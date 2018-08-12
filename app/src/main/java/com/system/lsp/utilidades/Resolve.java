@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -25,24 +26,32 @@ public class Resolve {
     private static final String EXTRA_MENSAJE = "extra.mensaje";
 
 
-    public static void sincronizarData(Context context){
-        // Verificación para evitar iniciar más de una sync a la vez
-        Account cuentaActiva = UCuentas.obtenerCuentaActiva(context);
-        if (ContentResolver.isSyncActive(cuentaActiva, Contract.AUTORIDAD)) {
-            Log.d("SINCRONIZADOR", "Ignorando sincronización ya que existe una en proceso.");
-            return;
-        }
+    public static void sincronizarData(final Context context){
+        new AsyncTask<Void,Void,Void>(){
 
-        Log.d("SINCRONIZADOR", "Solicitando sincronización manual");
-        if(UWeb.hayConexion(context)){
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-            ContentResolver.requestSync(cuentaActiva, Contract.AUTORIDAD, bundle);
-        }else {
-            Log.e("No tien internet","Estoy aca");
-            enviarBroadcast(context,true, "NO INTERNET");
-        }
+            @Override
+            protected Void doInBackground(Void... voids) {
+                // Verificación para evitar iniciar más de una sync a la vez
+                Account cuentaActiva = UCuentas.obtenerCuentaActiva(context);
+                if (ContentResolver.isSyncActive(cuentaActiva, Contract.AUTORIDAD)) {
+                    Log.d("SINCRONIZADOR", "Ignorando sincronización ya que existe una en proceso.");
+                    return null;
+                }
+
+                Log.d("SINCRONIZADOR", "Solicitando sincronización manual");
+                if(UWeb.hayConexion(context)){
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                    bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                    ContentResolver.requestSync(cuentaActiva, Contract.AUTORIDAD, bundle);
+                }else {
+                    Log.e("No tien internet","Estoy aca");
+                    enviarBroadcast(context,true, "NO INTERNET");
+                }
+                return null;
+            }
+        }.execute();
+
     }
 
 

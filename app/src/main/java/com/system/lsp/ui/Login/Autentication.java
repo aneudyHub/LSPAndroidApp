@@ -159,6 +159,20 @@ public class Autentication extends Activity {
         }
 
         setView();
+        permissions();
+
+
+    }
+
+    public void permissions(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
+                        MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+
+            }
+        }
     }
 
     /**
@@ -209,7 +223,7 @@ public class Autentication extends Activity {
                         String urlAPP = jObj.getString("connection");
                         UPreferencias.guardaUrlAPP(Autentication.this,urlAPP);
 
-                        String urlFoto = jObj.getString("url_foto");
+                        String urlFoto = jObj.getString("foto_url");
                         UPreferencias.guardarUrlFoto(Autentication.this,urlFoto);
 
 

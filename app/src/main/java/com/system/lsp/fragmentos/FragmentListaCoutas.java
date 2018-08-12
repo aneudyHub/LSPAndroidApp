@@ -1,13 +1,16 @@
 package com.system.lsp.fragmentos;
 
+import android.accounts.Account;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -44,13 +47,17 @@ import com.system.lsp.ui.AdaptadorCuotas;
 import com.system.lsp.ui.Main.MainActivity;
 import com.system.lsp.ui.Pagos.Pagos;
 import com.system.lsp.utilidades.Resolve;
+import com.system.lsp.utilidades.UCuentas;
 import com.system.lsp.utilidades.UPreferencias;
 import com.system.lsp.utilidades.URL;
 import com.system.lsp.utilidades.UTiempo;
+import com.system.lsp.utilidades.UWeb;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.system.lsp.utilidades.Resolve.enviarBroadcast;
 
 /**
  * Created by aneudy on 22/6/2017.
@@ -128,10 +135,41 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showProgress("CARGANDO DATOS");
-                    Resolve.sincronizarData(getContext());
+//                getActivity().runOnUiThread (new Thread(new Runnable() {
+//                    public void run() {
+//                        showProgress("CARGANDO DATOS");
+//                        swipeRefreshLayout.setRefreshing(true);
+//                    }
+//                }));
+//
+//                Resolve.sincronizarData(getContext());
 
-                    swipeRefreshLayout.setRefreshing(true);
+
+                new AsyncTask<Void,Void,Void>(){
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+
+                        getActivity().runOnUiThread (new Thread(new Runnable() {
+                            public void run() {
+                                showProgress("CARGANDO DATOS");
+                                swipeRefreshLayout.setRefreshing(true);
+                            }
+                        }));
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                    }
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        // Verificación para evitar iniciar más de una sync a la vez
+                        Resolve.sincronizarData(getActivity());
+                        return null;
+                    }
+                }.execute();
             }
         });
         /*swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
