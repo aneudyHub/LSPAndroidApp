@@ -79,7 +79,7 @@ public class HistorialPagos {
                     public void onResponse(JSONObject response) {
                         // Procesar GET
                         tratarGetCuotasPagos(response);
-                        Resolve.enviarBroadcast(context,false, "Listo");
+//                        Resolve.enviarBroadcast_Historial(context,false, "Listo");
                     }
                 },
                 new Response.ErrorListener() {
@@ -98,8 +98,6 @@ public class HistorialPagos {
 
 
     private void tratarGetCuotasPagos(JSONObject respuesta) {
-
-
         try {
             // Crear referencia de lista de operaciones
             ArrayList<ContentProviderOperation> ops = new ArrayList<>();
@@ -121,10 +119,10 @@ public class HistorialPagos {
                 // Notificar cambio al content provider
                 cr.notifyChange(Contract.URI_CONTENIDO_BASE, null, false);
 
-
+                Resolve.enviarBroadcast_Historial(context,false, "Sincronizacion Completa");
             } else {
                 Log.d(TAG, "Sin cambios remotos");
-                Resolve.enviarBroadcast(context,false, "Listo!!!");
+                Resolve.enviarBroadcast_Historial(context,false, "Sincronizacion Completa");
             }
 
             // Sincronización remota
@@ -232,7 +230,7 @@ public class HistorialPagos {
         Log.d(TAG, "Error Respuesta:" + (respuesta != null ? respuesta.toString() : "()")
                 + "\nDetalles:" + error.getMessage());
 
-        Resolve.enviarBroadcast(context,false, respuesta.getMensaje());
+        Resolve.enviarBroadcast_Historial(context,false, respuesta.getMensaje());
 
     }
 

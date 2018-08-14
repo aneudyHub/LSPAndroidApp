@@ -140,15 +140,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                         @Override
                         public void onResponse(JSONObject response) {
                             // Procesar GET
-                            tratarGet(response);
                             JSONObject jObj =  response;
                             try {
                                 String status = jObj.getString("estado");
                                 Log.e("STATUS->>LO",String.valueOf(status));
                                 if (status.equals("200")){
+                                    tratarGet(response);
                                     Log.e("STATUS->>LO",String.valueOf(status));
                                     operacionesBaseDatos.actualizarSyncTime(UPreferencias.obtenerIdUsuario(getContext()),UTiempo.obtenerFechaHora());
-                                    Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!");
+                                    //Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!");
                                 }
 
                             } catch (JSONException e) {
@@ -195,6 +195,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 cr.applyBatch(Contract.AUTORIDAD, ops);
                 // Notificar cambio al content provider
                 cr.notifyChange(Contract.URI_CONTENIDO_BASE, null, false);
+                Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!");
 
             } else {
                 Log.d(TAG, "Sin cambios remotos");
@@ -281,7 +282,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         procRemoto.desmarcarContactos(cr);
         //Resolve.sincronizarData(getContext());
         syncLocal();
-        Resolve.enviarBroadcast(getContext(),true, "Sicronizando espereeeeeeee!!!");
+//        Resolve.enviarBroadcast(getContext(),true, "Sicronizando espereeeeeeee!!!");
     }
 
     private void tratarErrores(VolleyError error) {

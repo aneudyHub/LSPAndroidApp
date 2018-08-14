@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/Layout"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="150dp"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardUseCompatPadding="true">
 
@@ -31,26 +31,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
             android:textColor="@color/negro87"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/vertical_separator1"
-            app:layout_constraintHorizontal_bias="0.187"
             app:layout_constraintStart_toEndOf="@+id/appointment_status"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fechaCobro"
             tools:text="Nombre Clientedffsdgsdfgsdfgsdfgsdfgsfd" />
 
         <TextView
             android:id="@+id/idPrestamoH"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/btn_login"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/appointment_status"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="#567" />
 
@@ -58,18 +61,20 @@
         <TextView
             android:id="@+id/fechaCobro"
             android:layout_width="0dp"
-            android:layout_height="24dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="right"
             android:maxLines="5"
             android:textColor="@color/input_register_hint"
             android:textSize="14sp"
             android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="@+id/montoCobrado"
             app:layout_constraintEnd_toStartOf="@+id/vertical_separator1"
-            app:layout_constraintHorizontal_bias="0.187"
-            app:layout_constraintStart_toEndOf="@+id/appointment_status"
-            app:layout_constraintTop_toBottomOf="@+id/nombre_cliente"
+            app:layout_constraintStart_toEndOf="@+id/idPrestamoH"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="2018-02-16" />
 
 
@@ -87,8 +92,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/appointment_status"
-            app:layout_constraintTop_toBottomOf="@+id/fechaCobro"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/nombre_cliente" />
 
 
         <View

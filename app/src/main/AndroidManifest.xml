@@ -93,6 +93,7 @@
         <activity
             android:name="com.system.lsp.ui.Pagos.Pagos"
             android:parentActivityName="com.system.lsp.ui.Main.MainActivity" />
+
         <activity
             android:name="com.system.lsp.ui.Prestamo.DetallePrestamo"
             android:label="@string/title_activity_detalle_prestamo"

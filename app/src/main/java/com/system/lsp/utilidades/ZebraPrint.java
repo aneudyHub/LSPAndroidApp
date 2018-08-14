@@ -42,7 +42,7 @@ public class ZebraPrint {
     private String[] parametros;// TRN Conceptopago etc... etc...
     //private List<NameValuePair> param_post; //Parametros por post
     private OperacionesBaseDatos datosBD;
-    private Cursor cursor;
+//    private Cursor cursor;
     private String fechaPago;
     private String numPrestamo;
     private String nombreCliente;
@@ -64,6 +64,7 @@ public class ZebraPrint {
 
     private String imp_dat = "";
     private Recibo receipt;
+    private Context context;
 
 
 
@@ -72,13 +73,14 @@ public class ZebraPrint {
 
 
     public ZebraPrint(Context context, String TAG,String nombreCobrador,String fechaCobro,
-                      String detalleCobro, Double totalPagado){
+                      String detalleCobro, Double totalPagado,Progress mListener){
         this._context = context;
         this.imp_dat=TAG;
         this.nombreCobrador = nombreCobrador;
         this.fechaPago = fechaCobro;
         this.detalleFactura = detalleCobro;
         this.totalPagado = totalPagado;
+        this.mListener=mListener;
     }
 
     public ZebraPrint(Context context, String TAG,String fechaPago, String numPrestamo, String nombreCliente,
@@ -93,33 +95,30 @@ public class ZebraPrint {
         this.totalMora = totalMora;
         this.nombreCobrador = nombreCobrador;
         this.telefono = telefono;
-        datosBD = OperacionesBaseDatos
-                .obtenerInstancia(context);
-
-        cursor = datosBD.datosCompania();
+        this.context=context;
         this.mListener=mListener;
 
     }
 
-    public ZebraPrint(Context context, String TAG,String fechaPago, String numPrestamo, String nombreCliente,
-                      String detalleFactura, Double totalPagado,Double totalMora, String nombreCobrador,String telefono) {
-        this._context = context;
-        this.imp_dat=TAG;
-        this.fechaPago = fechaPago;
-        this.numPrestamo = numPrestamo;
-        this.nombreCliente = nombreCliente;
-        this.detalleFactura = detalleFactura;
-        this.totalPagado = totalPagado;
-        this.totalMora = totalMora;
-        this.nombreCobrador = nombreCobrador;
-        this.telefono = telefono;
-        datosBD = OperacionesBaseDatos
-                .obtenerInstancia(context);
-
-        cursor = datosBD.datosCompania();
-
-
-    }
+//    public ZebraPrint(Context context, String TAG,String fechaPago, String numPrestamo, String nombreCliente,
+//                      String detalleFactura, Double totalPagado,Double totalMora, String nombreCobrador,String telefono) {
+//        this._context = context;
+//        this.imp_dat=TAG;
+//        this.fechaPago = fechaPago;
+//        this.numPrestamo = numPrestamo;
+//        this.nombreCliente = nombreCliente;
+//        this.detalleFactura = detalleFactura;
+//        this.totalPagado = totalPagado;
+//        this.totalMora = totalMora;
+//        this.nombreCobrador = nombreCobrador;
+//        this.telefono = telefono;
+//        datosBD = OperacionesBaseDatos
+//                .obtenerInstancia(context);
+//
+//        cursor = datosBD.datosCompania();
+//
+//
+//    }
 
 
     /* public ZebraPrint(Context context,List<HashMap<String,String>> detalles, String[] parametros, List<NameValuePair> param_post, Cliente cl){
@@ -130,10 +129,11 @@ public class ZebraPrint {
         //this.cliente = cl;
     }*/
 
-    public ZebraPrint(Context context, Recibo receipt, String TAG){
+    public ZebraPrint(Context context, Recibo receipt, String TAG,Progress mListener){
         this._context = context;
         this.receipt=receipt;
         this.imp_dat=TAG;
+        this.mListener=mListener;
     }
 
     public ZebraPrint(Context _context) {
@@ -149,8 +149,6 @@ public class ZebraPrint {
         mListener.showProgressPrint(true);
         new Thread(new Runnable() {
             public void run() {
-
-
                 try {
                     Looper.prepare();
                     doConnectionTest(imp_dat);
@@ -161,7 +159,6 @@ public class ZebraPrint {
                     Log.e("CONECT ERROR","error conection1");
                     e.printStackTrace();
                 }
-
             }
         }).start();
     }
@@ -741,6 +738,16 @@ public class ZebraPrint {
 
     private byte[] imprmir() {
 
+        datosBD = OperacionesBaseDatos
+                .obtenerInstancia(context);
+
+        Cursor cursor = datosBD.datosCompania();
+
+        if(!cursor.moveToFirst()){
+            mListener.error("NO EXISTEN DATOS DE COMPANIA");
+            return null;
+        }
+
         PrinterLanguage printerLanguage = printer.getPrinterControlLanguage();
 
         byte[] configLabel = null;
@@ -799,6 +806,8 @@ public class ZebraPrint {
 
             configLabel = cpclConfigLabel.getBytes();
         }
+
+        cursor.close();
         return configLabel;
 
     }
@@ -806,6 +815,17 @@ public class ZebraPrint {
 
 
     private byte[] imprmirCuadre() {
+
+        datosBD = OperacionesBaseDatos
+                .obtenerInstancia(context);
+
+        Cursor cursor = datosBD.datosCompania();
+
+        if(!cursor.moveToFirst()){
+            mListener.error("NO EXISTEN DATOS DE COMPANIA");
+            return null;
+        }
+
 
         PrinterLanguage printerLanguage = printer.getPrinterControlLanguage();
 
@@ -862,6 +882,7 @@ public class ZebraPrint {
 
             configLabel = cpclConfigLabel.getBytes();
         }
+        cursor.close();
         return configLabel;
 
     }

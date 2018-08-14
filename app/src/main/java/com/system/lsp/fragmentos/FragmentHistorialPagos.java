@@ -1,6 +1,7 @@
 package com.system.lsp.fragmentos;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,6 +40,7 @@ import com.system.lsp.provider.OperacionesBaseDatos;
 import com.system.lsp.ui.AdaptadorHisotiralPagos;
 import com.system.lsp.ui.Pagos.CuotasAdapter;
 import com.system.lsp.ui.Pagos.Pagos;
+import com.system.lsp.utilidades.Progress;
 import com.system.lsp.utilidades.Resolve;
 import com.system.lsp.utilidades.UPreferencias;
 import com.system.lsp.utilidades.UTiempo;
@@ -55,7 +57,7 @@ import java.util.Locale;
  * Created by Suarez on 13/01/2018.
  */
 
-public class FragmentHistorialPagos extends android.support.v4.app.Fragment implements View.OnClickListener,SearchView.OnQueryTextListener {
+public class FragmentHistorialPagos extends android.support.v4.app.Fragment implements View.OnClickListener,SearchView.OnQueryTextListener,Progress {
 
     public static final String TAG = "Prestamos";
     // Referencias UI
@@ -82,14 +84,20 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
     SwipeRefreshLayout swipeRefreshLayout;
     Calendar newCalendar;
 
+    String fecha="";
+
+    ProgressDialog mProgress;
+
+    public int year=0, monthOfYear=0, dayOfMonth=0;
+
+
+
 
     @Override
     public void onResume() {
         super.onResume();
-        IntentFilter filtroSync = new IntentFilter(Intent.ACTION_SYNC);
+        IntentFilter filtroSync = new IntentFilter(Resolve.ACTION_HISTORIAL);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receptorSync, filtroSync);
-
-
     }
 
     private BroadcastReceiver receptorSync;
@@ -110,19 +118,35 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                //mostrarProgreso(false);
-                Log.e("broadcast","llego0000000000");
-                swipeRefreshLayout.setRefreshing(false);
-                String mensaje = intent.getStringExtra("extra.mensaje");
 
-                Snackbar.make(view.findViewById(R.id.historial),
-                        mensaje, Snackbar.LENGTH_LONG).show();
-                if (mensaje == "Listo"){
-                    Log.e("Hola soy ","AC");
-                    //getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                if(intent.getAction().equals(Resolve.ACTION_HISTORIAL)){
+                    //mostrarProgreso(false);
+                    Log.e("broadcast","llego0000000000");
+                    swipeRefreshLayout.setRefreshing(false);
+                    String mensaje = intent.getStringExtra(Resolve.EXTRA_MENSAJE_HISTORIAL);
+
+                    Snackbar.make(view.findViewById(R.id.historial),
+                            mensaje, Snackbar.LENGTH_LONG).show();
+
+                    if (mensaje == "Listo"){
+                        Log.e("Hola soy ","AC");
+                        //getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                    }
+
+                    listaCuotasCobradas = operacionesBaseDatos.getCutaPagas(UPreferencias.obtenerIdUsuario(getContext()),fecha);
+                    double totalFacturado=0;
+
+                    for(CuotaPaga cu :listaCuotasCobradas){
+                        totalFacturado+=cu.getMonto();
+                    }
+                    mTotalFacutado.setText(String.valueOf(totalFacturado));
+
+                    adaptador = new AdaptadorHisotiralPagos((ArrayList<CuotaPaga>) listaCuotasCobradas,getContext(),FragmentHistorialPagos.this);
+                    reciclador.setAdapter(adaptador);
+                    mCant.setText(String.valueOf(adaptador.getItemCount()));
+                    swipeRefreshLayout.setRefreshing(false);
+//                  getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
                 }
-                // getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-
             }
 
         };
@@ -135,7 +159,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
+//                swipeRefreshLayout.setRefreshing(true);
                 getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
             }
         });
@@ -173,6 +197,10 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
         reciclador = (RecyclerView) view.findViewById(R.id.reciclador);
         layoutManager = new LinearLayoutManager(getContext());
         reciclador.setLayoutManager(layoutManager);
+
+        mProgress = new ProgressDialog(getActivity());
+        mProgress.setTitle("Imprimiendo...");
+        mProgress.setCancelable(false);
 
 
 
@@ -231,16 +259,13 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
 
 
     private void setDateTimeField() {
+
         newCalendar = Calendar.getInstance();
         toDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
                 getData(year,monthOfYear,dayOfMonth);
-
             }
-
-
 
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
@@ -249,10 +274,12 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
 
 
     private void getData(int year, int monthOfYear, int dayOfMonth){
+        swipeRefreshLayout.setRefreshing(true);
+
         newCalendar.set(year,monthOfYear,dayOfMonth);
         Log.e("E DADO CLICK","N");
         fechaBuscar.setText(dateFormatter.format(newCalendar.getTime()));
-        String fecha = fechaBuscar.getText().toString();
+        fecha = fechaBuscar.getText().toString();
         Log.e("VALOR-FECH",fecha);
         operacionesBaseDatos = OperacionesBaseDatos
                 .obtenerInstancia(getContext());
@@ -285,17 +312,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
             historialPagos.synCuotaPagaLocal(fecha);
         }
 
-        listaCuotasCobradas = operacionesBaseDatos.getCutaPagas(UPreferencias.obtenerIdUsuario(getContext()),fecha);
-        double totalFacturado=0;
-        for(CuotaPaga cu :listaCuotasCobradas){
-            totalFacturado+=cu.getMonto();
-        }
-        mTotalFacutado.setText(String.valueOf(totalFacturado));
 
-        adaptador = new AdaptadorHisotiralPagos((ArrayList<CuotaPaga>) listaCuotasCobradas,getContext());
-        reciclador.setAdapter(adaptador);
-        mCant.setText(String.valueOf(adaptador.getItemCount()));
-        swipeRefreshLayout.setRefreshing(false);
     }
 
 
@@ -318,8 +335,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
 
         Log.e("CUADRE",""+nombreCobrador+" "+sb.toString() +" Total:"+totalCobrado);
 
-            ZebraPrint zebraprint = new ZebraPrint(getContext(),"imprimirCuadre",nombreCobrador,fechaCobro,sb.toString(),
-                                                    totalCobrado);
+            ZebraPrint zebraprint = new ZebraPrint(getContext(),"imprimirCuadre",nombreCobrador,fechaCobro,sb.toString(), totalCobrado,FragmentHistorialPagos.this);
             zebraprint.probarlo();
 
 
@@ -403,7 +419,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receptorSync);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receptorSync);
     }
 
     @Override
@@ -414,5 +430,78 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
+    }
+
+    @Override
+    public void showProgressPrint(Boolean b) {
+        if(mProgress==null) return;
+
+        if(b){
+            mProgress.show();
+        }else{
+            mProgress.dismiss();
+        }
+    }
+
+    @Override
+    public void error(String msj) {
+        if(mProgress!=null)
+            mProgress.dismiss();
+
+        showAlert(msj);
+
+    }
+
+    @Override
+    public void finishPrint(String msj) {
+        if(mProgress!=null)
+            mProgress.dismiss();
+
+        showAlert(msj);
+    }
+
+    public void showAlert(String mensaje){
+
+
+        /*AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(mensaje);
+
+        alertDialogBuilder.setPositiveButton("salir", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                finish();
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();*/
+
+         /*Snackbar.make(findViewById(R.id.coordinador),
+                            "No hay conexion disponible",
+                            Snackbar.LENGTH_LONG).show();*/
+
+        android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        // set title
+        alertDialogBuilder.setTitle(Html.fromHtml("<font color='#FFF'>INFORMACION</font>"));
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(mensaje)
+                .setCancelable(false)
+                .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+
     }
 }

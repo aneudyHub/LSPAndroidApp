@@ -245,7 +245,7 @@ public class OperacionesBaseDatos {
                 Contract.CUOTA_PAGADA + "." + Contract.CuotaPaga.NOMBRE_COBRADOR,
         };
 
-        c = builder.query(db, proyeccion, selection, selectionArgs, null, null, null);
+        c = builder.query(db, proyeccion, selection, selectionArgs, null, null, Contract.CuotaPaga.FECHA+" ASC");
 
         //Nos movemos al primer registro de la consulta
         /*if (c != null) {
@@ -391,6 +391,7 @@ public class OperacionesBaseDatos {
             list.add(cuotaPaga);
 
         }
+        c.close();
         return  list;
 
     }
@@ -409,6 +410,7 @@ public class OperacionesBaseDatos {
             list.add(cuotaPaga);
 
         }
+        c.close();
         return  list;
 
     }
@@ -463,6 +465,7 @@ public class OperacionesBaseDatos {
             }else {
                 result = false;
             }
+            cursor.close();
         } catch (Exception e) {
             Log.e("Requestdbhelper", e.toString());
         }

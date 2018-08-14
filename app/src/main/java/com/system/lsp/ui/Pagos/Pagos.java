@@ -54,6 +54,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
+
 public class Pagos extends AppCompatActivity implements Progress,LoaderManager.LoaderCallbacks<Cursor>{
 
     private String mPrestamoURI;
@@ -179,6 +181,13 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -219,8 +228,12 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
                         // show it
                         alertDialog.show();
                     }else{
-
-                        pagar();
+                        try {
+                            pagar();
+                        } catch (InterruptedException e) {
+                            showAlert(e.getLocalizedMessage());
+                            e.printStackTrace();
+                        }
                     }
 
                 }
@@ -270,7 +283,7 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
     }
 
 
-    public void pagar(){
+    public void pagar() throws InterruptedException {
         showProgress("CARGANDO DATOS. ESPERE!!!!");
 
         StringBuilder sb= new StringBuilder() ;
@@ -415,13 +428,14 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
 
         getContentResolver().insert(Contract.CuotaPaga.URI_CONTENIDO,valores);
 
+//        sleep(2000);
 
         detallePago =sb.toString();
 
 
 
-        Resolve.sincronizarData(Pagos.this);
-        setResult(RESULT_OK);
+        //Resolve.sincronizarData(Pagos.this);
+//        setResult(RESULT_OK);
         Log.e("TOTAL-E-MORA",String.valueOf(CuotasAdapter.totalMora));
         Log.e("VALOR-FATURA",CuotasAdapter.datos);
 
@@ -432,6 +446,7 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
                 detallePago,totalPagado,totalMoraF, UPreferencias.obtenerNombreUsuario(Pagos.this),
                 UPreferencias.obtenerTelefonoCobrador(Pagos.this),Pagos.this);
         zebraprint.probarlo();
+
 
 
 
@@ -486,6 +501,7 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
                         // if this button is clicked, close
                         // current activity
                         dialog.cancel();
+                        setResult(RESULT_OK);
                         finish();
                     }
                 });
@@ -518,8 +534,6 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
         }
         Log.e("error printer",msj);
         showAlert(msj);
-
-
     }
 
     @Override
@@ -529,6 +543,9 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
 
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        progress.onDetachedFromWindow();
+    }
 }

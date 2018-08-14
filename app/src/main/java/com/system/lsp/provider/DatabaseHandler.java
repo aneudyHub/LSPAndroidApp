@@ -124,9 +124,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 Cobrador.NOMBRECOMPANIA + " TEXT,"+
                 Cobrador.DIRECCIONCOMPANIA + " TEXT,"+
                 Cobrador.TELEFONOCOMPANIA + " TEXT,"+
-                Cobrador.RNCCOMPANIA + " TEXT,"+
-                Cobrador.NOTACOMPANIA + " TEXT,"+
-                Cobrador.LEMACOMPANIA + " TEXT,"+
+                Cobrador.RNCCOMPANIA + " TEXT default '',"+
+                Cobrador.NOTACOMPANIA + " TEXT default '',"+
+                Cobrador.LEMACOMPANIA + " TEXT default '',"+
                 Cobrador.SYNC_TIME + " TIMESTAMP);";
 
         db.execSQL(CobradorT);

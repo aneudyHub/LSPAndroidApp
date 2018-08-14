@@ -201,9 +201,8 @@ public class Autentication extends Activity {
             public void onResponse(String response) {
                 Log.e(TAG, "Login Response: " + response.toString());
                 hideDialog();
-
+                
                 Log.e("PASO 3", "PASO 3");
-
                 try {
                     JSONObject jObj = new JSONObject(response.replaceAll("[^\\x00-\\x7F]", ""));
                    // int status = jObj.getInt("status");
@@ -247,7 +246,6 @@ public class Autentication extends Activity {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
-
             }
         }, new Response.ErrorListener() {
 
@@ -317,7 +315,6 @@ public class Autentication extends Activity {
             e.printStackTrace();
             return null;
         }
-
         return trimmedString;
     }
 
@@ -383,11 +380,8 @@ public class Autentication extends Activity {
             }
         });
 
-
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-
-
     }
 
 

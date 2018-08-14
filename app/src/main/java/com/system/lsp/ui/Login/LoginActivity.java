@@ -52,6 +52,7 @@ public class LoginActivity extends Activity {
     private ProgressDialog pDialog;
     private SessionManager session;
     private TextView nombreUsuario;
+    private TextView mCompania;
 
     private static final int ESTADO_PETICION_FALLIDA = 107;
     private static final int ESTADO_TIEMPO_ESPERA = 108;
@@ -63,6 +64,12 @@ public class LoginActivity extends Activity {
     public void setView(){
 
         inputEmail = (EditText) findViewById(R.id.email);
+        mCompania = (TextView)findViewById(R.id.NombreCompania);
+
+        if(UPreferencias.obtenerNombreCompania(this)!=null)
+            mCompania.setText(UPreferencias.obtenerNombreCompania(this));
+
+
         inputPassword = (EditText) findViewById(R.id.password);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +392,10 @@ public class LoginActivity extends Activity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        //nada
+    }
 
     //Somewhere that has access to a context
     public void displayMessage(String toastString){

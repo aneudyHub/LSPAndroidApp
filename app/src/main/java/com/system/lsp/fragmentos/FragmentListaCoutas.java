@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.app.Activity.RESULT_OK;
 import static com.system.lsp.utilidades.Resolve.enviarBroadcast;
 
 /**
@@ -88,8 +89,10 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
     @Override
     public void onResume() {
         super.onResume();
-        IntentFilter filtroSync = new IntentFilter(Intent.ACTION_SYNC);
+
         getActivity().getSupportLoaderManager().restartLoader(1, null, this);
+
+        IntentFilter filtroSync = new IntentFilter(Resolve.ACTION_CUOTAS);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receptorSync, filtroSync);
         Log.e("ESTOY EN RESUME","");
         //startTime(getContext());
@@ -113,14 +116,15 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                //mostrarProgreso(false);
-                Log.e("broadcast","llego0000000000");
-                swipeRefreshLayout.setRefreshing(false);
-                String mensaje = intent.getStringExtra("extra.mensaje");
-                Snackbar.make(view.findViewById(R.id.coordinador),
-                        mensaje, Snackbar.LENGTH_LONG).show();
-                progress.dismiss();
-
+                if(intent.getAction().equals(Resolve.ACTION_CUOTAS)){
+                    //mostrarProgreso(false);
+                    Log.e("broadcast","llego0000000000");
+                    swipeRefreshLayout.setRefreshing(false);
+                    String mensaje = intent.getStringExtra(Resolve.EXTRA_MENSAJE);
+                    Snackbar.make(view.findViewById(R.id.coordinador),
+                            mensaje, Snackbar.LENGTH_LONG).show();
+                    progress.dismiss();
+                }
             }
         };
 
@@ -189,10 +193,44 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
         return  view;
     }
 
-    private void sincronizar(View view) {
-        swipeRefreshLayout.setRefreshing(true);
-        // Verificación para evitar iniciar más de una sync a la vez
-        Resolve.sincronizarData(getContext());
+//    private void sincronizar(View view) {
+//        swipeRefreshLayout.setRefreshing(true);
+//        // Verificación para evitar iniciar más de una sync a la vez
+//        Resolve.sincronizarData(getContext());
+//    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQ_DET){
+            if(resultCode==RESULT_OK){
+                new AsyncTask<Void,Void,Void>(){
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+
+                        getActivity().runOnUiThread (new Thread(new Runnable() {
+                            public void run() {
+                                showProgress("CARGANDO DATOS");
+                                swipeRefreshLayout.setRefreshing(true);
+                            }
+                        }));
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                    }
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        // Verificación para evitar iniciar más de una sync a la vez
+                        Resolve.sincronizarData(getActivity());
+                        return null;
+                    }
+                }.execute();
+            }
+        }
     }
 
     private void mostrarProgreso(boolean mostrar) {
@@ -390,9 +428,9 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
         RequestOptions options = new RequestOptions()
                 .fitCenter()
                 .placeholder(getResources().getDrawable(R.drawable.index))
-                .error(getResources().getDrawable(R.drawable.index));
+                .error(getResources().getDrawable(R.drawable.ic_error_info));
 
-        String Url = URL.FOTO+documento+".jpg";
+        String Url = UPreferencias.obtenerUrlFoto(getActivity())+documento+".jpg";
         Glide.with(this).load(Url).apply(options).into(foto);
 
 

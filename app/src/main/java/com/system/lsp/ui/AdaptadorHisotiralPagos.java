@@ -18,6 +18,7 @@ import com.system.lsp.modelo.DatosCliente;
 import com.system.lsp.modelo.PrestamoDetalle;
 import com.system.lsp.ui.Pagos.CuotasAdapter;
 import com.system.lsp.ui.Pagos.Pagos;
+import com.system.lsp.utilidades.Progress;
 import com.system.lsp.utilidades.UPreferencias;
 import com.system.lsp.utilidades.UTiempo;
 import com.system.lsp.utilidades.ZebraPrint;
@@ -35,12 +36,14 @@ public class AdaptadorHisotiralPagos extends RecyclerView.Adapter<AdaptadorHisot
     private ArrayList<CuotaPaga> mFilteredList;
     private ArrayList<CuotaPaga> mArrayListOriginal;
     private Context context;
+    private Progress mListenerProgress;
 
-    public AdaptadorHisotiralPagos(ArrayList<CuotaPaga> mArrayList,Context context) {
+    public AdaptadorHisotiralPagos(ArrayList<CuotaPaga> mArrayList,Context context,Progress mListenerProgress) {
         this.mArrayList=mArrayList;
         this.context = context;
         this.mFilteredList=mArrayList;
         this.mArrayListOriginal=mArrayList;
+        this.mListenerProgress=mListenerProgress;
 
     }
 
@@ -104,8 +107,8 @@ public class AdaptadorHisotiralPagos extends RecyclerView.Adapter<AdaptadorHisot
                 Log.e("Soy el nombre",nombreCliente);
                 Log.e("STRING:",datos);
                 Log.e("VALOR-TOTAL-MORA",String.valueOf(totalMora));
-                ZebraPrint zebraprint = new ZebraPrint(view.getContext(),"imprimir", fecha,
-                        idPrestamos,nombreCliente, datos,monto,totalMora, nombreCobrador,telefonoCobrador);
+                ZebraPrint zebraprint = new ZebraPrint(view.getContext(), "imprimir", fecha,
+                        idPrestamos, nombreCliente, datos, monto, totalMora, nombreCobrador, telefonoCobrador, mListenerProgress);
                 zebraprint.probarlo();
             }
         });

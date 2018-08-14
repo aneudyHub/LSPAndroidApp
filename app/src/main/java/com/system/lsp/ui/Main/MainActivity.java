@@ -27,13 +27,14 @@ import com.system.lsp.provider.Contract;
 import com.system.lsp.provider.SessionManager;
 import com.system.lsp.ui.AdaptadorCuotas;
 import com.system.lsp.ui.Login.LoginActivity;
+import com.system.lsp.utilidades.Progress;
 import com.system.lsp.utilidades.UPreferencias;
 import com.system.lsp.utilidades.ZebraPrint;
 import com.system.lsp.utilidades.ZebraprintOld;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,Progress {
 
     private Handler mHandler;
     private SessionManager session;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity
             /*ZebraprintOld zebraprint = new ZebraprintOld(this,null,"prueba");
             zebraprint.probarlo();*/
 
-            ZebraPrint zebraprint = new ZebraPrint(this,null,"prueba");
+            ZebraPrint zebraprint = new ZebraPrint(this,null,"prueba",this);
             zebraprint.probarlo();
 
             return true;
@@ -262,4 +263,18 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void showProgressPrint(Boolean b) {
+
+    }
+
+    @Override
+    public void error(String msj) {
+
+    }
+
+    @Override
+    public void finishPrint(String msj) {
+
+    }
 }

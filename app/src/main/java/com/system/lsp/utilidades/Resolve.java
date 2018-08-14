@@ -23,7 +23,15 @@ import java.net.InetAddress;
 public class Resolve {
 
     public static final String EXTRA_RESULTADO = "extra.resultado";
-    private static final String EXTRA_MENSAJE = "extra.mensaje";
+    public static final String EXTRA_MENSAJE = "extra.mensaje";
+    public static final String ACTION_CUOTAS="extra.cuotas";
+
+
+    public static final String EXTRA_RESULTADO_HISTORIAL = "extra.resultado.historial";
+    public static final String EXTRA_MENSAJE_HISTORIAL = "extra.mensaje.historial";
+    public static final String ACTION_HISTORIAL = "extra.historial";
+
+
 
 
     public static void sincronizarData(final Context context){
@@ -56,9 +64,16 @@ public class Resolve {
 
 
     public static void enviarBroadcast(Context context,boolean estado, String mensaje) {
-        Intent intentLocal = new Intent(Intent.ACTION_SYNC);
+        Intent intentLocal = new Intent(Resolve.ACTION_CUOTAS);
         intentLocal.putExtra(EXTRA_RESULTADO, estado);
         intentLocal.putExtra(EXTRA_MENSAJE, mensaje);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intentLocal);
+    }
+
+    public static void enviarBroadcast_Historial(Context context,boolean estado, String mensaje) {
+        Intent intentLocal = new Intent(Resolve.ACTION_HISTORIAL);
+        intentLocal.putExtra(EXTRA_RESULTADO_HISTORIAL, estado);
+        intentLocal.putExtra(EXTRA_MENSAJE_HISTORIAL, mensaje);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intentLocal);
     }
 
