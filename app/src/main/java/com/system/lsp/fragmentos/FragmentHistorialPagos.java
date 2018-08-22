@@ -83,6 +83,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
     com.system.lsp.sync.HistorialPagos historialPagos;
     SwipeRefreshLayout swipeRefreshLayout;
     Calendar newCalendar;
+    public ProgressDialog progress;
 
     String fecha="";
 
@@ -198,9 +199,12 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
         layoutManager = new LinearLayoutManager(getContext());
         reciclador.setLayoutManager(layoutManager);
 
-        mProgress = new ProgressDialog(getActivity());
+
+
+       /* mProgress = new ProgressDialog(getActivity());
         mProgress.setTitle("Imprimiendo...");
-        mProgress.setCancelable(false);
+        mProgress.setCancelable(false);*/
+       //showProgress("Imprimiendo!!!");
 
 
 
@@ -317,6 +321,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
 
 
     private void imprimirCuadre(){
+
         operacionesBaseDatos = OperacionesBaseDatos
                 .obtenerInstancia(getContext());
         listaCobrosRealizados = operacionesBaseDatos.getImprimirCuadre(UPreferencias.obtenerIdUsuario(getContext()));
@@ -440,6 +445,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
             mProgress.show();
         }else{
             mProgress.dismiss();
+          
         }
     }
 
@@ -456,6 +462,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
     public void finishPrint(String msj) {
         if(mProgress!=null)
             mProgress.dismiss();
+
 
         showAlert(msj);
     }
@@ -493,6 +500,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
                         // if this button is clicked, close
                         // current activity
                         dialog.cancel();
+                        Resolve.dimmisProgress();
                     }
                 });
 
@@ -503,5 +511,15 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
         alertDialog.show();
 
 
+
     }
+
+
+    public void showProgress(String title){
+        progress = new ProgressDialog(getContext());
+        progress.setTitle(title);
+        progress.setCancelable(false);
+        progress.show();
+    }
+
 }

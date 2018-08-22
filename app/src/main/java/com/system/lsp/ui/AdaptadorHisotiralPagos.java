@@ -1,5 +1,6 @@
 package com.system.lsp.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import com.system.lsp.modelo.PrestamoDetalle;
 import com.system.lsp.ui.Pagos.CuotasAdapter;
 import com.system.lsp.ui.Pagos.Pagos;
 import com.system.lsp.utilidades.Progress;
+import com.system.lsp.utilidades.Resolve;
 import com.system.lsp.utilidades.UPreferencias;
 import com.system.lsp.utilidades.UTiempo;
 import com.system.lsp.utilidades.ZebraPrint;
@@ -37,6 +39,7 @@ public class AdaptadorHisotiralPagos extends RecyclerView.Adapter<AdaptadorHisot
     private ArrayList<CuotaPaga> mArrayListOriginal;
     private Context context;
     private Progress mListenerProgress;
+
 
     public AdaptadorHisotiralPagos(ArrayList<CuotaPaga> mArrayList,Context context,Progress mListenerProgress) {
         this.mArrayList=mArrayList;
@@ -107,11 +110,16 @@ public class AdaptadorHisotiralPagos extends RecyclerView.Adapter<AdaptadorHisot
                 Log.e("Soy el nombre",nombreCliente);
                 Log.e("STRING:",datos);
                 Log.e("VALOR-TOTAL-MORA",String.valueOf(totalMora));
+                Resolve.showProgress(context,"Imprmiendo");
                 ZebraPrint zebraprint = new ZebraPrint(view.getContext(), "imprimir", fecha,
                         idPrestamos, nombreCliente, datos, monto, totalMora, nombreCobrador, telefonoCobrador, mListenerProgress);
                 zebraprint.probarlo();
+
+
             }
         });
+
+
 
 
         /*Log.e("Valor Cuota",pago);
@@ -132,6 +140,9 @@ public class AdaptadorHisotiralPagos extends RecyclerView.Adapter<AdaptadorHisot
 
 
     }
+
+
+
 
     @Override
     public int getItemCount() {

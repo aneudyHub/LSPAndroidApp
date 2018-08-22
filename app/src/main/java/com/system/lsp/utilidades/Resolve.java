@@ -1,6 +1,7 @@
 package com.system.lsp.utilidades;
 
 import android.accounts.Account;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +32,7 @@ public class Resolve {
     public static final String EXTRA_MENSAJE_HISTORIAL = "extra.mensaje.historial";
     public static final String ACTION_HISTORIAL = "extra.historial";
 
-
+    public static ProgressDialog progress;
 
 
     public static void sincronizarData(final Context context){
@@ -113,6 +114,19 @@ public class Resolve {
             return false;
         }
     }
+
+    public static void showProgress(Context context,String title){
+        progress = new ProgressDialog(context);
+        progress.setTitle(title);
+        progress.setCancelable(false);
+        progress.show();
+    }
+
+    public static void dimmisProgress(){
+        progress.dismiss();
+    }
+
+
 
 
 }
