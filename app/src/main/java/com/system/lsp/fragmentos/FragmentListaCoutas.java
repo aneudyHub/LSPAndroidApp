@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -77,6 +78,9 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
     private BroadcastReceiver receptorSync;
     private Context globalContext = null;
     public ProgressDialog progress;
+    private LinearLayout mFilterPanel;
+    int FilterSwith = 0;
+
 
     private Cursor cursor;
     public OperacionesBaseDatos operacionesBaseDatos;
@@ -123,7 +127,9 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
                     String mensaje = intent.getStringExtra(Resolve.EXTRA_MENSAJE);
                     Snackbar.make(view.findViewById(R.id.coordinador),
                             mensaje, Snackbar.LENGTH_LONG).show();
-                    progress.dismiss();
+
+                    // TODO: 9/14/2018 check this progres dismiss crashed
+                    //progress.dismiss();
                 }
             }
         };
@@ -243,6 +249,10 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
         layoutManager = new LinearLayoutManager(getContext());
         reciclador.setLayoutManager(layoutManager);
         //reciclador.setAdapter(adaptador);
+
+        mFilterPanel = (LinearLayout)view.findViewById(R.id.FilterPanel);
+        mFilterPanel.setVisibility(View.GONE);
+//        mFilterPanel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,0));
     }
 
 
@@ -371,6 +381,23 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.main, menu);
         MenuItem search = menu.findItem(R.id.search);
+
+        MenuItem filter = menu.findItem(R.id.filter);
+        filter.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+//                mFilterPanel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,45));
+                if(FilterSwith==0){
+                    mFilterPanel.setVisibility(View.VISIBLE);
+                    FilterSwith=1;
+                }else{
+                    mFilterPanel.setVisibility(View.GONE);
+                    FilterSwith=0;
+                }
+
+                return false;
+            }
+        });
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
         search(searchView);
 

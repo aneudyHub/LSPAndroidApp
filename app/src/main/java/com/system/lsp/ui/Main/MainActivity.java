@@ -23,6 +23,7 @@ import com.system.lsp.R;
 import com.system.lsp.fragmentos.FragmentHistorialPagos;
 import com.system.lsp.fragmentos.FragmentListaCoutas;
 import com.system.lsp.fragmentos.FragmentListaPrestamos;
+import com.system.lsp.fragmentos.FragmentPrincipal;
 import com.system.lsp.provider.Contract;
 import com.system.lsp.provider.SessionManager;
 import com.system.lsp.ui.AdaptadorCuotas;
@@ -191,6 +192,33 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
 
+
+//            case 0:
+//            {
+//                Runnable mPendingRunnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        FragmentManager fragmentManager;
+//                        FragmentTransaction fragmentTransaction;
+//                        // update the main content by replacing fragments
+//                        fragmentManager = getSupportFragmentManager();
+//                        FragmentPrincipal main_fragment = new FragmentPrincipal();
+//                        fragmentTransaction = fragmentManager.beginTransaction();
+//                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+//                                android.R.anim.fade_out);
+//                        fragmentTransaction.replace(R.id.container, main_fragment);
+//                        fragmentTransaction.commitAllowingStateLoss();
+//                        //getSupportActionBar().setTitle("COBRAR CUOTAS");
+//                    }
+//                };
+//
+//                // If mPendingRunnable is not null, then add to the message queue
+//                if (mPendingRunnable != null) {
+//                    mHandler.post(mPendingRunnable);
+//                }
+//
+//                break;
+//            }
 
             case 1:
             {
