@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.system.lsp.R;
 import com.system.lsp.fragmentos.FragmentPrestamoPagado;
 
@@ -45,10 +46,10 @@ public class DetallePrestamo extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private OperacionesBaseDatos datos;
-    private Cursor cursor;
+    //private Cursor cursor;
     private Context ctx;
 
-    private int REQ_DET=100;
+    private int REQ_DET=200;
 
     private String idPrestamos;
     private Double monto;
@@ -163,50 +164,51 @@ public class DetallePrestamo extends AppCompatActivity {
 
     }
 
-    void mostrarDetalles(Uri uri, double montoPendiente, String nombre) {
-        Intent intent = new Intent(this, Pagos.class);
-        if (null != uri) {
-            intent.putExtra(Contract.PRESTAMOS, uri.toString());
-            intent.putExtra(Contract.Cobrador.TOTAL,montoPendiente);
-            intent.putExtra(Contract.Prestamo.ID, Contract.Prestamo.obtenerIdPrestamo(uri));
-            intent.putExtra(Contract.Cobrador.CLIENTE,nombre);
-        }
-        startActivityForResult(intent,REQ_DET);
-    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+    }
 
     private void consultar(String id)
     {
         //
         // Consultamos el centro por el identificador
         //
-        operacionesBaseDatos = OperacionesBaseDatos
-                .obtenerInstancia(this);
-        int totalPendiente = operacionesBaseDatos.getCuotaPendiete(UPreferencias.obtenerIdPrestamos(this),"0").size();
-        int totalPagada = operacionesBaseDatos.getCuotaPendiete(UPreferencias.obtenerIdPrestamos(this),"1").size();
 
+        Cursor cursor = null;
+        try{
+            cursor = datos.ObtenerDatosPrestamoPorId(id);
+            operacionesBaseDatos = OperacionesBaseDatos
+                    .obtenerInstancia(this);
 
-        cursor = datos.ObtenerDatosPrestamoPorId(id);
+            int totalPendiente = operacionesBaseDatos.getCuotaPendiete(UPreferencias.obtenerIdPrestamos(this),"0").size();
+            int totalPagada = operacionesBaseDatos.getCuotaPendiete(UPreferencias.obtenerIdPrestamos(this),"1").size();
+            Log.e("TAOTAL-PENDIENTE",String.valueOf(totalPendiente));
 
-        Log.e("TAOTAL-PENDIENTE",String.valueOf(totalPendiente));
+            capital.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CAPITAL)));
+            interes.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.INTERES)));
+            mora.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.MORA)));
+            balance.setText("RD$ "+cursor.getString(cursor.getColumnIndex("ValorCapital")));
+            //double b =Double.parseDouble(cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.CAPITAL)));
+            monto = datos.obtenerTotalAPagar(idPrestamos);
+            totalCuota = datos.obtenerTotalCuota(idPrestamos);
 
-        capital.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CAPITAL)));
-        interes.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.INTERES)));
-        mora.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.MORA)));
-        balance.setText("RD$ "+cursor.getString(cursor.getColumnIndex("ValorCapital")));
-        //double b =Double.parseDouble(cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.CAPITAL)));
-        monto = datos.obtenerTotalAPagar(idPrestamos);
-        totalCuota = datos.obtenerTotalCuota(idPrestamos);
-
-        fecha.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.FECHA_INICIO)));
-        cuotas.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)));
-        pagas.setText(String.valueOf(totalPagada));
-        pendiente.setText(String.valueOf(totalPendiente));
-        nombre.setText(cursor.getString(cursor.getColumnIndex(Contract.Cliente.NOMBRE)));
-        documento.setText(cursor.getString(cursor.getColumnIndex(Contract.Cliente.DOCUMENTO)));
-        iPrestamo.setText("# "+idPrestamos);
-
-
+            fecha.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.FECHA_INICIO)));
+            cuotas.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)));
+            pagas.setText(String.valueOf(totalPagada));
+            pendiente.setText(String.valueOf(totalPendiente));
+            nombre.setText(cursor.getString(cursor.getColumnIndex(Contract.Cliente.NOMBRE)));
+            documento.setText(cursor.getString(cursor.getColumnIndex(Contract.Cliente.DOCUMENTO)));
+            iPrestamo.setText("# "+idPrestamos);
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(cursor!=null){
+                cursor.close();
+            }
+        }
     }
 
 

@@ -302,16 +302,14 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
             reciclador.setVisibility(View.GONE);
         }
 
-        operacionesBaseDatos = OperacionesBaseDatos
-                .obtenerInstancia(getContext());
-        String fechaSync="";
-        cursor = operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(globalContext));
-        if (cursor.moveToFirst()) {
-            fechaSync = cursor.getString(cursor.getColumnIndex(Contract.Cobrador.SYNC_TIME));
-        }
-        if (fechaSync==null){
-            fechaSync="2000-01-01";
-        }
+        operacionesBaseDatos = OperacionesBaseDatos.obtenerInstancia(getContext());
+        String fechaSync=operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(globalContext));
+//        if (cursor.moveToFirst()) {
+//            fechaSync = cursor.getString(cursor.getColumnIndex(Contract.Cobrador.SYNC_TIME));
+//        }
+//        if (fechaSync==null){
+//            fechaSync="2000-01-01";
+//        }
         String fechaExtraida = fechaSync.substring(0,10);
 
         if (fechaExtraida.equals(UTiempo.obtenerFecha())){

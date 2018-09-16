@@ -165,12 +165,14 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
             }
         });
 
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-            }
-        });
+//        swipeRefreshLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+//            }
+//        });
+
+
 
 
 
@@ -206,6 +208,18 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
         mProgress.setCancelable(false);*/
        //showProgress("Imprimiendo!!!");
 
+        operacionesBaseDatos = new OperacionesBaseDatos();
+        listaCuotasCobradas = operacionesBaseDatos.getCutaPagas(UPreferencias.obtenerIdUsuario(getContext()),"20180903");
+        double totalFacturado=0;
+
+        for(CuotaPaga cu :listaCuotasCobradas){
+            totalFacturado+=cu.getMonto();
+        }
+        mTotalFacutado.setText(String.valueOf(totalFacturado));
+
+        adaptador = new AdaptadorHisotiralPagos((ArrayList<CuotaPaga>) listaCuotasCobradas,getContext(),FragmentHistorialPagos.this);
+        reciclador.setAdapter(adaptador);
+        mCant.setText(String.valueOf(adaptador.getItemCount()));
 
 
 
@@ -215,7 +229,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
     public void onClick(View view) {
         if(view == fechaBuscar) {
 
-            DatabaseUtils.dumpCursor(operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(getContext())));
+//            DatabaseUtils.dumpCursor(operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(getContext())));
             if (operacionesBaseDatos.isCuotasPagasExists()){
                 android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getContext());
                 // set title
@@ -378,27 +392,6 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
         search(searchView);
 
     }
-
-
-
-
-   /* private void search(SearchView searchView) {
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                adaptador.getFilter().filter(newText);
-                return true;
-            }
-        });
-    }*/
 
 
 

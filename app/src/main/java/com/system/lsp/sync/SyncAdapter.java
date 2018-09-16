@@ -26,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.system.lsp.fragmentos.FragmentListaCoutas;
@@ -56,7 +57,7 @@ import java.util.HashMap;
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private static final String TAG = SyncAdapter.class.getSimpleName();
-    private Cursor cursor;
+//    private Cursor cursor;
     public OperacionesBaseDatos operacionesBaseDatos;
     // Extras para intent local
     public static final String EXTRA_RESULTADO = "extra.resultado";
@@ -75,7 +76,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int ESTADO_ERROR_SERVIDOR = 110;
 
 
-    private DatabaseHandler db;
+//    private DatabaseHandler db;
     private ContentResolver cr;
     private Gson gson = new Gson();
     private ProcesadorRemoto procRemoto = new ProcesadorRemoto();
@@ -226,28 +227,37 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             HashMap<String, String> cabeceras = new HashMap<>();
             cabeceras.put("Authorization", UPreferencias.obtenerClaveApi(getContext()));
             String fechaSync="";
-            cursor = operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(getContext()));
-            if (cursor.moveToFirst()) {
-                fechaSync = cursor.getString(cursor.getColumnIndex(Contract.Cobrador.SYNC_TIME));
-            }
+//            Cursor cursor = null;
+//            try{
+//                cursor = operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(getContext()));
+//                if (cursor.moveToFirst()) {
+//                    fechaSync = cursor.getString(cursor.getColumnIndex(Contract.Cobrador.SYNC_TIME));
+//                }
+//            }catch (Exception e){
+//                FirebaseCrash.report(e);
+//            }finally {
+//                if(cursor!=null){
+//                    cursor.close();
+//                }
+//            }
             cabeceras.put("sync_time", "0");
 
             boolean t = Resolve.isInternetAvailable();
 
-            //if(t){
+            if(t){
                 new RESTService(getContext()).post(UPreferencias.obtenerUrlAPP(getContext())+URL.SYNC, datos,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-
-
-                                    tratarPost();
                                 JSONObject jObj =  response;
                                 try {
                                     int status = jObj.getInt("status");
                                     Log.e("STATUS->>RE",String.valueOf(status));
+                                    tratarPost();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    FirebaseCrash.report(e);
+                                    Resolve.enviarBroadcast(getContext(),false,e.getMessage());
                                 }
 
                             }
@@ -259,21 +269,21 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             }
                         }
                         , cabeceras);
-            //}else{
-               // Resolve.enviarBroadcast(getContext(),true, "NO INTERNET");
-            //}
+            }else{
+                Resolve.enviarBroadcast(getContext(),true, "NO INTERNET");
+            }
 
 
         } else {
-            Log.d(TAG, "Sin cambios locales");
+            Log.e(TAG, "Sin cambios remotos para enviar");
             //Resolve.enviarBroadcast(getContext(),true, "Sicronizando espere!!!");
-            //syncLocal();
+            syncLocal();
 
         }
 
 
 
-        syncLocal();
+
     }
 
 
@@ -410,14 +420,31 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
     private void logoutUser(Context context) {
-        db = new DatabaseHandler(context);
-        SessionManager session = new SessionManager(context);
-        session.setLogin(false);
-        db.deleteCobrador();
-        // Launching the login activity
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+//        db = new DatabaseHandler(context);
+//        SessionManager session = new SessionManager(context);
+//        session.setLogin(false);
+//        db.deleteCobrador();
+//        // Launching the login activity
+//        Intent intent = new Intent(context, LoginActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        context.startActivity(intent);
+
+        DatabaseHandler db = new DatabaseHandler(context);
+        try{
+            SessionManager session = new SessionManager(context);
+            session.setLogin(false);
+            db.deleteCobrador();
+            // Launching the login activity
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+        }finally {
+            if(db!=null){
+                db.close();
+            }
+            Intent intent = new Intent(context, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
     }
 
 

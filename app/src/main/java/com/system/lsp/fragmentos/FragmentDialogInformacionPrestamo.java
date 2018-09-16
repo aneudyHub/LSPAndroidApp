@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.system.lsp.R;
 import com.system.lsp.provider.Contract;
 import com.system.lsp.provider.OperacionesBaseDatos;
@@ -31,7 +32,7 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
     private final String LOG_TAG = FragmentDialogInformacionPrestamo.class.getSimpleName();
 
     private OperacionesBaseDatos datos;
-    public Cursor cursor,cursor1;
+//    public Cursor cursor,cursor1;
     private String message = "message";
     private String idPrestamo;
     private Context context;
@@ -76,48 +77,63 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
                 .obtenerInstancia(context);
 
 
-        cursor = datos.ObtenerInfoPrestamoPorId(idPrestamo);
-        DatabaseUtils.dumpCursor(datos.ObtenerInfoPrestamoPorId(idPrestamo));
+        Cursor cursor = null;
+        Cursor cursor1 = null;
+        try{
+            cursor = datos.ObtenerInfoPrestamoPorId(idPrestamo);
+//            DatabaseUtils.dumpCursor(datos.ObtenerInfoPrestamoPorId(idPrestamo));
 
-        DatabaseUtils.dumpCursor(datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo));
-        montoPrestamo.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CAPITAL)));
-        String capital = cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.CAPITAL));
-        String interes = cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.INTERES));
-        int valorCuotas = Integer.parseInt(capital)+Integer.parseInt(interes);
-        valorCuota.setText(String.valueOf(valorCuotas));
+//            DatabaseUtils.dumpCursor(datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo));
+            montoPrestamo.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CAPITAL)));
+            String capital = cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.CAPITAL));
+            String interes = cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.INTERES));
+            int valorCuotas = Integer.parseInt(capital)+Integer.parseInt(interes);
+            valorCuota.setText(String.valueOf(valorCuotas));
 
-        String plaso = cursor.getString(cursor.getColumnIndex(Contract.Prestamo.PLAZO));
-        switch (plaso){
-            case "D":
-                plasoCuota.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)) + " DIAS");
-                break;
-            case "S":
-                plasoCuota.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)) + " SEMANA");
-                break;
-            case "Q":
-                plasoCuota.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)) + " QUINCENA");
-                break;
-            case "M":
-                plasoCuota.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)) + " MESES");
-                break;
-            default:
-                plasoCuota.setText(" ");
+            String plaso = cursor.getString(cursor.getColumnIndex(Contract.Prestamo.PLAZO));
+            switch (plaso){
+                case "D":
+                    plasoCuota.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)) + " DIAS");
+                    break;
+                case "S":
+                    plasoCuota.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)) + " SEMANA");
+                    break;
+                case "Q":
+                    plasoCuota.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)) + " QUINCENA");
+                    break;
+                case "M":
+                    plasoCuota.setText(cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)) + " MESES");
+                    break;
+                default:
+                    plasoCuota.setText(" ");
+            }
+
+            cuotasPagadas.setText(cursor.getString(cursor.getColumnIndex("CuotaPagada"))+"/"+
+                    cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)));
+            String capitalPrestamo = cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CAPITAL));
+            String porciento = cursor.getString(cursor.getColumnIndex(Contract.Prestamo.PORCIENTO_MORA));
+            int porcientoMora = (Integer.parseInt(capitalPrestamo)*Integer.parseInt(porciento))/1000;
+            costoPorDias.setText(String.valueOf(porcientoMora));
+
+
+            cursor1 = datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo);
+            diasAtrasados.setText(cursor1.getString(cursor1.getColumnIndex("DiasAtrasados")));
+            cuotasAtrasadas.setText(cursor1.getString(cursor1.getColumnIndex("CuotasAtrasadas")));
+            Log.e("Valor",cursor1.getString(cursor1.getColumnIndex("ValorMora")));
+            valorMora.setText(cursor1.getString(cursor1.getColumnIndex("ValorMora")));
+            abonoMora.setText(cursor1.getString(cursor1.getColumnIndex("AbonoMora")));
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(cursor!=null){
+                cursor.close();
+            }
+            if(cursor1!=null){
+                cursor1.close();
+            }
         }
 
-        cuotasPagadas.setText(cursor.getString(cursor.getColumnIndex("CuotaPagada"))+"/"+
-                cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CUOTAS)));
-        String capitalPrestamo = cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CAPITAL));
-        String porciento = cursor.getString(cursor.getColumnIndex(Contract.Prestamo.PORCIENTO_MORA));
-        int porcientoMora = (Integer.parseInt(capitalPrestamo)*Integer.parseInt(porciento))/1000;
-        costoPorDias.setText(String.valueOf(porcientoMora));
-
-
-        cursor1 = datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo);
-        diasAtrasados.setText(cursor1.getString(cursor1.getColumnIndex("DiasAtrasados")));
-        cuotasAtrasadas.setText(cursor1.getString(cursor1.getColumnIndex("CuotasAtrasadas")));
-        Log.e("Valor",cursor1.getString(cursor1.getColumnIndex("ValorMora")));
-        valorMora.setText(cursor1.getString(cursor1.getColumnIndex("ValorMora")));
-        abonoMora.setText(cursor1.getString(cursor1.getColumnIndex("AbonoMora")));
 
 
         buttonPos.setOnClickListener(new View.OnClickListener() {

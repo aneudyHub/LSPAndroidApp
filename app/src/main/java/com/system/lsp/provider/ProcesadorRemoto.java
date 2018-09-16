@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 import com.system.lsp.utilidades.UConsultas;
 import com.system.lsp.utilidades.UDatos;
@@ -53,91 +54,92 @@ public class ProcesadorRemoto {
 
     public List<Map<String, Object>> obtenerInserciones(ContentResolver cr) {
         List<Map<String, Object>> ops = new ArrayList<>();
+        Cursor c = null;
+        try {
+            c = cr.query(Contract.CuotaPaga.URI_CONTENIDO,
+                    null,
+                    Contract.CuotaPaga.INSERTADO + "=?",
+                    new String[]{"1"}, null);
 
-        // Obtener contactos donde 'insertado' = 1
-        /*Cursor c = cr.query(Contract.CuotaPaga.URI_CONTENIDO,
-                null,
-                null,
-                null, null);*/
+            // Comprobar si hay trabajo que realizar
+            if (c != null && c.getCount() > 0) {
 
-        Cursor c = cr.query(Contract.CuotaPaga.URI_CONTENIDO,
-                null,
-                Contract.CuotaPaga.INSERTADO + "=?",
-                new String[]{"1"}, null);
+                Log.d(TAG, "Inserciones remotas: " + c.getCount());
 
-        // Comprobar si hay trabajo que realizar
-        if (c != null && c.getCount() > 0) {
+                // Procesar inserciones
+                while (c.moveToNext()) {
+                    ops.add(mapearInsercion(c));
+                }
 
-            Log.d(TAG, "Inserciones remotas: " + c.getCount());
+                return ops;
 
-            // Procesar inserciones
-            while (c.moveToNext()) {
-                ops.add(mapearInsercion(c));
+            } else {
+                return null;
             }
-
-            return ops;
-
-        } else {
-            return null;
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c!=null)
+                c.close();
         }
-
     }
 
-    public List<Map<String, Object>> obtenerModificaciones(ContentResolver cr) {
-
-        List<Map<String, Object>> ops = new ArrayList<>();
-
-        // Obtener contactos donde 'modificado' = 1
-        Cursor c = cr.query(Contract.Cliente.URI_CONTENIDO,
-                null,
-                Contract.Cliente.MODIFICADO + "=?",
-                new String[]{"1"}, null);
-
-        // Comprobar si hay trabajo que realizar
-        if (c != null && c.getCount() > 0) {
-
-            Log.d(TAG, "Existen " + c.getCount() + " modificaciones de contactos");
-
-            // Procesar operaciones
-            while (c.moveToNext()) {
-                ops.add(mapearActualizacion(c));
-            }
-
-            return ops;
-
-        } else {
-            return null;
-        }
-
-    }
-
-    public List<String> obtenerEliminaciones(ContentResolver cr) {
-
-        List<String> ops = new ArrayList<>();
-
-        // Obtener contactos donde 'eliminado' = 1
-        Cursor c = cr.query(Contract.Cliente.URI_CONTENIDO,
-                null,
-                Contract.Cliente.ELIMINADO + "=?",
-                new String[]{"1"}, null);
-
-        // Comprobar si hay trabajo que realizar
-        if (c != null && c.getCount() > 0) {
-
-            Log.d(TAG, "Existen " + c.getCount() + " eliminaciones de contactos");
-
-            // Procesar operaciones
-            while (c.moveToNext()) {
-                ops.add(UConsultas.obtenerString(c, Contract.Cliente.ID));
-            }
-
-            return ops;
-
-        } else {
-            return null;
-        }
-
-    }
+//    public List<Map<String, Object>> obtenerModificaciones(ContentResolver cr) {
+//
+//        List<Map<String, Object>> ops = new ArrayList<>();
+//
+//        // Obtener contactos donde 'modificado' = 1
+//        Cursor c = cr.query(Contract.Cliente.URI_CONTENIDO,
+//                null,
+//                Contract.Cliente.MODIFICADO + "=?",
+//                new String[]{"1"}, null);
+//
+//        // Comprobar si hay trabajo que realizar
+//        if (c != null && c.getCount() > 0) {
+//
+//            Log.d(TAG, "Existen " + c.getCount() + " modificaciones de contactos");
+//
+//            // Procesar operaciones
+//            while (c.moveToNext()) {
+//                ops.add(mapearActualizacion(c));
+//            }
+//
+//            return ops;
+//
+//        } else {
+//            return null;
+//        }
+//
+//    }
+//
+//    public List<String> obtenerEliminaciones(ContentResolver cr) {
+//
+//        List<String> ops = new ArrayList<>();
+//
+//        // Obtener contactos donde 'eliminado' = 1
+//        Cursor c = cr.query(Contract.Cliente.URI_CONTENIDO,
+//                null,
+//                Contract.Cliente.ELIMINADO + "=?",
+//                new String[]{"1"}, null);
+//
+//        // Comprobar si hay trabajo que realizar
+//        if (c != null && c.getCount() > 0) {
+//
+//            Log.d(TAG, "Existen " + c.getCount() + " eliminaciones de contactos");
+//
+//            // Procesar operaciones
+//            while (c.moveToNext()) {
+//                ops.add(UConsultas.obtenerString(c, Contract.Cliente.ID));
+//            }
+//
+//            return ops;
+//
+//        } else {
+//            return null;
+//        }
+//
+//    }
 
 
     /**
@@ -157,6 +159,7 @@ public class ProcesadorRemoto {
 
         // Modificar banderas de insertados y modificados
         cr.update(Contract.CuotaPaga.URI_CONTENIDO, valores, seleccion, argumentos);
+
 
         seleccion = Contract.CuotaPaga.ELIMINADO + "=?";
         // Eliminar definitivamente

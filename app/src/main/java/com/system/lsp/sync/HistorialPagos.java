@@ -17,6 +17,7 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.system.lsp.provider.Contract;
@@ -52,7 +53,7 @@ public class HistorialPagos {
 
     private Context context;
 
-    private DatabaseHandler db;
+//    private DatabaseHandler db;
     private ContentResolver cr;
     private Gson gson = new Gson();
     private ProcesadorRemoto procRemoto = new ProcesadorRemoto();
@@ -258,14 +259,23 @@ public class HistorialPagos {
 
 
     private void logoutUser(Context context) {
-        db = new DatabaseHandler(context);
-        SessionManager session = new SessionManager(context);
-        session.setLogin(false);
-        db.deleteCobrador();
-        // Launching the login activity
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        DatabaseHandler db = new DatabaseHandler(context);
+        try{
+            SessionManager session = new SessionManager(context);
+            session.setLogin(false);
+            db.deleteCobrador();
+            // Launching the login activity
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+        }finally {
+            if(db!=null){
+                db.close();
+            }
+            Intent intent = new Intent(context, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+
     }
 
 

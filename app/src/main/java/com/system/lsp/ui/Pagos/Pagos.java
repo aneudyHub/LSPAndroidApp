@@ -83,6 +83,7 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
     private ProgressDialog server_prog;
     public ProgressDialog mPrinterProgress;
     public ProgressDialog progress;
+    android.support.v7.app.AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +100,20 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
 
         datosBD = OperacionesBaseDatos
                 .obtenerInstancia(this);
-        mPrestamoURI = (String) getIntent().getExtras().get(Contract.PRESTAMOS);
-        montoAPagar = (Double) getIntent().getExtras().get(Contract.Cobrador.TOTAL);
-        TotalCuota = (Double) getIntent().getExtras().get("TotalCuota");
-        idPrestamos = (String) getIntent().getExtras().get(Contract.Prestamo.ID);
-        montoAPagar = datosBD.obtenerTotalMora(idPrestamos)+TotalCuota;
-        nombreCliente  = (String) getIntent().getExtras().get(Contract.Cobrador.CLIENTE);
-        idCliente = (String) getIntent().getExtras().get(Contract.Cliente.ID);
+
+        if(getIntent().getExtras()!=null){
+            mPrestamoURI = (String) getIntent().getExtras().get(Contract.PRESTAMOS);
+            montoAPagar = (Double) getIntent().getExtras().get(Contract.Cobrador.TOTAL);
+            TotalCuota = (Double) getIntent().getExtras().get("TotalCuota");
+            idPrestamos = (String) getIntent().getExtras().get(Contract.Prestamo.ID);
+            montoAPagar = datosBD.obtenerTotalMora(idPrestamos)+TotalCuota;
+            nombreCliente  = (String) getIntent().getExtras().get(Contract.Cobrador.CLIENTE);
+            //idCliente = (String) getIntent().getExtras().get(Contract.Cliente.ID);
+        }
+
+
+
+
         infoPrestamo = (ImageView)findViewById(R.id.info_prestamo);
 
         infoPrestamo.setOnClickListener(new View.OnClickListener() {
@@ -182,9 +190,9 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         setResult(RESULT_CANCELED);
         finish();
+        super.onBackPressed();
     }
 
     @Override
@@ -284,7 +292,7 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
 
 
     public void pagar() throws InterruptedException {
-        showProgress("CARGANDO DATOS. ESPERE!!!!");
+        showProgress("REALIZANDO PAGO...");
 
         StringBuilder sb= new StringBuilder() ;
         String cantidadCuota="";
@@ -403,10 +411,16 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
 
         try {
             getContentResolver().applyBatch(Contract.AUTORIDAD,ops);
+            //c.close();
+
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (OperationApplicationException e) {
             e.printStackTrace();
+        }finally {
+            if(c!=null){
+               c.close();
+            }
         }
 
         ContentValues valores = new ContentValues();
@@ -500,18 +514,17 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
                     public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, close
                         // current activity
-                        dialog.cancel();
+                        if(alertDialog !=null)
+                            alertDialog.dismiss();
+
                         setResult(RESULT_OK);
                         finish();
                     }
                 });
 
         // create alert dialog
-        android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
+        alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-
 
     }
 
@@ -540,12 +553,20 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
     public void finishPrint(String msj) {
         setResult(RESULT_OK);
         showAlert(msj);
-
     }
 
     @Override
     protected void onDestroy() {
+        if (progress != null && progress.isShowing())
+            progress.dismiss();
+
+
+        if(alertDialog !=null && alertDialog.isShowing())
+            alertDialog.dismiss();
+
+
         super.onDestroy();
+
 //        progress.onDetachedFromWindow();
     }
 }

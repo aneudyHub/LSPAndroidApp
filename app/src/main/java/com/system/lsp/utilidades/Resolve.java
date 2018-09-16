@@ -106,7 +106,8 @@ public class Resolve {
 
     public static boolean isInternetAvailable() {
         try{
-            InetAddress ipAddr = InetAddress.getByName("google.com");
+            Log.e("pin=>>","inicio de pin para google.com");
+            InetAddress ipAddr = InetAddress.getByName("www.google.com");
             //You can replace it with your name
             return !ipAddr.equals("");
 

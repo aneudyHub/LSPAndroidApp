@@ -305,4 +305,5 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
 
 
 
+
 }

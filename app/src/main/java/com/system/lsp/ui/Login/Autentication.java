@@ -251,7 +251,9 @@ public class Autentication extends Activity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
+                Log.e(TAG, "Login Error: " + error.getLocalizedMessage());
+                Log.e(TAG, "Login Error: " + error.networkResponse);
+                Log.e(TAG, "Login Error: " + error.fillInStackTrace());
                 String json = null;
                 //tratarErrores(error);
 

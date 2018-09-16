@@ -87,10 +87,15 @@ public class MainActivity extends AppCompatActivity
         userdb.moveToNext();
 
         String claveApi = userdb.getString(userdb.getColumnIndex(Contract.Cobrador.TOKEN));
+        if(userdb!=null){
+            userdb.close();
+        }
+
         if (claveApi==null){
             logoutUser();
             Log.e("Esta es la api",claveApi);
         }
+
         Log.e("Esta es la api",claveApi);
         // Reemplaza con tu clave
         UPreferencias.guardarClaveApi(this,claveApi);

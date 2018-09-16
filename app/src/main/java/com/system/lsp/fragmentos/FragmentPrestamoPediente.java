@@ -36,6 +36,7 @@ public class FragmentPrestamoPediente extends Fragment {
 
         operacionesBaseDatos = OperacionesBaseDatos
                 .obtenerInstancia(getContext());
+
        listaCuotaPendiente = operacionesBaseDatos.getCuotaPendiete(UPreferencias.obtenerIdPrestamos(getContext()),"0");
 
        totalPendiente = listaCuotaPendiente.size();

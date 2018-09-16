@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.gson.Gson;
 import com.system.lsp.modelo.Cliente;
 import com.system.lsp.modelo.CuotaPaga;
@@ -157,329 +158,363 @@ public class ProcesadorLocal {
     }
 
     public void procesarOperaciones_Clientes(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
+        Cursor c_clientes = null;
+        try{
+            // Consultar clientes locales
+            c_clientes = resolver.query(Contract.Cliente.URI_CONTENIDO,
+                    null,
+                    Contract.Cliente.INSERTADO + "=?",
+                    new String[]{"0"}, null);
 
-        // Consultar clientes locales
-        Cursor c_clientes = resolver.query(Contract.Cliente.URI_CONTENIDO,
-                null,
-                Contract.Cliente.INSERTADO + "=?",
-                new String[]{"0"}, null);
+            if (c_clientes != null) {
 
-        if (c_clientes != null) {
+                while (c_clientes.moveToNext()) {
 
-            while (c_clientes.moveToNext()) {
+                    // Convertir fila del cursor en objeto Contacto
+                    Cliente filaActual = deCursorACliente(c_clientes);
 
-                // Convertir fila del cursor en objeto Contacto
-                Cliente filaActual = deCursorACliente(c_clientes);
+                    // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
+                    Cliente match = ClientesRemotos.get(filaActual.getId());
 
-                // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
-                Cliente match = ClientesRemotos.get(filaActual.getId());
+                    if (match != null) {
+                        // Esta entrada existe, por lo que se remueve del mapeado
+                        ClientesRemotos.remove(filaActual.getId());
 
-                if (match != null) {
-                    // Esta entrada existe, por lo que se remueve del mapeado
-                    ClientesRemotos.remove(filaActual.getId());
-
-                    // Crear uri de este contacto
-                    Uri updateUri = Contract.Cliente.crearUriCliente(String.valueOf(filaActual.getId()));
+                        // Crear uri de este contacto
+                        Uri updateUri = Contract.Cliente.crearUriCliente(String.valueOf(filaActual.getId()));
 
                     /*
                     Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso
                     tanto en el servidro como en la app. Quién tenga la versión más actual, será tomado
                     como preponderante
                      */
-                    if (!match.compararCon(filaActual)) {
-                        int flag = match.esMasReciente(filaActual);
-                        if (flag > 0) {
-                            Log.d(TAG, "Programar actualización  DE CLIENTES " + updateUri);
+                        if (!match.compararCon(filaActual)) {
+                            int flag = match.esMasReciente(filaActual);
+                            if (flag > 0) {
+                                Log.d(TAG, "Programar actualización  DE CLIENTES " + updateUri);
 
-                            // Verificación: ¿Existe conflicto de modificación?
-                            if (filaActual.getModificado() == 1) {
-                                match.setModificado(0);
+                                // Verificación: ¿Existe conflicto de modificación?
+                                if (filaActual.getModificado() == 1) {
+                                    match.setModificado(0);
+                                }
+                                ops.add(construirOperacionUpdate_Cliente(match, updateUri));
+
                             }
-                            ops.add(construirOperacionUpdate_Cliente(match, updateUri));
 
                         }
 
-                    }
-
-                } else {
+                    } else {
                     /*
                     Se deduce que aquellos elementos que no coincidieron, ya no existen en el servidor,
                     por lo que se eliminarán
                      */
-                    Uri deleteUri = Contract.Cliente.crearUriCliente(String.valueOf(filaActual.getId()));
-                    Log.i(TAG, "Programar Eliminación del Clientes " + deleteUri);
-                    ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                        Uri deleteUri = Contract.Cliente.crearUriCliente(String.valueOf(filaActual.getId()));
+                        Log.i(TAG, "Programar Eliminación del Clientes " + deleteUri);
+                        ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                    }
                 }
+                c_clientes.close();
             }
-            c_clientes.close();
-        }
-        // Insertar los items resultantes ya que se asume que no existen en el contacto
-        for (Cliente cliente : ClientesRemotos.values()) {
-            Log.d(TAG, "Programar Inserción de un nuevo Clientes con ID = " + cliente.getId());
-            ops.add(construirOperacionInsert_Cliente(cliente));
+            // Insertar los items resultantes ya que se asume que no existen en el contacto
+            for (Cliente cliente : ClientesRemotos.values()) {
+                Log.d(TAG, "Programar Inserción de un nuevo Clientes con ID = " + cliente.getId());
+                ops.add(construirOperacionInsert_Cliente(cliente));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c_clientes!=null){
+                c_clientes.close();
+            }
         }
     }
 
     public void procesarOperaciones_Prestamos(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
+        Cursor c_prestamo = null;
+        try{
+            // Consultar clientes locales
+            c_prestamo = resolver.query(Contract.Prestamo.URI_CONTENIDO,
+                    null,
+                    Contract.Prestamo.INSERTADO + "=?",
+                    new String[]{"0"}, null);
 
-        // Consultar clientes locales
-        Cursor c_prestamo = resolver.query(Contract.Prestamo.URI_CONTENIDO,
-                null,
-                Contract.Prestamo.INSERTADO + "=?",
-                new String[]{"0"}, null);
+            if (c_prestamo != null) {
 
-        if (c_prestamo != null) {
+                while (c_prestamo.moveToNext()) {
 
-            while (c_prestamo.moveToNext()) {
+                    // Convertir fila del cursor en objeto Contacto
+                    Prestamo filaActual = deCursorAPrestamo(c_prestamo);
 
-                // Convertir fila del cursor en objeto Contacto
-                Prestamo filaActual = deCursorAPrestamo(c_prestamo);
+                    // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
+                    Prestamo match = PrestamosRemotos.get(filaActual.getId());
 
-                // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
-                Prestamo match = PrestamosRemotos.get(filaActual.getId());
+                    if (match != null) {
+                        // Esta entrada existe, por lo que se remueve del mapeado
+                        PrestamosRemotos.remove(filaActual.getId());
 
-                if (match != null) {
-                    // Esta entrada existe, por lo que se remueve del mapeado
-                    PrestamosRemotos.remove(filaActual.getId());
-
-                    // Crear uri de este contacto
-                    Uri updateUri = Contract.Prestamo.crearUriPrestamo(String.valueOf(filaActual.getId()));
+                        // Crear uri de este contacto
+                        Uri updateUri = Contract.Prestamo.crearUriPrestamo(String.valueOf(filaActual.getId()));
 
                     /*
                     Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso
                     tanto en el servidro como en la app. Quién tenga la versión más actual, será tomado
                     como preponderante
                      */
-                    if (!match.compararCon(filaActual)) {
-                        int flag = match.esMasReciente(filaActual);
-                        if (flag > 0) {
-                            Log.e(TAG, "Programar actualización  del Prestamos " + updateUri);
+                        if (!match.compararCon(filaActual)) {
+                            int flag = match.esMasReciente(filaActual);
+                            if (flag > 0) {
+                                Log.e(TAG, "Programar actualización  del Prestamos " + updateUri);
 
-                            // Verificación: ¿Existe conflicto de modificación?
-                            if (filaActual.getModificado() == 1) {
-                                match.setModificado(0);
+                                // Verificación: ¿Existe conflicto de modificación?
+                                if (filaActual.getModificado() == 1) {
+                                    match.setModificado(0);
+                                }
+                                ops.add(construirOperacionUpdate_Prestamo(match, updateUri));
+
                             }
-                            ops.add(construirOperacionUpdate_Prestamo(match, updateUri));
 
                         }
 
-                    }
-
-                } else {
+                    } else {
                     /*
                     Se deduce que aquellos elementos que no coincidieron, ya no existen en el servidor,
                     por lo que se eliminarán
                      */
-                    Uri deleteUri = Contract.Prestamo.crearUriPrestamo(String.valueOf(filaActual.getId()));
-                    Log.e(TAG, "Programar Eliminación del Prestamos " + deleteUri);
-                    ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                        Uri deleteUri = Contract.Prestamo.crearUriPrestamo(String.valueOf(filaActual.getId()));
+                        Log.e(TAG, "Programar Eliminación del Prestamos " + deleteUri);
+                        ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                    }
                 }
+                c_prestamo.close();
             }
-            c_prestamo.close();
+            // Insertar los items resultantes ya que se asume que no existen en el contacto
+            for (Prestamo prestamo : PrestamosRemotos.values()) {
+                Log.d(TAG, "Programar Inserción de un nuevo Prestamos con ID = " + prestamo.getId());
+                ops.add(construirOperacionInsert_Prestamo(prestamo));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c_prestamo!=null)
+                c_prestamo.close();
         }
-        // Insertar los items resultantes ya que se asume que no existen en el contacto
-        for (Prestamo prestamo : PrestamosRemotos.values()) {
-            Log.d(TAG, "Programar Inserción de un nuevo Prestamos con ID = " + prestamo.getId());
-            ops.add(construirOperacionInsert_Prestamo(prestamo));
-        }
+
     }
 
     public void procesarOperaciones_Prestamos_Detalle(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
+        Cursor c_prestamo_detalle=null;
+        try{
+            // Consultar clientes locales
+            c_prestamo_detalle = resolver.query(Contract.PrestamoDetalle.URI_CONTENIDO,
+                    null,
+                    Contract.PrestamoDetalle.INSERTADO + "=?",
+                    new String[]{"0"}, null);
 
-        // Consultar clientes locales
-        Cursor c_prestamo_detalle = resolver.query(Contract.PrestamoDetalle.URI_CONTENIDO,
-                null,
-                Contract.PrestamoDetalle.INSERTADO + "=?",
-                new String[]{"0"}, null);
+            if (c_prestamo_detalle != null) {
 
-        if (c_prestamo_detalle != null) {
+                while (c_prestamo_detalle.moveToNext()) {
 
-            while (c_prestamo_detalle.moveToNext()) {
+                    // Convertir fila del cursor en objeto Contacto
+                    PrestamoDetalle filaActual = deCursorAPrestamoDetalle(c_prestamo_detalle);
 
-                // Convertir fila del cursor en objeto Contacto
-                PrestamoDetalle filaActual = deCursorAPrestamoDetalle(c_prestamo_detalle);
+                    // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
+                    PrestamoDetalle match = PrestamosDetalleRemotos.get(filaActual.getId());
 
-                // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
-                PrestamoDetalle match = PrestamosDetalleRemotos.get(filaActual.getId());
+                    if (match != null) {
+                        // Esta entrada existe, por lo que se remueve del mapeado
+                        PrestamosDetalleRemotos.remove(filaActual.getId());
 
-                if (match != null) {
-                    // Esta entrada existe, por lo que se remueve del mapeado
-                    PrestamosDetalleRemotos.remove(filaActual.getId());
-
-                    // Crear uri de este contacto
-                    Uri updateUri = Contract.PrestamoDetalle.crearUriPrestamoDetalle(String.valueOf(filaActual.getId()));
+                        // Crear uri de este contacto
+                        Uri updateUri = Contract.PrestamoDetalle.crearUriPrestamoDetalle(String.valueOf(filaActual.getId()));
 
                     /*
                     Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso
                     tanto en el servidro como en la app. Quién tenga la versión más actual, será tomado
                     como preponderante
                      */
-                    if (!match.compararCon(filaActual)) {
-                        int flag = match.esMasReciente(filaActual);
-                        if (flag > 0) {
-                           // Log.d(TAG, "Programar actualización  del Prestamos_Detalle " + updateUri);
+                        if (!match.compararCon(filaActual)) {
+                            int flag = match.esMasReciente(filaActual);
+                            if (flag > 0) {
+                                // Log.d(TAG, "Programar actualización  del Prestamos_Detalle " + updateUri);
 
-                            // Verificación: ¿Existe conflicto de modificación?
-                            if (filaActual.getModificado() == 1) {
-                                match.setModificado(0);
+                                // Verificación: ¿Existe conflicto de modificación?
+                                if (filaActual.getModificado() == 1) {
+                                    match.setModificado(0);
+                                }
+                                ops.add(construirOperacionUpdate_Prestamo_Detalle(match, updateUri));
+
                             }
+                            // Log.d(TAG, "Programar actualización  del Prestamos_Detalle " + updateUri);
                             ops.add(construirOperacionUpdate_Prestamo_Detalle(match, updateUri));
-
                         }
-                       // Log.d(TAG, "Programar actualización  del Prestamos_Detalle " + updateUri);
-                        ops.add(construirOperacionUpdate_Prestamo_Detalle(match, updateUri));
-                    }
 
-                } else {
+                    } else {
                     /*
                     Se deduce que aquellos elementos que no coincidieron, ya no existen en el servidor,
                     por lo que se eliminarán
                      */
-                    Uri deleteUri = Contract.PrestamoDetalle.crearUriPrestamoDetalle(String.valueOf(filaActual.getId()));
-                    Log.i(TAG, "Programar Eliminación del Prestamos_Detalle " + deleteUri);
-                    ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                        Uri deleteUri = Contract.PrestamoDetalle.crearUriPrestamoDetalle(String.valueOf(filaActual.getId()));
+                        Log.i(TAG, "Programar Eliminación del Prestamos_Detalle " + deleteUri);
+                        ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                    }
                 }
             }
-            c_prestamo_detalle.close();
-        }
-        // Insertar los items resultantes ya que se asume que no existen en el contacto
-        for (PrestamoDetalle prestamoDetalle : PrestamosDetalleRemotos.values()) {
-           // Log.d(TAG, "Programar Inserción de un nuevo Prestamos_Detalle con ID = " + prestamoDetalle.getId());
-            ops.add(construirOperacionInsert_Prestamo_Detalle(prestamoDetalle));
+            // Insertar los items resultantes ya que se asume que no existen en el contacto
+            for (PrestamoDetalle prestamoDetalle : PrestamosDetalleRemotos.values()) {
+                // Log.d(TAG, "Programar Inserción de un nuevo Prestamos_Detalle con ID = " + prestamoDetalle.getId());
+                ops.add(construirOperacionInsert_Prestamo_Detalle(prestamoDetalle));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c_prestamo_detalle!=null){
+                c_prestamo_detalle.close();
+            }
         }
     }
 
 
 
     public void procesarOperaciones_Cuota_Paga(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
+        Cursor c_cuotaPagas = null;
+        try{
+            Log.e("DONDE ESTOY","1");
+            // Consultar clientes locales
+            c_cuotaPagas = resolver.query(Contract.CuotaPaga.URI_CONTENIDO,
+                    null,
+                    Contract.CuotaPaga.INSERTADO + "=?",
+                    new String[]{"0"}, null);
 
-        Log.e("DONDE ESTOY","1");
-        // Consultar clientes locales
-        Cursor c_cuotaPagas = resolver.query(Contract.CuotaPaga.URI_CONTENIDO,
-                null,
-                Contract.CuotaPaga.INSERTADO + "=?",
-                new String[]{"0"}, null);
+            if (c_cuotaPagas != null) {
 
-        if (c_cuotaPagas != null) {
+                while (c_cuotaPagas.moveToNext()) {
 
-            while (c_cuotaPagas.moveToNext()) {
+                    // Convertir fila del cursor en objeto Contacto
+                    CuotaPaga filaActual = deCursorACuotasPagas(c_cuotaPagas);
 
-                // Convertir fila del cursor en objeto Contacto
-                CuotaPaga filaActual = deCursorACuotasPagas(c_cuotaPagas);
+                    // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
+                    CuotaPaga match = CuotasPagasRemotos.get(filaActual.getId());
 
-                // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
-                CuotaPaga match = CuotasPagasRemotos.get(filaActual.getId());
+                    if (match != null) {
+                        // Esta entrada existe, por lo que se remueve del mapeado
+                        CuotasPagasRemotos.remove(filaActual.getId());
 
-                if (match != null) {
-                    // Esta entrada existe, por lo que se remueve del mapeado
-                    CuotasPagasRemotos.remove(filaActual.getId());
-
-                    // Crear uri de este contacto
-                    Uri updateUri = Contract.CuotaPaga.crearUriCuotaPaga(String.valueOf(filaActual.getId()));
-
-                    /*
-                    Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso
-                    tanto en el servidro como en la app. Quién tenga la versión más actual, será tomado
-                    como preponderante
-                     */
-                    if (!match.compararCon(filaActual)) {
-                        int flag = match.esMasReciente(filaActual);
-                        if (flag > 0) {
-                            Log.e(TAG, "Programar actualización  del CuotasPagas " + updateUri);
-
-                            // Verificación: ¿Existe conflicto de modificación?
-                            if (filaActual.getModificado() == 1) {
-                                match.setModificado(0);
-                            }
-                            ops.add(construirOperacionUpdate_Cuota_Pagada(match, updateUri));
-
-                        }
-
-                    }
-
-                } else {
-                    /*
-                    Se deduce que aquellos elementos que no coincidieron, ya no existen en el servidor,
-                    por lo que se eliminarán
-                     */
-                    Uri deleteUri = Contract.CuotaPaga.crearUriCuotaPaga(String.valueOf(filaActual.getId()));
-                    Log.e(TAG, "Programar Eliminación del CuotasPagas " + deleteUri);
-                    ops.add(ContentProviderOperation.newDelete(deleteUri).build());
-                }
-            }
-            c_cuotaPagas.close();
-        }
-        // Insertar los items resultantes ya que se asume que no existen en el contacto
-        for (CuotaPaga cuotaPaga : CuotasPagasRemotos.values()) {
-            Log.d(TAG, "Programar Inserción Cuotas-Pagas con ID = " + cuotaPaga.getId());
-            ops.add(construirOperacionInsert_Cuota_Pagada(cuotaPaga));
-        }
-    }
-
-
-    public void procesarOperaciones_HistorialPagos(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
-
-        // Consultar clientes locales
-        Cursor c_clientes = resolver.query(Contract.Cliente.URI_CONTENIDO,
-                null,
-                Contract.Cliente.INSERTADO + "=?",
-                new String[]{"0"}, null);
-
-        if (c_clientes != null) {
-
-            while (c_clientes.moveToNext()) {
-
-                // Convertir fila del cursor en objeto Contacto
-                Cliente filaActual = deCursorACliente(c_clientes);
-
-                // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
-                Cliente match = ClientesRemotos.get(filaActual.getId());
-
-                if (match != null) {
-                    // Esta entrada existe, por lo que se remueve del mapeado
-                    ClientesRemotos.remove(filaActual.getId());
-
-                    // Crear uri de este contacto
-                    Uri updateUri = Contract.Cliente.crearUriCliente(String.valueOf(filaActual.getId()));
+                        // Crear uri de este contacto
+                        Uri updateUri = Contract.CuotaPaga.crearUriCuotaPaga(String.valueOf(filaActual.getId()));
 
                     /*
                     Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso
                     tanto en el servidro como en la app. Quién tenga la versión más actual, será tomado
                     como preponderante
                      */
-                    if (!match.compararCon(filaActual)) {
-                        int flag = match.esMasReciente(filaActual);
-                        if (flag > 0) {
-                            Log.d(TAG, "Programar actualización  DE CLIENTES " + updateUri);
+                        if (!match.compararCon(filaActual)) {
+                            int flag = match.esMasReciente(filaActual);
+                            if (flag > 0) {
+                                Log.e(TAG, "Programar actualización  del CuotasPagas " + updateUri);
 
-                            // Verificación: ¿Existe conflicto de modificación?
-                            if (filaActual.getModificado() == 1) {
-                                match.setModificado(0);
+                                // Verificación: ¿Existe conflicto de modificación?
+                                if (filaActual.getModificado() == 1) {
+                                    match.setModificado(0);
+                                }
+                                ops.add(construirOperacionUpdate_Cuota_Pagada(match, updateUri));
+
                             }
-                            ops.add(construirOperacionUpdate_Cliente(match, updateUri));
 
                         }
 
-                    }
-
-                } else {
+                    } else {
                     /*
                     Se deduce que aquellos elementos que no coincidieron, ya no existen en el servidor,
                     por lo que se eliminarán
                      */
-                    Uri deleteUri = Contract.Cliente.crearUriCliente(String.valueOf(filaActual.getId()));
-                    Log.i(TAG, "Programar Eliminación del Clientes " + deleteUri);
-                    ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                        Uri deleteUri = Contract.CuotaPaga.crearUriCuotaPaga(String.valueOf(filaActual.getId()));
+                        Log.e(TAG, "Programar Eliminación del CuotasPagas " + deleteUri);
+                        ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+                    }
                 }
             }
-            c_clientes.close();
-        }
-        // Insertar los items resultantes ya que se asume que no existen en el contacto
-        for (Cliente cliente : ClientesRemotos.values()) {
-            Log.d(TAG, "Programar Inserción de un nuevo Clientes con ID = " + cliente.getId());
-            ops.add(construirOperacionInsert_Cliente(cliente));
+            // Insertar los items resultantes ya que se asume que no existen en el contacto
+            for (CuotaPaga cuotaPaga : CuotasPagasRemotos.values()) {
+                Log.d(TAG, "Programar Inserción Cuotas-Pagas con ID = " + cuotaPaga.getId());
+                ops.add(construirOperacionInsert_Cuota_Pagada(cuotaPaga));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c_cuotaPagas!=null){
+                c_cuotaPagas.close();
+            }
         }
     }
+
+
+//    public void procesarOperaciones_HistorialPagos(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
+//
+//        // Consultar clientes locales
+//        Cursor c_clientes = resolver.query(Contract.Cliente.URI_CONTENIDO,
+//                null,
+//                Contract.Cliente.INSERTADO + "=?",
+//                new String[]{"0"}, null);
+//
+//        if (c_clientes != null) {
+//
+//            while (c_clientes.moveToNext()) {
+//
+//                // Convertir fila del cursor en objeto Contacto
+//                Cliente filaActual = deCursorACliente(c_clientes);
+//
+//                // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
+//                Cliente match = ClientesRemotos.get(filaActual.getId());
+//
+//                if (match != null) {
+//                    // Esta entrada existe, por lo que se remueve del mapeado
+//                    ClientesRemotos.remove(filaActual.getId());
+//
+//                    // Crear uri de este contacto
+//                    Uri updateUri = Contract.Cliente.crearUriCliente(String.valueOf(filaActual.getId()));
+//
+//                    /*
+//                    Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso
+//                    tanto en el servidro como en la app. Quién tenga la versión más actual, será tomado
+//                    como preponderante
+//                     */
+//                    if (!match.compararCon(filaActual)) {
+//                        int flag = match.esMasReciente(filaActual);
+//                        if (flag > 0) {
+//                            Log.d(TAG, "Programar actualización  DE CLIENTES " + updateUri);
+//
+//                            // Verificación: ¿Existe conflicto de modificación?
+//                            if (filaActual.getModificado() == 1) {
+//                                match.setModificado(0);
+//                            }
+//                            ops.add(construirOperacionUpdate_Cliente(match, updateUri));
+//
+//                        }
+//
+//                    }
+//
+//                } else {
+//                    /*
+//                    Se deduce que aquellos elementos que no coincidieron, ya no existen en el servidor,
+//                    por lo que se eliminarán
+//                     */
+//                    Uri deleteUri = Contract.Cliente.crearUriCliente(String.valueOf(filaActual.getId()));
+//                    Log.i(TAG, "Programar Eliminación del Clientes " + deleteUri);
+//                    ops.add(ContentProviderOperation.newDelete(deleteUri).build());
+//                }
+//            }
+//            c_clientes.close();
+//        }
+//        // Insertar los items resultantes ya que se asume que no existen en el contacto
+//        for (Cliente cliente : ClientesRemotos.values()) {
+//            Log.d(TAG, "Programar Inserción de un nuevo Clientes con ID = " + cliente.getId());
+//            ops.add(construirOperacionInsert_Cliente(cliente));
+//        }
+//    }
 
 
 
