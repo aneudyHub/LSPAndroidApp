@@ -28,6 +28,7 @@ public class OperacionesBaseDatos {
 
     private static DatabaseHandler baseDatos;
     private static OperacionesBaseDatos instancia = new OperacionesBaseDatos();
+    static Context mCtx;
 
     public OperacionesBaseDatos() {
     }
@@ -36,6 +37,7 @@ public class OperacionesBaseDatos {
         if (baseDatos == null) {
             baseDatos = new DatabaseHandler(context);
         }
+        mCtx=context;
         return instancia;
     }
 
@@ -196,7 +198,7 @@ public class OperacionesBaseDatos {
                     Contract.PRESTAMOS + "." + Contract.Prestamo.FECHA_INICIO,
                     "(SUM( " + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.CAPITAL + " ) + " +
                             "SUM(" + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.INTERES + " ) + " +
-                            "SUM(" + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MORA + " )) as ValorCapital",
+                            "SUM(" + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MORA + " ) - "+Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MONTO_PAGADO+") as Balance",
                     Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MONTO_PAGADO,
                     "SUM("+Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.INTERES+") AS "+Contract.PrestamoDetalle.INTERES,
                     "SUM("+Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MORA+") AS "+Contract.PrestamoDetalle.MORA,
@@ -344,12 +346,12 @@ public class OperacionesBaseDatos {
             FirebaseCrash.report(e);
             throw e;
         }finally {
-            if(c!=null){
-                c.close();
-            }
-            if(db!=null){
-                db.close();
-            }
+//            if(c!=null){
+//                c.close();
+//            }
+//            if(db!=null){
+//                db.close();
+//            }
         }
         return c;
 
@@ -399,7 +401,9 @@ public class OperacionesBaseDatos {
     }
 
     public Cursor ObtenerCuotasPendientesOPagadas(String id,String pagado){
-        SQLiteDatabase db = baseDatos.getWritableDatabase();
+        DatabaseHandler handler = new DatabaseHandler(mCtx);
+
+        SQLiteDatabase db =handler.getReadableDatabase();
         Cursor c=null;
 
         try{
@@ -436,10 +440,10 @@ public class OperacionesBaseDatos {
 //            if(c!=null){
 //                c.close();
 //            }
-            if(db!=null)
-            {
-                db.close();
-            }
+//            if(db!=null)
+//            {
+//                db.close();
+//            }
         }
         return c;
 
@@ -539,7 +543,7 @@ public class OperacionesBaseDatos {
 
         List<CuotaPendiente> list = new ArrayList<>();
         Cursor c= null;
-        try{
+       try{
             c = ObtenerCuotasPendientesOPagadas(ipPrestamos,pagado);
             while (c.moveToNext()) {
                 CuotaPendiente cuotaPendiente = new CuotaPendiente();

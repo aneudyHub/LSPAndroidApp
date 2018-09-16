@@ -32,6 +32,11 @@ public class Resolve {
     public static final String EXTRA_MENSAJE_HISTORIAL = "extra.mensaje.historial";
     public static final String ACTION_HISTORIAL = "extra.historial";
 
+
+    public static final String EXTRA_RESULTADO_DETALLE_PRESTAMOS = "extra.resultado.historial";
+    public static final String EXTRA_MENSAJE_DETALLE_PRESTAMOS = "extra.mensaje.historial";
+    public static final String ACTION_DETALLE_PRESTAMOS = "extra.historial";
+
     public static ProgressDialog progress;
 
 
@@ -48,15 +53,15 @@ public class Resolve {
                 }
 
                 Log.d("SINCRONIZADOR", "Solicitando sincronización manual");
-                if(UWeb.hayConexion(context)){
+//                if(UWeb.hayConexion(context)){
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
                     bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
                     ContentResolver.requestSync(cuentaActiva, Contract.AUTORIDAD, bundle);
-                }else {
-                    Log.e("No tien internet","Estoy aca");
-                    enviarBroadcast(context,true, "NO INTERNET");
-                }
+//                }else {
+//                    Log.e("No tien internet","Estoy aca");
+//                    enviarBroadcast(context,true, "NO INTERNET");
+//                }
                 return null;
             }
         }.execute();
@@ -64,11 +69,20 @@ public class Resolve {
     }
 
 
-    public static void enviarBroadcast(Context context,boolean estado, String mensaje) {
-        Intent intentLocal = new Intent(Resolve.ACTION_CUOTAS);
-        intentLocal.putExtra(EXTRA_RESULTADO, estado);
-        intentLocal.putExtra(EXTRA_MENSAJE, mensaje);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intentLocal);
+    public static void enviarBroadcast(Context context,boolean estado, String mensaje,int from) {
+        if(from==1){
+            Intent intentLocal = new Intent(Resolve.ACTION_CUOTAS);
+            intentLocal.putExtra(EXTRA_RESULTADO, estado);
+            intentLocal.putExtra(EXTRA_MENSAJE, mensaje);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intentLocal);
+        }
+
+        if(from==2){
+            Intent intentLocal = new Intent(Resolve.ACTION_DETALLE_PRESTAMOS);
+            intentLocal.putExtra(EXTRA_RESULTADO_DETALLE_PRESTAMOS, estado);
+            intentLocal.putExtra(EXTRA_MENSAJE_DETALLE_PRESTAMOS, mensaje);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intentLocal);
+        }
     }
 
     public static void enviarBroadcast_Historial(Context context,boolean estado, String mensaje) {

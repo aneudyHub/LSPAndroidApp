@@ -75,6 +75,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int ESTADO_ERROR_PARSING = 109;
     private static final int ESTADO_ERROR_SERVIDOR = 110;
 
+    private int from;
+
 
 //    private DatabaseHandler db;
     private ContentResolver cr;
@@ -83,21 +85,24 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
 
-    public SyncAdapter(Context context, boolean autoInitialize) {
+    public SyncAdapter(Context context, boolean autoInitialize,int from) {
         super(context, autoInitialize);
         cr = context.getContentResolver();
+        this.from=from;
+        if(from==2)
+            syncRemota();
     }
 
     /**
      * Constructor para mantener compatibilidad en versiones inferiores a 3.0
-     */
-    public SyncAdapter(
-            Context context,
-            boolean autoInitialize,
-            boolean allowParallelSyncs) {
-        super(context, autoInitialize, allowParallelSyncs);
-        cr = context.getContentResolver();
-    }
+//     */
+//    public SyncAdapter(
+//            Context context,
+//            boolean autoInitialize,
+//            boolean allowParallelSyncs) {
+//        super(context, autoInitialize, allowParallelSyncs);
+//        cr = context.getContentResolver();
+//    }
 
     @Override
     public void onPerformSync(Account account,
@@ -149,7 +154,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                     tratarGet(response);
                                     Log.e("STATUS->>LO",String.valueOf(status));
                                     operacionesBaseDatos.actualizarSyncTime(UPreferencias.obtenerIdUsuario(getContext()),UTiempo.obtenerFechaHora());
-                                    //Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!");
+
                                 }
 
                             } catch (JSONException e) {
@@ -196,11 +201,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 cr.applyBatch(Contract.AUTORIDAD, ops);
                 // Notificar cambio al content provider
                 cr.notifyChange(Contract.URI_CONTENIDO_BASE, null, false);
-                Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!");
+                Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!",from);
 
             } else {
                 Log.d(TAG, "Sin cambios remotos");
-                Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!");
+                Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!",from);
             }
 
             // Sincronización remota
@@ -257,7 +262,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     FirebaseCrash.report(e);
-                                    Resolve.enviarBroadcast(getContext(),false,e.getMessage());
+                                    Resolve.enviarBroadcast(getContext(),false,e.getMessage(),from);
                                 }
 
                             }
@@ -270,7 +275,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                         }
                         , cabeceras);
             }else{
-                Resolve.enviarBroadcast(getContext(),true, "NO INTERNET");
+                Resolve.enviarBroadcast(getContext(),true, "NO INTERNET",from);
             }
 
 
@@ -392,7 +397,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d(TAG, "Error Respuesta:" + (respuesta != null ? respuesta.toString() : "()")
                 + "\nDetalles:" + error.getMessage());
 
-        Resolve.enviarBroadcast(getContext(),false, respuesta.getMensaje());
+        Resolve.enviarBroadcast(getContext(),false, respuesta.getMensaje(),from);
 
     }
 

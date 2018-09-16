@@ -54,13 +54,6 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
     SwipeRefreshLayout swipeRefreshLayout;
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        IntentFilter filtroSync = new IntentFilter(Intent.ACTION_SYNC);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receptorSync, filtroSync);
-    }
-
     private BroadcastReceiver receptorSync;
 
 
@@ -72,47 +65,8 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
         prepararLista(view);
         getActivity().getSupportLoaderManager().restartLoader(1, null, this);
         Log.e("broadcast","llego");
-        // Crear receptor de mensajes de sincronización
-        receptorSync = new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                //mostrarProgreso(false);
-                Log.e("broadcast","llego");
-                if(swipeRefreshLayout!=null){
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-                String mensaje = intent.getStringExtra("extra.mensaje");
-                Snackbar.make(view.findViewById(R.id.coordinador),
-                        mensaje, Snackbar.LENGTH_LONG).show();
-            }
-        };
-
-        /*swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-               Log.e("ESTOY EN onRefresh","");
-            }
-        });
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });*/
 
         return  view;
-    }
-
-    private void sincronizar(View view) {
-        swipeRefreshLayout.setRefreshing(true);
-        // Verificación para evitar iniciar más de una sync a la vez
-        Resolve.sincronizarData(getContext());
-    }
-
-    private void mostrarProgreso(boolean mostrar) {
-        //findViewById(R.id.barra).setVisibility(mostrar ? View.VISIBLE : View.GONE);
     }
 
     private void prepararLista(View view) {
@@ -247,6 +201,6 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receptorSync);
+//        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receptorSync);
     }
 }
