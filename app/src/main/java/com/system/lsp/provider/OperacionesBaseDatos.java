@@ -389,12 +389,12 @@ public class OperacionesBaseDatos {
             FirebaseCrash.report(e);
             throw e;
         }finally {
-            if(c!=null){
-                c.close();
-            }
-            if(db!=null){
-                db.close();
-            }
+//            if(c!=null){
+//                c.close();
+//            }
+//            if(db!=null){
+//                db.close();
+//            }
         }
         return c;
 
@@ -515,7 +515,7 @@ public class OperacionesBaseDatos {
                 db.close();
             }
         }
-        return fechaSync;
+        return fechaSync==null?"2000-01-01":fechaSync;
     }
 
     // [OPERACIONES_FORMA_PAGO]

@@ -41,6 +41,7 @@ import com.system.lsp.utilidades.Resolve;
 import com.system.lsp.utilidades.UPreferencias;
 import com.system.lsp.utilidades.URL;
 import com.system.lsp.utilidades.UTiempo;
+import com.system.lsp.utilidades.UWeb;
 import com.system.lsp.web.RESTService;
 import com.system.lsp.web.RespuestaApi;
 
@@ -89,7 +90,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         super(context, autoInitialize);
         cr = context.getContentResolver();
         this.from=from;
-        if(from==2)
+        if(from != 1)
             syncRemota();
     }
 
@@ -225,31 +226,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.e("ESTADO 107","2");
         String datos = procRemoto.crearPayload(cr);
 
-        if (datos != null) {
-            Log.d(TAG, "Payload de contactos:" + datos);
-            operacionesBaseDatos = OperacionesBaseDatos
-                    .obtenerInstancia(getContext());
-            HashMap<String, String> cabeceras = new HashMap<>();
-            cabeceras.put("Authorization", UPreferencias.obtenerClaveApi(getContext()));
-            String fechaSync="";
-//            Cursor cursor = null;
-//            try{
-//                cursor = operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(getContext()));
-//                if (cursor.moveToFirst()) {
-//                    fechaSync = cursor.getString(cursor.getColumnIndex(Contract.Cobrador.SYNC_TIME));
-//                }
-//            }catch (Exception e){
-//                FirebaseCrash.report(e);
-//            }finally {
-//                if(cursor!=null){
-//                    cursor.close();
-//                }
-//            }
-            cabeceras.put("sync_time", "0");
+        if(UWeb.hayConexion(getContext())) {
+            if (datos != null) {
+                Log.d(TAG, "Payload de contactos:" + datos);
+                operacionesBaseDatos = OperacionesBaseDatos
+                        .obtenerInstancia(getContext());
+                HashMap<String, String> cabeceras = new HashMap<>();
+                cabeceras.put("Authorization", UPreferencias.obtenerClaveApi(getContext()));
+                cabeceras.put("sync_time", "0");
 
-            boolean t = Resolve.isInternetAvailable();
 
-            if(t){
+
+
                 new RESTService(getContext()).post(UPreferencias.obtenerUrlAPP(getContext())+URL.SYNC, datos,
                         new Response.Listener<JSONObject>() {
                             @Override
@@ -274,17 +262,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             }
                         }
                         , cabeceras);
-            }else{
-                Resolve.enviarBroadcast(getContext(),true, "NO INTERNET",from);
+
+
+
+            } else {
+                Log.e(TAG, "Sin cambios remotos para enviar");
+                //Resolve.enviarBroadcast(getContext(),true, "Sicronizando espere!!!");
+
+                syncLocal();
+
             }
-
-
-        } else {
-            Log.e(TAG, "Sin cambios remotos para enviar");
-            //Resolve.enviarBroadcast(getContext(),true, "Sicronizando espere!!!");
-            syncLocal();
-
+        }else{
+            Resolve.enviarBroadcast(getContext(),false, "NO INTERNET",from);
         }
+
 
 
 

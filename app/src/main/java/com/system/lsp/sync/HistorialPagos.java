@@ -120,10 +120,10 @@ public class HistorialPagos {
                 // Notificar cambio al content provider
                 cr.notifyChange(Contract.URI_CONTENIDO_BASE, null, false);
 
-                Resolve.enviarBroadcast_Historial(context,false, "Sincronizacion Completa");
+                Resolve.enviarBroadcast_Historial(context,true, "Sincronizacion Completa");
             } else {
                 Log.d(TAG, "Sin cambios remotos");
-                Resolve.enviarBroadcast_Historial(context,false, "Sincronizacion Completa");
+                Resolve.enviarBroadcast_Historial(context,true, "Sincronizacion Completa");
             }
 
             // Sincronización remota
@@ -231,7 +231,7 @@ public class HistorialPagos {
         Log.d(TAG, "Error Respuesta:" + (respuesta != null ? respuesta.toString() : "()")
                 + "\nDetalles:" + error.getMessage());
 
-        Resolve.enviarBroadcast_Historial(context,false, respuesta.getMensaje());
+        Resolve.enviarBroadcast_Historial(context,true, respuesta.getMensaje());
 
     }
 

@@ -53,15 +53,15 @@ public class Resolve {
                 }
 
                 Log.d("SINCRONIZADOR", "Solicitando sincronización manual");
-//                if(UWeb.hayConexion(context)){
+                if(UWeb.hayConexion(context)){
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
                     bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
                     ContentResolver.requestSync(cuentaActiva, Contract.AUTORIDAD, bundle);
-//                }else {
-//                    Log.e("No tien internet","Estoy aca");
-//                    enviarBroadcast(context,true, "NO INTERNET");
-//                }
+                }else {
+                    Log.e("No tien internet","Estoy aca");
+                    enviarBroadcast(context,true, "NO INTERNET",1);
+                }
                 return null;
             }
         }.execute();
@@ -82,6 +82,10 @@ public class Resolve {
             intentLocal.putExtra(EXTRA_RESULTADO_DETALLE_PRESTAMOS, estado);
             intentLocal.putExtra(EXTRA_MENSAJE_DETALLE_PRESTAMOS, mensaje);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intentLocal);
+        }
+
+        if(from==3){
+            enviarBroadcast_Historial(context,estado,mensaje);
         }
     }
 

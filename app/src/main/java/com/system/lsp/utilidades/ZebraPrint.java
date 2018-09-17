@@ -371,7 +371,7 @@ public class ZebraPrint {
             if(this._context instanceof Pay_Credits){
                 ((Pay_Credits)this._context).showAlert("ERROR CONECTION TO PRINTER");
             }*/
-            mListener.error("ERROR CONECTION TO PRINTER24");
+//            mListener.error("ERROR CONECTION TO PRINTER24");
         }
 
         return printer;

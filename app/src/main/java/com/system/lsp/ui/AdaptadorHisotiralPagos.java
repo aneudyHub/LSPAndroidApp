@@ -110,7 +110,7 @@ public class AdaptadorHisotiralPagos extends RecyclerView.Adapter<AdaptadorHisot
                 Log.e("Soy el nombre",nombreCliente);
                 Log.e("STRING:",datos);
                 Log.e("VALOR-TOTAL-MORA",String.valueOf(totalMora));
-                Resolve.showProgress(context,"Imprmiendo");
+//                Resolve.showProgress(context,"Imprmiendo");
                 ZebraPrint zebraprint = new ZebraPrint(view.getContext(), "imprimir", fecha,
                         idPrestamos, nombreCliente, datos, monto, totalMora, nombreCobrador, telefonoCobrador, mListenerProgress);
                 zebraprint.probarlo();

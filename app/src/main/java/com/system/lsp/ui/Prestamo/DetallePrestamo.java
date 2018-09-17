@@ -369,8 +369,11 @@ public class DetallePrestamo extends AppCompatActivity {
         return false;
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receptorSync);
+    }
 
     /**
      * A placeholder fragment containing a simple view.

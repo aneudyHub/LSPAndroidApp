@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.DatabaseUtils;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -37,13 +38,16 @@ import com.system.lsp.R;
 import com.system.lsp.modelo.CuotaPaga;
 import com.system.lsp.modelo.DatosCliente;
 import com.system.lsp.provider.OperacionesBaseDatos;
+import com.system.lsp.sync.SyncAdapter;
 import com.system.lsp.ui.AdaptadorHisotiralPagos;
 import com.system.lsp.ui.Pagos.CuotasAdapter;
 import com.system.lsp.ui.Pagos.Pagos;
+import com.system.lsp.ui.Prestamo.DetallePrestamo;
 import com.system.lsp.utilidades.Progress;
 import com.system.lsp.utilidades.Resolve;
 import com.system.lsp.utilidades.UPreferencias;
 import com.system.lsp.utilidades.UTiempo;
+import com.system.lsp.utilidades.UWeb;
 import com.system.lsp.utilidades.ZebraPrint;
 
 import java.text.SimpleDateFormat;
@@ -165,12 +169,12 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
             }
         });
 
-//        swipeRefreshLayout.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-//            }
-//        });
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                getData(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+            }
+        });
 
 
 
@@ -316,7 +320,42 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
                         public void onClick(DialogInterface dialog,int id) {
                             // if this button is clicked, close
                             // current activity
-                            Resolve.sincronizarData(getActivity());
+//                            Resolve.sincronizarData(getActivity());
+
+
+                            if(UWeb.hayConexion(getContext())){
+                                new AsyncTask<Void,Void,Void>(){
+                                    @Override
+                                    protected void onPreExecute() {
+                                        super.onPreExecute();
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                    }
+
+                                    @Override
+                                    protected Void doInBackground(Void... voids) {
+                                        // Verificación para evitar iniciar más de una sync a la vez
+//                        Resolve.sincronizarData(DetallePrestamo.this);
+                                        SyncAdapter syncAdapter = null;
+                                        Object lock = new Object();
+                                        synchronized (lock) {
+                                            if (syncAdapter == null) {
+                                                syncAdapter = new SyncAdapter(getActivity(), true,3);
+                                            }
+                                        }
+
+                                        return null;
+                                    }
+                                }.execute();
+                            }else{
+                                Resolve.enviarBroadcast_Historial(getContext(),true, "NO INTERNET");
+                            }
+
+
+
                             dialog.cancel();
                         }
                     });
@@ -432,7 +471,11 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
 
     @Override
     public void showProgressPrint(Boolean b) {
-        if(mProgress==null) return;
+        if(mProgress==null){
+            mProgress = new ProgressDialog(getContext());
+            mProgress.setTitle("IMPRIMIENDO");
+            mProgress.setCancelable(false);
+        }
 
         if(b){
             mProgress.show();
@@ -493,7 +536,6 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
                         // if this button is clicked, close
                         // current activity
                         dialog.cancel();
-                        Resolve.dimmisProgress();
                     }
                 });
 
