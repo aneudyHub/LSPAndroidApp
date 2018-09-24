@@ -75,8 +75,8 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
             id_prestamo = (TextView) v.findViewById(R.id.prestamo_id);
             valor = (TextView) v.findViewById(R.id.valor);
             total = (TextView) v.findViewById(R.id.total);
-            telefono = (TextView) v.findViewById(R.id.telefono);
-            celular = (TextView) v.findViewById(R.id.celular);
+//            telefono = (TextView) v.findViewById(R.id.telefono);
+//            celular = (TextView) v.findViewById(R.id.celular);
             cuota = (TextView) v.findViewById(R.id.cuota);
             statusIndicator = itemView.findViewById(R.id.appointment_status);
             mLayout= (CardView) itemView.findViewById(R.id.Layout);
@@ -175,23 +175,23 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
         holder.direccion.setText(c.getDIRECCION());
         holder.id_prestamo.setText("#"+c.getPRESTAMO());
         holder.fecha.setText(c.getFECHA());
-        if (c.getTELEFONO().equals("NULL") || c.getTELEFONO().equals("null")){
-            holder.telefono.setText("");
-        }else {
-            holder.telefono.setText(c.getTELEFONO());
-        }
+//        if (c.getTELEFONO().equals("NULL") || c.getTELEFONO().equals("null")){
+//            holder.telefono.setText("");
+//        }else {
+//            holder.telefono.setText(c.getTELEFONO());
+//        }
 
-        if (c.getCELULAR().equals("NULL") || c.getCELULAR().equals("null")){
-            if(holder.celular!=null){
-                holder.celular.setText("");
-            }
-
-        }else {
-            if(holder.celular!=null){
-                holder.celular.setText(c.getCELULAR()==null?"":c.getCELULAR());
-            }
-
-        }
+//        if (c.getCELULAR().equals("NULL") || c.getCELULAR().equals("null")){
+//            if(holder.celular!=null){
+//                holder.celular.setText("");
+//            }
+//
+//        }else {
+//            if(holder.celular!=null){
+//                holder.celular.setText(c.getCELULAR()==null?"":c.getCELULAR());
+//            }
+//
+//        }
         holder.valor.setText("RD$ "+c.getVALOR());
         holder.total.setText("RD$ "+c.getTOTAL());
         holder.mLayout.setOnClickListener(new View.OnClickListener() {

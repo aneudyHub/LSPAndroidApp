@@ -6,56 +6,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
 
     <!-- Indicador de estado -->
-    <View
-        android:id="@+id/appointment_status"
-        android:layout_width="11dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="false"
-        android:background="#E0E0E0" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="8dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/cuota"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6sp"
-            android:textColor="@color/mr"
+        <View
+            android:id="@+id/appointment_status"
+            android:layout_width="11dp"
+            android:layout_height="0dp"
+            android:layout_alignParentStart="false"
+            android:background="#E0E0E0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="# 3" />
-
-        <View
-            android:id="@+id/vertical_separator"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="6dp"
-            android:background="#E0E0E0"
-            app:layout_constraintLeft_toRightOf="@+id/cuota"
-            app:layout_constraintStart_toEndOf="@+id/cuota"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintVertical_bias="0.0" />
 
 
         <TextView
             android:id="@+id/nombre_cliente"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:ellipsize="end"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:maxLines="1"
             android:textColor="@color/negro87"
-            app:layout_constraintLeft_toLeftOf="@+id/vertical_separator"
-            app:layout_constraintStart_toStartOf="@+id/vertical_separator"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/appointment_status"
+            app:layout_constraintTop_toBottomOf="@+id/prestamo_id"
             tools:text="Clínica Central" />
 
 
@@ -64,12 +50,14 @@
             style="@style/Base.TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:textColor="@color/negro87"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/vertical_separator"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/appointment_status"
             app:layout_constraintTop_toBottomOf="@+id/nombre_cliente"
             tools:text="0000000000" />
 
@@ -78,119 +66,112 @@
             android:id="@+id/direccion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="6dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:maxLines="5"
-            android:paddingBottom="10dp"
-            android:paddingRight="16dp"
-            android:paddingTop="2dp"
             android:textColor="@color/GRIS"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="@+id/vertical_separator"
-            app:layout_constraintStart_toStartOf="@+id/vertical_separator"
+            app:layout_constraintStart_toEndOf="@+id/appointment_status"
             app:layout_constraintTop_toBottomOf="@+id/documento_cliente"
             tools:text="Clínica Central" />
 
 
         <TextView
-            android:id="@+id/telefono"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:maxLines="5"
-            android:paddingBottom="10dp"
-            android:paddingRight="16dp"
-            android:paddingTop="2dp"
-            android:textColor="@color/GRIS"
-            app:layout_constraintLeft_toLeftOf="@+id/vertical_separator"
-            app:layout_constraintStart_toStartOf="@+id/vertical_separator"
-            app:layout_constraintTop_toBottomOf="@+id/direccion"
-            tools:text="Clínica Central" />
-
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_marginStart="3dp"
-            android:text="Valor"
             android:id="@+id/val"
-            app:layout_constraintTop_toBottomOf="@+id/telefono"
-            app:layout_constraintLeft_toLeftOf="@+id/vertical_separator"
-            app:layout_constraintStart_toStartOf="@+id/vertical_separator"
-            android:textStyle="bold" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Valor"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/appointment_status"
+            app:layout_constraintTop_toBottomOf="@+id/direccion" />
 
         <TextView
             android:id="@+id/valor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:maxLines="1"
             android:textColor="@color/naranja"
-            app:layout_constraintLeft_toRightOf="@+id/val"
-            app:layout_constraintStart_toStartOf="@+id/val"
-            app:layout_constraintTop_toBottomOf="@+id/telefono"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/bal"
+            app:layout_constraintTop_toBottomOf="@+id/direccion"
             tools:text="Clínica Central" />
 
 
         <TextView
+            android:id="@+id/bal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_marginStart="3dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="Balance"
-            android:id="@+id/bal"
-            app:layout_constraintTop_toBottomOf="@+id/valor"
-            app:layout_constraintLeft_toLeftOf="@+id/vertical_separator"
-            app:layout_constraintStart_toStartOf="@+id/vertical_separator"
-            android:textStyle="bold" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/appointment_status"
+            app:layout_constraintTop_toBottomOf="@+id/val" />
 
         <TextView
             android:id="@+id/total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:paddingTop="2dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:paddingTop="2dp"
             android:textColor="@color/naranja"
-            app:layout_constraintLeft_toLeftOf="@+id/bal"
-            app:layout_constraintStart_toStartOf="@+id/bal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/bal"
             app:layout_constraintTop_toBottomOf="@+id/valor"
             tools:text="Clínica Central" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="#00"
-            android:textColor="@color/bg_login"
             android:id="@+id/prestamo_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="#00"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/bg_login"
+            android:textStyle="italic"
             app:layout_constraintRight_toRightOf="parent"
-            android:textStyle="italic" />
-
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="01/01/2017"
             android:id="@+id/fecha"
-            app:layout_constraintTop_toBottomOf="@+id/nombre_cliente"
-            app:layout_constraintRight_toRightOf="parent"
-            android:textStyle="italic" />
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="01/01/2017"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text=">"
-            android:id="@+id/fec"
-            app:layout_constraintTop_toBottomOf="@+id/telefono"
-            app:layout_constraintRight_toRightOf="parent"
-            android:textStyle="bold" />
+            android:textStyle="italic"
+            app:layout_constraintStart_toEndOf="@+id/appointment_status"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </android.support.constraint.ConstraintLayout>

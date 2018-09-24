@@ -39,6 +39,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.system.lsp.R;
 import com.system.lsp.modelo.DatosCliente;
 import com.system.lsp.provider.Contract;
@@ -330,9 +331,16 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
                         public void onClick(DialogInterface dialog,int id) {
                             // if this button is clicked, close
                             // current activity
-                            showProgress("CARGANDO DATOS");
+                            getActivity().runOnUiThread (new Thread(new Runnable() {
+                                public void run() {
+                                    showProgress("CARGANDO DATOS");
+                                    swipeRefreshLayout.setRefreshing(true);
+                                }
+                            }));
                             Resolve.sincronizarData(getActivity());
-                            dialog.cancel();
+//                            showProgress("CARGANDO DATOS");
+//                            Resolve.sincronizarData(getActivity());
+                            dialog.dismiss();
                         }
                     });
 
@@ -443,7 +451,10 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
     }
 
     public void showProgress(String title){
-        progress = new ProgressDialog(getContext());
+        if(progress==null)
+            progress = new ProgressDialog(getContext());
+
+
         progress.setTitle(title);
         progress.setCancelable(false);
         progress.show();

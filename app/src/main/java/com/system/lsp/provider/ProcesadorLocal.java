@@ -767,7 +767,8 @@ public class ProcesadorLocal {
                 c.getString(c.getColumnIndex(Contract.CuotaPaga.FECHA)),
                 c.getInt(c.getColumnIndex(Contract.CuotaPaga.PRESTAMO)),
                 c.getDouble(c.getColumnIndex(Contract.CuotaPaga.MONTO)),
-                c.getInt(c.getColumnIndex(Contract.CuotaPaga.MODIFICADO))
+                c.getInt(c.getColumnIndex(Contract.CuotaPaga.MODIFICADO)),
+                c.getString(c.getColumnIndex(Contract.CuotaPaga.UPDATE_AT))
 
         );
 

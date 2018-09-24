@@ -44,7 +44,7 @@ public class CuotaPaga {
         Modificado = modificado;
     }
 
-    public CuotaPaga(int id, int cobradorId, String fecha, int prestamoId, double monto, int modificado) {
+    public CuotaPaga(int id, int cobradorId, String fecha, int prestamoId, double monto, int modificado,String Updated_at) {
 
         Id = id;
         CobradorId = cobradorId;
@@ -52,6 +52,7 @@ public class CuotaPaga {
         PrestamoId = prestamoId;
         Modificado = modificado;
         Monto=monto;
+        this.Updated_at=Updated_at;
     }
 
     public String getUpdated_at() {return Updated_at;}
@@ -165,7 +166,7 @@ public class CuotaPaga {
 
             return fechaA.compareTo(fechaB);
 
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;

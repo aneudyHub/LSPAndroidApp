@@ -114,7 +114,7 @@ public class HistorialPagos {
             // ¿ Hay operaciones por realizar ?
             if (ops.size() > 0) {
 
-                Log.d(TAG, "# Cambios en \'contacto\': " + ops.size() + " ops.");
+                Log.d(TAG, "# Cambios en \'Pagos\': " + ops.size() + " ops.");
                 // Aplicar batch de operaciones
                 cr.applyBatch(Contract.AUTORIDAD, ops);
                 // Notificar cambio al content provider

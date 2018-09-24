@@ -2,26 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+
         <item
             android:id="@+id/nav_princial"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/nav_princial" />
-
-    </group>
-
-    <item android:title="Other">
-        <menu>
-            <item
-                android:id="@+id/nav_prestamos"
-                android:title="@string/nav_prestamos" />
-            <item
+        <item
+            android:id="@+id/nav_prestamos"
+            android:icon="@drawable/ic_people_black_24dp"
+            android:title="@string/nav_prestamos" />
+        <item
             android:id="@+id/nav_h_pagos"
+            android:icon="@drawable/ic_receipt_black_24dp"
             android:title="@string/nav_h_pagos" />
-
-            <item
-                android:id="@+id/nav_logout"
-                android:title="@string/nav_logout" />
-        </menu>
-    </item>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/nav_logout" />
+    </group>
 
 </menu>

@@ -93,7 +93,7 @@ public class CuotasAdapter extends RecyclerView.Adapter<CuotasAdapter.CuotaViewH
         holder.moraMonto.setText(precision.format(valorMora));
         holder.total_monto.setText("RD$ "+precision.format(total));
         holder.mLayout.setBackgroundColor(mCtx.getResources().getColor(R.color.cardview_light_background));
-        holder.mIcon.setVisibility(View.GONE);
+//        holder.mIcon.setVisibility(View.GONE);
         holder.mRestante.setVisibility(View.GONE);
         holder.mAbonado.setText(mItems.getString(mItems.getColumnIndex(Contract.PrestamoDetalle.MONTO_PAGADO)));
 
@@ -158,7 +158,7 @@ public class CuotasAdapter extends RecyclerView.Adapter<CuotasAdapter.CuotaViewH
             moraMonto=(TextView)itemView.findViewById(R.id.Mora_Monto);
             total_monto=(TextView)itemView.findViewById(R.id.Total_Monto);
             mNumero=(TextView)itemView.findViewById(R.id.Cuota_Numero);
-            mIcon =(ImageView)itemView.findViewById(R.id.Cuota_Modificacion);
+//            mIcon =(ImageView)itemView.findViewById(R.id.Cuota_Modificacion);
             mRestante=(TextView)itemView.findViewById(R.id.Restante);
             mAbonado=(TextView)itemView.findViewById(R.id.Abonado);
             diasAtrasados = (TextView)itemView.findViewById(R.id.dias_atrasados);

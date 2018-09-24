@@ -435,6 +435,19 @@ public class Provider extends ContentProvider {
                 resolver.notifyChange(uri, null, false);
                 break;
 
+
+            case CUOTA_PAGADA_ID:
+                String idCuotapagada = Contract.CuotaPaga.obtenerIdCuotasPaga(uri);
+
+                filasAfectadas = db.update(Contract.CUOTA_PAGADA, values,
+                        Contract.CuotaPaga.ID + "=" + "\'" + idCuotapagada + "\'"
+                                + (!TextUtils.isEmpty(selection) ?
+                                " AND (" + selection + ')' : ""),
+                        selectionArgs);
+
+                resolver.notifyChange(uri, null, false);
+                break;
+
             case CUOTA_PAGADA:
                 String idCuotaPagada = Contract.CuotaPaga.obtenerIdCuotasPaga(uri);
 

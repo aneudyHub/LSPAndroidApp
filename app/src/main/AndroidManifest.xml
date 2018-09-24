@@ -92,7 +92,8 @@
 
         <activity
             android:name="com.system.lsp.ui.Pagos.Pagos"
-            android:parentActivityName="com.system.lsp.ui.Main.MainActivity" />
+            android:parentActivityName="com.system.lsp.ui.Main.MainActivity"
+            android:theme="@style/AppTheme"/>
 
         <activity
             android:name="com.system.lsp.ui.Prestamo.DetallePrestamo"
