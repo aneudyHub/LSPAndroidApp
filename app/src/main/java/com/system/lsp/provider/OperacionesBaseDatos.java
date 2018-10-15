@@ -696,12 +696,12 @@ public class OperacionesBaseDatos {
             FirebaseCrash.report(e);
             throw e;
         }finally {
-            if(c!=null){
-                c.close();
-            }
-            if(db!=null){
-                db.close();
-            }
+//            if(c!=null){
+//                c.close();
+//            }
+//            if(db!=null){
+//                db.close();
+//            }
         }
         return c;
 
