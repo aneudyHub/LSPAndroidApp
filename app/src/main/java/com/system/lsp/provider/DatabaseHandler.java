@@ -142,11 +142,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         try {
-            db.execSQL("DROP TABLE IF EXISTS " + Contract.CLIENTES);
-            db.execSQL("DROP TABLE IF EXISTS " + Contract.PRESTAMOS);
-            db.execSQL("DROP TABLE IF EXISTS " + Contract.PRESTAMOS_DETALLES);
-            db.execSQL("DROP TABLE IF EXISTS " + Contract.CUOTA_PAGADA);
-            db.execSQL("DROP TABLE IF EXISTS " + Contract.COBRADOR);
+//            db.execSQL("DROP TABLE IF EXISTS " + Contract.CLIENTES);
+//            db.execSQL("DROP TABLE IF EXISTS " + Contract.PRESTAMOS);
+//            db.execSQL("DROP TABLE IF EXISTS " + Contract.PRESTAMOS_DETALLES);
+//            db.execSQL("DROP TABLE IF EXISTS " + Contract.CUOTA_PAGADA);
+//            db.execSQL("DROP TABLE IF EXISTS " + Contract.COBRADOR);
         } catch (SQLiteException e) {
             // Manejo de excepciones
             FirebaseCrash.report(e);

@@ -1,6 +1,8 @@
 package com.system.lsp.ui.Main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,12 +26,16 @@ import com.system.lsp.R;
 import com.system.lsp.fragmentos.FragmentHistorialPagos;
 import com.system.lsp.fragmentos.FragmentListaCoutas;
 import com.system.lsp.fragmentos.FragmentListaPrestamos;
+import com.system.lsp.notificaciones.verificaSync_Service;
 import com.system.lsp.provider.Contract;
+import com.system.lsp.provider.OperacionesBaseDatos;
 import com.system.lsp.provider.SessionManager;
 import com.system.lsp.ui.AdaptadorCuotas;
 import com.system.lsp.ui.Login.LoginActivity;
 import com.system.lsp.utilidades.Progress;
+import com.system.lsp.utilidades.Resolve;
 import com.system.lsp.utilidades.UPreferencias;
+import com.system.lsp.utilidades.UTiempo;
 import com.system.lsp.utilidades.ZebraPrint;
 import com.system.lsp.utilidades.ZebraprintOld;
 
@@ -100,6 +107,8 @@ public class MainActivity extends AppCompatActivity
         // Reemplaza con tu clave
         UPreferencias.guardarClaveApi(this,claveApi);
 
+        startService(new Intent(this, verificaSync_Service.class));
+
         setFragment(0);
     }
 
@@ -113,7 +122,50 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        OperacionesBaseDatos operacionesBaseDatos = OperacionesBaseDatos.obtenerInstancia(this);
+//        String fechaSync=operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(this));
+//
+//        String fechaExtraida = fechaSync.substring(0,10);
+//
+//        if (!fechaExtraida.equals(UTiempo.obtenerFecha())){
+//            Log.e("VALOR FECHA", fechaExtraida);
+//            Log.e("VALOR FECHA-ACTUAL", UTiempo.obtenerFecha());
+//            android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+//            // set title
+//            alertDialogBuilder.setTitle(Html.fromHtml("<font color='#FF0000'>SALUDO!!!</font>"));
+//
+//            // set dialog message
+//            alertDialogBuilder
+//                    .setMessage(Html.fromHtml("SI ESTA LELLENDO ESTE MENSAJE:<br/><br/>" +
+//                            "<font color='#FF0000'> NECEISTA SINCRONIZAR PARA EMPEZAR A TRABAJAR.</font>"))
+//                    .setCancelable(false)
+//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            // if this button is clicked, close
+//                            // current activity
+//                            runOnUiThread(new Thread(new Runnable() {
+//                                public void run() {
+////                                    showProgress("CARGANDO DATOS");
+////                                    swipeRefreshLayout.setRefreshing(true);
+//                                }
+//                            }));
+//                            Resolve.sincronizarData(MainActivity.this);
+////                            showProgress("CARGANDO DATOS");
+////                            Resolve.sincronizarData(getActivity());
+//                            dialog.dismiss();
+//                        }
+//                    });
+//
+//            // create alert dialog
+//            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+//
+//            // show it
+//            alertDialog.show();
+//        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

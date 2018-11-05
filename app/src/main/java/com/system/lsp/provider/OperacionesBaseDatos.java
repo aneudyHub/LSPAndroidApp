@@ -499,7 +499,7 @@ public class OperacionesBaseDatos {
         String fechaSync="2000-01-01";
         Cursor c=null;
         try{
-            String sql = String.format("SELECT sync_time FROM %s ", Contract.COBRADOR +" WHERE id = "+idCobrador);
+            String sql = "SELECT sync_time FROM "+ Contract.COBRADOR +" WHERE id = "+idCobrador;
             c = db.rawQuery(sql, null);
             if (c.moveToFirst()) {
                 fechaSync = c.getString(c.getColumnIndex(Contract.Cobrador.SYNC_TIME));

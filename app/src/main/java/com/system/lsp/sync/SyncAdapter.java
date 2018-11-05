@@ -124,24 +124,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void syncLocal() {
         // Construcción de cabeceras
         Log.e("sync local","sincronizando--------------");
-        operacionesBaseDatos = OperacionesBaseDatos
-                .obtenerInstancia(getContext());
+
         HashMap<String, String> cabeceras = new HashMap<>();
         cabeceras.put("Authorization", UPreferencias.obtenerClaveApi(getContext()));
         String fechaSync="";
-       /*  cursor = operacionesBaseDatos.obtenerSyncTime(UPreferencias.obtenerIdUsuario(getContext()));
-        if (cursor.moveToFirst()) {
-            fechaSync = cursor.getString(cursor.getColumnIndex(Contract.Cobrador.SYNC_TIME));
-        }
-        if (fechaSync==null){*/
-            fechaSync ="0";
-        //}
+        fechaSync ="0";
         cabeceras.put("sync_time",fechaSync);
-        Log.e("ESTADO 107","1");
+//        Log.e("ESTADO 107","1");
 
         boolean t = Resolve.isInternetAvailable();
         Log.e("verifica red==>",String.valueOf(t));
-        //if(t){
+        if(UWeb.hayConexion(getContext())) {
             new RESTService(getContext()).get(UPreferencias.obtenerUrlAPP(getContext())+URL.SYNC,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -154,7 +147,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                 if (status.equals("200")){
                                     tratarGet(response);
                                     Log.e("STATUS->>LO",String.valueOf(status));
-                                    operacionesBaseDatos.actualizarSyncTime(UPreferencias.obtenerIdUsuario(getContext()),UTiempo.obtenerFechaHora());
+//                                    operacionesBaseDatos.actualizarSyncTime(UPreferencias.obtenerIdUsuario(getContext()),UTiempo.obtenerFechaHora());
 
                                 }
 
@@ -169,17 +162,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             tratarErrores(error);
                         }
                     }, cabeceras);
-       // }else{
-          //  Resolve.enviarBroadcast(getContext(),true, "NO INTERNET");
-       // }
-
-        // Petición GET
-
+        }else{
+            Resolve.enviarBroadcast(getContext(),false, "NO INTERNET",from);
+        }
     }
 
     private void tratarGet(JSONObject respuesta) {
-
-
         try {
             // Crear referencia de lista de operaciones
             ArrayList<ContentProviderOperation> ops = new ArrayList<>();
@@ -209,6 +197,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 Resolve.enviarBroadcast(getContext(),true, "Sicronizacion Completa!!!",from);
             }
 
+            operacionesBaseDatos = OperacionesBaseDatos.obtenerInstancia(getContext());
+            operacionesBaseDatos.actualizarSyncTime(UPreferencias.obtenerIdUsuario(getContext()),UTiempo.obtenerFechaHora());
+
+
             // Sincronización remota
 
 
@@ -229,8 +221,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if(UWeb.hayConexion(getContext())) {
             if (datos != null) {
                 Log.d(TAG, "Payload de contactos:" + datos);
-                operacionesBaseDatos = OperacionesBaseDatos
-                        .obtenerInstancia(getContext());
+//                operacionesBaseDatos = OperacionesBaseDatos.obtenerInstancia(getContext());
                 HashMap<String, String> cabeceras = new HashMap<>();
                 cabeceras.put("Authorization", UPreferencias.obtenerClaveApi(getContext()));
                 cabeceras.put("sync_time", "0");

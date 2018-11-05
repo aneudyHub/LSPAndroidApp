@@ -80,6 +80,7 @@
                 android:resource="@xml/sync_adapter" />
         </service>
 
+        <service android:name=".notificaciones.verificaSync_Service" android:enabled="true" android:exported="false"></service>
         <activity
             android:name="com.system.lsp.ui.Main.MainActivity"
             android:label="@string/title_activity_main"
