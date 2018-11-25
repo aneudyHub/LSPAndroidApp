@@ -26,6 +26,7 @@ import com.system.lsp.R;
 import com.system.lsp.fragmentos.FragmentHistorialPagos;
 import com.system.lsp.fragmentos.FragmentListaCoutas;
 import com.system.lsp.fragmentos.FragmentListaPrestamos;
+import com.system.lsp.fragmentos.FragmentMiRuta;
 import com.system.lsp.notificaciones.verificaSync_Service;
 import com.system.lsp.provider.Contract;
 import com.system.lsp.provider.OperacionesBaseDatos;
@@ -207,9 +208,17 @@ public class MainActivity extends AppCompatActivity
                 setFragment(2);
                 break;
 
+            case R.id.nav_ruta:
+                setFragment(3);
+                break;
+
+
+
             case R.id.nav_logout:
                 logoutUser();
                 break;
+
+
         }
 
 
@@ -292,6 +301,33 @@ public class MainActivity extends AppCompatActivity
                         fragmentTransaction.replace(R.id.container, main_fragment);
                         fragmentTransaction.commitAllowingStateLoss();
                         getSupportActionBar().setTitle("PRESTAMOS");
+                    }
+                };
+
+                // If mPendingRunnable is not null, then add to the message queue
+                if (mPendingRunnable != null) {
+                    mHandler.post(mPendingRunnable);
+                }
+
+                break;
+            }
+
+            case 3:
+            {
+                Runnable mPendingRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        FragmentManager fragmentManager;
+                        FragmentTransaction fragmentTransaction;
+                        // update the main content by replacing fragments
+                        fragmentManager = getSupportFragmentManager();
+                        FragmentMiRuta rutaFragment = new FragmentMiRuta();
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                                android.R.anim.fade_out);
+                        fragmentTransaction.replace(R.id.container, rutaFragment);
+                        fragmentTransaction.commitAllowingStateLoss();
+                        getSupportActionBar().setTitle("Mi Ruta");
                     }
                 };
 

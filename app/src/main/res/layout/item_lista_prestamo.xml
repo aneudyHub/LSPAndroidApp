@@ -63,7 +63,7 @@
 
 
         <TextView
-            android:id="@+id/direccion"
+            android:id="@+id/Direccion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -90,7 +90,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/appointment_status"
-            app:layout_constraintTop_toBottomOf="@+id/direccion" />
+            app:layout_constraintTop_toBottomOf="@+id/Direccion" />
 
         <TextView
             android:id="@+id/valor"
@@ -106,7 +106,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/bal"
-            app:layout_constraintTop_toBottomOf="@+id/direccion"
+            app:layout_constraintTop_toBottomOf="@+id/Direccion"
             tools:text="Clínica Central" />
 
 

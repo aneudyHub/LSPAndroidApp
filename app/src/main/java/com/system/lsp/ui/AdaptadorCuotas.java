@@ -3,11 +3,13 @@ package com.system.lsp.ui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -80,54 +83,63 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
         public View statusIndicator;
         public CardView mLayout;
         public ImageView mFoto;
+        public ImageView mLlamarCliente;
+        public TextView mPlazo;
+        public TextView mTipo;
 
         public ViewHolder(View v) {
             super(v);
             fecha = (TextView) v.findViewById(R.id.fecha);
             nombre_cliente = (TextView) v.findViewById(R.id.nombre_cliente);
             cedula_cliente = (TextView) v.findViewById(R.id.cedula_cliente);
-            telefono = (TextView) v.findViewById(R.id.telefono);
-            celular = (TextView)v.findViewById(R.id.celular);
-            total = (TextView) v.findViewById(R.id.total);
-            direccion = (TextView) v.findViewById(R.id.direccion);
+//            telefono = (TextView) v.findViewById(R.id.telefono);
+//            celular = (TextView)v.findViewById(R.id.celular);
+            total = (TextView) v.findViewById(R.id.balance);
+            direccion = (TextView) v.findViewById(R.id.Direccion);
             cuota = (TextView) v.findViewById(R.id.cuota);
             idPrestamo = (TextView) v.findViewById(R.id.idPrestamo);
             statusIndicator = itemView.findViewById(R.id.indicator_appointment_status);
             mLayout= (CardView) itemView.findViewById(R.id.Layout);
             cantiCuota = cuota.getText().toString();
             mFoto = (ImageView) itemView.findViewById(R.id.foto);
+            mLlamarCliente = (ImageView) itemView.findViewById(R.id.llamada);
+            mPlazo = (TextView) itemView.findViewById(R.id.plazo);
+            mTipo = (TextView) itemView.findViewById(R.id.tipo);
 
 
 
-            telefono.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View viewIn) {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+telefono.getText().toString()));
-                        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)!=
-                                PackageManager.PERMISSION_GRANTED)
-                            return;
-                        context.startActivity(intent);
-                    } catch (Exception except) {
-                        Log.e(TAG1,"Ooops GMAIL account selection problem "+except.getMessage());
-                    }
-                }
-            });
 
-            celular.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View viewIn) {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+celular.getText().toString()));
-                        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)!=
-                                PackageManager.PERMISSION_GRANTED)
-                            return;
-                        context.startActivity(intent);
-                    } catch (Exception except) {
-                        Log.e(TAG1,"Ooops GMAIL account selection problem "+except.getMessage());
-                    }
-                }
-            });
+//            telefono.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View viewIn) {
+//                    try {
+//                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+telefono.getText().toString()));
+//                        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)!=
+//                                PackageManager.PERMISSION_GRANTED)
+//                            return;
+//                        context.startActivity(intent);
+//                    } catch (Exception except) {
+//                        Log.e(TAG1,"Ooops GMAIL account selection problem "+except.getMessage());
+//                    }
+//                }
+//            });
+//
+//            celular.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View viewIn) {
+//                    try {
+//                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+celular.getText().toString()));
+//                        if(ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)!=
+//                                PackageManager.PERMISSION_GRANTED)
+//                            return;
+//                        context.startActivity(intent);
+//                    } catch (Exception except) {
+//                        Log.e(TAG1,"Ooops GMAIL account selection problem "+except.getMessage());
+//                    }
+//                }
+//            });
+
+
 
 
 
@@ -173,18 +185,19 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
         holder.cuota.setText(cantida_cuota);
         holder.nombre_cliente.setText(c.getCLIENTE());
         holder.cedula_cliente.setText(c.getCEDULA());
-        if (c.getTELEFONO().equals("NULL")||c.getTELEFONO().equals("null")){
-            holder.telefono.setText("");
-
-        }else {
-            holder.telefono.setText(c.getTELEFONO());
-        }
-        if (c.getCELULAR().equals("NULL")||c.getCELULAR().equals("null")){
-            holder.celular.setText("");
-
-        }else {
-            holder.celular.setText(c.getCELULAR());
-        }
+        holder.mPlazo.setText(c.getPLAZO());
+//        if (c.getTELEFONO().equals("NULL")||c.getTELEFONO().equals("null")){
+//            holder.telefono.setText("");
+//
+//        }else {
+//            holder.telefono.setText(c.getTELEFONO());
+//        }
+//        if (c.getCELULAR().equals("NULL")||c.getCELULAR().equals("null")){
+//            holder.celular.setText("");
+//
+//        }else {
+//            holder.celular.setText(c.getCELULAR());
+//        }
         holder.direccion.setText(c.getDIRECCION());
         holder.fecha.setText(c.getFECHA());
         holder.total.setText("RD$ "+c.getTOTAL());
@@ -204,6 +217,52 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
                escucha.showFoto(c.getCEDULA());
            }
        });
+
+       holder.mLlamarCliente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_item);
+                if (!c.getTELEFONO().equals("NULL") && !c.getTELEFONO().equals("null") && !c.getTELEFONO().equalsIgnoreCase("")){
+
+                    arrayAdapter.add(c.getTELEFONO());
+
+                }
+                if (!c.getCELULAR().equals("NULL") && !c.getCELULAR().equals("null") && !c.getCELULAR().equalsIgnoreCase("")) {
+
+                    arrayAdapter.add(c.getCELULAR());
+                }
+
+                if(arrayAdapter.getCount()==0){
+                    Toast.makeText(context,"EL CLIENTE NO TIENE NUMEROS DE TELEFONOS REGISTRADOS",Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                final AlertDialog pDialog;
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Selecciona el numero");
+
+                builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strName = arrayAdapter.getItem(which);
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+strName));
+                            if(ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)!=
+                                    PackageManager.PERMISSION_GRANTED)
+                                return;
+                            context.startActivity(intent);
+                            Toast.makeText(context,"LLAMANDO...",Toast.LENGTH_LONG).show();
+                        } catch (Exception except) {
+                            Log.e(TAG1,"Ooops GMAIL account selection problem "+except.getMessage());
+                            Toast.makeText(context,"ERROR DE LLAMADA",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                pDialog = builder.create();
+                pDialog.show();
+
+            }
+        });
 
     }
 

@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -30,8 +31,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.crash.FirebaseCrash;
 import com.system.lsp.R;
 import com.system.lsp.fragmentos.FragmentPrestamoPagado;
@@ -84,6 +88,7 @@ public class DetallePrestamo extends AppCompatActivity {
     private  Button adelantarPago;
     public OperacionesBaseDatos operacionesBaseDatos;
     private Double montoTotal;
+    private ImageView mFoto,mLlamar;
 
     private BroadcastReceiver receptorSync;
 
@@ -135,12 +140,45 @@ public class DetallePrestamo extends AppCompatActivity {
         nombre = (TextView) findViewById(R.id.nombre_cliente);
         documento = (TextView) findViewById(R.id.documento);
         iPrestamo = (TextView) findViewById(R.id.idprestamo);
+        mFoto = (ImageView)findViewById(R.id.Foto);
+        mFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog pDialog;
+
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(DetallePrestamo.this);
+                builder.setTitle("Foto");
+                View view = getLayoutInflater().inflate(R.layout.dialog_foto_layout,null);
+                builder.setView(view);
+                ImageView foto = (ImageView) view.findViewById(R.id.DialogFoto_Foto);
+
+                RequestOptions options = new RequestOptions()
+                        .fitCenter()
+                        .placeholder(getResources().getDrawable(R.drawable.index))
+                        .error(getResources().getDrawable(R.drawable.ic_error_info));
+
+                String Url = UPreferencias.obtenerUrlFoto(DetallePrestamo.this)+documento.getText().toString()+".jpg";
+                Glide.with(DetallePrestamo.this).load(Url).apply(options).into(foto);
+
+
+                pDialog = builder.create();
+                pDialog.show();
+            }
+        });
+        mLlamar=(ImageView)findViewById(R.id.Llamar);
+        mLlamar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //todo agregar a la consulta de datos los numero de telefono y celular para poder llamar
+            }
+        });
 
 
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

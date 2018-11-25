@@ -48,6 +48,7 @@ public class Provider extends ContentProvider {
     public static final int LISTA_CUOTAS=402;
     public static final int PAGAR_CUOTA =403;
     public static final int LISTA_PRESTAMO=404;
+    public static final int MI_RUTA_DIAS=405;
     public static final int COBRADOR=500;
     public static final int COBRADOR_ID=501;
 
@@ -62,6 +63,7 @@ public class Provider extends ContentProvider {
 
         uriMatcher.addURI(Contract.AUTORIDAD,Contract.COBRADOR+"/HOY/*",LISTA_CUOTAS);
         uriMatcher.addURI(Contract.AUTORIDAD,Contract.COBRADOR+"/TODO/*",LISTA_PRESTAMO);
+        uriMatcher.addURI(Contract.AUTORIDAD,Contract.COBRADOR+"/RUTA/*",MI_RUTA_DIAS);
 
         uriMatcher.addURI(Contract.AUTORIDAD,Contract.PRESTAMOS_DETALLES,PRESTAMO_DETALLE);
         uriMatcher.addURI(Contract.AUTORIDAD,Contract.PRESTAMOS_DETALLES+"/*",PRESTAMO_DETALLE_ID);
@@ -129,6 +131,7 @@ public class Provider extends ContentProvider {
                         "cli.nombre as "+Contract.Cobrador.CLIENTE+","+
                         "cli.documento as "+Contract.Cobrador.CEDULA+","+
                         "pd.fecha as "+Contract.Cobrador.FECHA+","+
+                        "p."+Contract.Prestamo.PLAZO+","+
                         "cli.direccion as "+Contract.Cobrador.DIRECCION+","+
                         "cli.celular as "+Contract.Cobrador.CELULAR+","+
                         "cli.telefono as "+Contract.Cobrador.TELEFONO+","+
@@ -141,6 +144,20 @@ public class Provider extends ContentProvider {
                         "where pd.pagado=0 and date(pd.fecha) <= '"+ UTiempo.obtenerFecha()+"'"+
                         "group by p.id "+
                         "order by pd.fecha DESC",null);
+                break;
+
+            case MI_RUTA_DIAS:
+                id = Contract.Prestamo.obtenerIdPrestamo(uri);
+                c = bd.rawQuery(
+                        "SELECT p."+Contract.Prestamo.ID+",cli."+Contract.Cliente.NOMBRE+",cli."+Contract.Cliente.DIRECCION+",p."+Contract.Prestamo.PLAZO+
+                                " from prestamos p " +
+                                "join prestamos_detalle pd on p.id=pd.prestamos_id " +
+                                "join clientes cli on p.clientes_id=cli.id " +
+                                " where strftime('%w', pd."+Contract.PrestamoDetalle.FECHA+")=? "+
+                                "group by p.id",new String[]{String.valueOf(id)});
+
+
+
                 break;
             case LISTA_PRESTAMO:
                // Log.e("Estoy en Lista","Prestamo");

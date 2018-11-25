@@ -16,6 +16,10 @@
             android:icon="@drawable/ic_receipt_black_24dp"
             android:title="@string/nav_h_pagos" />
         <item
+            android:id="@+id/nav_ruta"
+            android:icon="@drawable/ic_calendar_24dp"
+            android:title="Mi Ruta" />
+        <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_logout"
             android:title="@string/nav_logout" />

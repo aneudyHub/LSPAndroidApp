@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/Layout"
     android:layout_width="match_parent"
-    android:layout_height="315dp"
+    android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
@@ -31,8 +31,8 @@
             android:id="@+id/cuota"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:textColor="@color/mr"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/indicator_appointment_status"
@@ -43,8 +43,8 @@
             android:id="@+id/vertical_separator"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
             android:layout_marginStart="3dp"
+            android:layout_marginLeft="8dp"
             android:background="#E0E0E0"
             app:layout_constraintLeft_toRightOf="@+id/cuota"
             app:layout_constraintStart_toEndOf="@+id/cuota"
@@ -55,11 +55,11 @@
             style="@style/Base.TextAppearance.AppCompat.Body2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:maxLines="1"
             android:textColor="@color/negro87"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,11 +73,11 @@
             style="@style/Base.TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:maxLines="1"
             android:textColor="@color/negro87"
             app:layout_constraintEnd_toEndOf="parent"
@@ -87,12 +87,12 @@
 
 
         <TextView
-            android:id="@+id/direccion"
+            android:id="@+id/Direccion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="6dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:maxLines="5"
             android:textColor="@color/GRIS"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,27 +104,11 @@
 
 
         <TextView
-            android:id="@+id/total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="16dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="8000"
-            android:textColor="@color/naranja"
-            app:layout_constraintLeft_toLeftOf="@+id/vertical_separator"
-            app:layout_constraintStart_toStartOf="@+id/vertical_separator"
-            app:layout_constraintTop_toBottomOf="@+id/direccion" />
-
-
-        <TextView
             android:id="@+id/fecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:text="01/01/2017"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -136,8 +120,8 @@
             android:id="@+id/idPrestamo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginRight="8dp"
             android:text="0000"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textStyle="italic"
@@ -147,55 +131,114 @@
 
         <ImageView
             android:id="@+id/foto"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/vertical_separator"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
             app:srcCompat="@drawable/ic_image" />
 
+        <ImageView
+            android:id="@+id/llamada"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/foto"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+            app:srcCompat="@drawable/ic_call_black" />
+
         <LinearLayout
-            android:id="@+id/linearLayout3"
+            android:id="@+id/linearLayout2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:orientation="horizontal"
-            android:weightSum="2"
+            android:weightSum="3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/vertical_separator"
-            app:layout_constraintTop_toBottomOf="@+id/total">
+            app:layout_constraintTop_toBottomOf="@+id/Direccion">
 
-            <TextView
-                android:id="@+id/telefono"
+            <LinearLayout
+                android:id="@+id/plazoPanel"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:maxLines="1"
-                android:textColor="@color/naranja"
-                android:textSize="18dp"
-                tools:text="80912312345" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/celular"
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Plazo"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/plazo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="Diario" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tipoPanel"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="8091231234"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/naranja"
-                android:textSize="18dp"
-                android:textStyle="italic"
-                tools:layout_editor_absoluteX="309dp"
-                tools:layout_editor_absoluteY="199dp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tipo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="Normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/balancePanel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Balance a Fecha"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="TextView" />
+            </LinearLayout>
+
         </LinearLayout>
 
 

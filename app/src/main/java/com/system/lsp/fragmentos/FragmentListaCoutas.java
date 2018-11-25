@@ -273,6 +273,7 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
         int total = data.getColumnIndex(Contract.Cobrador.TOTAL);
         int totalCuota = data.getColumnIndex("Total_cuota");
         int prestamo = data.getColumnIndex(Contract.Cobrador.PRESTAMO);
+        int plazo = data.getColumnIndex(Contract.Prestamo.PLAZO);
 
 
 
@@ -282,7 +283,7 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
                 DatosCliente cli = new DatosCliente(data.getString(cuota),data.getString(cuota_id),
                         data.getString(cliente),data.getString(documento),data.getString(fecha),data.getString(direccion),
                         data.getString(telefono),data.getString(celular),data.getString(total),data.getString(totalCuota),
-                        data.getString(prestamo)
+                        data.getString(prestamo),data.getString(plazo)
                 );
                 mArrayList.add(cli);
                 //Log.e("Este es el ARRAY",cli.getDIRECCION());

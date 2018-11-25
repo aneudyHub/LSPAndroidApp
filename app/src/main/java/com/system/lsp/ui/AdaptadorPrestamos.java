@@ -14,8 +14,6 @@ import android.widget.TextView;
 import com.system.lsp.R;
 import com.system.lsp.modelo.DatosCliente;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 /**
@@ -48,7 +46,7 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
      * Interfaz para escuchar clicks del recycler
      */
     public interface OnItemClickListener {
-        public void onClick(String idContacto,String montoPendiente);
+        void onClick(String idContacto,String montoPendiente);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,7 +69,7 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
             fecha = (TextView) v.findViewById(R.id.fecha);
             nombre_cliente = (TextView) v.findViewById(R.id.nombre_cliente);
             num_documento = (TextView) v.findViewById(R.id.documento_cliente);
-            direccion = (TextView) v.findViewById(R.id.direccion);
+            direccion = (TextView) v.findViewById(R.id.Direccion);
             id_prestamo = (TextView) v.findViewById(R.id.prestamo_id);
             valor = (TextView) v.findViewById(R.id.valor);
             total = (TextView) v.findViewById(R.id.total);

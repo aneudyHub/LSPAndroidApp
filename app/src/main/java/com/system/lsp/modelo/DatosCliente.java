@@ -19,24 +19,40 @@ public class DatosCliente {
     private String Total_cuota;
     private String MONTO_PAGADO;
     private String PRESTAMO;
+    private String PLAZO;
 
 
-    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE,String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String VALOR,String TOTAL,String total_cuota, String PRESTAMO) {
-        this.CUOTA = CUOTA;
-        this.CUOTA_ID = CUOTA_ID;
-        this.CLIENTE = CLIENTE;
-        this.CEDULA = CEDULA;
-        this.FECHA = FECHA;
-        this.DIRECCION = DIRECCION;
-        this.TELEFONO = TELEFONO;
-        this.CELULAR = CELULAR;
-        this.VALOR = VALOR;
-        this.TOTAL = TOTAL;
-        this.Total_cuota = total_cuota;
-        this.PRESTAMO = PRESTAMO;
+//    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE,String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String VALOR,String TOTAL,String total_cuota, String PRESTAMO) {
+//        this.CUOTA = CUOTA;
+//        this.CUOTA_ID = CUOTA_ID;
+//        this.CLIENTE = CLIENTE;
+//        this.CEDULA = CEDULA;
+//        this.FECHA = FECHA;
+//        this.DIRECCION = DIRECCION;
+//        this.TELEFONO = TELEFONO;
+//        this.CELULAR = CELULAR;
+//        this.VALOR = VALOR;
+//        this.TOTAL = TOTAL;
+//        this.Total_cuota = total_cuota;
+//        this.PRESTAMO = PRESTAMO;
+//    }
+
+    public String getPLAZO() {
+        return PLAZO;
     }
 
-    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE,String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL,String total_cuota, String PRESTAMO) {
+    public void setPLAZO(String PLAZO) {
+        this.PLAZO = PLAZO;
+    }
+
+    public DatosCliente(String PRESTAMO,String PLAZO,String DIRECCION,String NombreCliente){
+        this.PRESTAMO=PRESTAMO;
+        this.PLAZO=PLAZO;
+        this.DIRECCION=DIRECCION;
+        this.CLIENTE=NombreCliente;
+    }
+
+    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE, String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL, String total_cuota, String PRESTAMO, String PLAZO) {
         this.CUOTA = CUOTA;
         this.CUOTA_ID = CUOTA_ID;
         this.CLIENTE = CLIENTE;
@@ -48,6 +64,7 @@ public class DatosCliente {
         this.TOTAL = TOTAL;
         this.Total_cuota = total_cuota;
         this.PRESTAMO = PRESTAMO;
+        this.PLAZO=PLAZO;
     }
 
     public String getCUOTA() {

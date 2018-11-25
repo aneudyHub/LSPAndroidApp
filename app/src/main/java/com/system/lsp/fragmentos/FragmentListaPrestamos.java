@@ -113,10 +113,23 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
         if (data != null) {
             for (data.moveToFirst(); !data.isAfterLast();data.moveToNext()){
 
-                cli = new DatosCliente(data.getString(cuota),data.getString(cuota_id),
-                        data.getString(cliente),data.getString(cedula),data.getString(fecha),data.getString(direccion),
-                        data.getString(telefono),data.getString(celular),data.getString(capital),
-                        data.getString(total), data.getString(totalCuota),data.getString(prestamo)
+//                public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE, String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL, String total_cuota, String PRESTAMO, String PLAZO) {
+
+
+                    cli = new DatosCliente(
+                            data.getString(cuota),
+                            data.getString(cuota_id),
+                            data.getString(cliente),
+                            data.getString(cedula),
+                            data.getString(fecha),
+                            data.getString(direccion),
+                            data.getString(telefono),
+                            data.getString(celular),
+                            data.getString(capital),
+                            data.getString(total),
+                            data.getString(prestamo),
+                            ""
+
                 );
                 mArrayList.add(cli);
                // Log.e("Este es el ARRAY",cli.getDIRECCION());
@@ -195,7 +208,8 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
     @Override
     public void onClick(String idContacto,String montoPendiente) {
         Log.e("idcontacto",idContacto);
-        mostrarDetalles(Contract.Prestamo.crearUriPrestamo(idContacto),montoPendiente);
+        Uri u = Contract.PrestamoDetalle.crearUriPrestamoDetalle(idContacto);
+        mostrarDetalles(u,montoPendiente);
     }
 
     @Override
