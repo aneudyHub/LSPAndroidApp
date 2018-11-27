@@ -128,7 +128,7 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
                             data.getString(capital),
                             data.getString(total),
                             data.getString(prestamo),
-                            ""
+                            "",""
 
                 );
                 mArrayList.add(cli);

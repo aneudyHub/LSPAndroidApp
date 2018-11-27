@@ -52,6 +52,7 @@ public class Contract {
         String FECHA_SALDO="fecha_saldo";
         String ACTIVO ="activo";
         String SALDADO="saldado";
+        String ESTADO ="estado";
         String UPDATED_AT="updated_at";
     }
 

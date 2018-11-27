@@ -186,6 +186,15 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
         holder.nombre_cliente.setText(c.getCLIENTE());
         holder.cedula_cliente.setText(c.getCEDULA());
         holder.mPlazo.setText(c.getPLAZO());
+        Log.e("ESTADO PRESTAMO",String.valueOf(c.getESTADO()));
+        String tipoPrestamo = c.getESTADO();
+        if(tipoPrestamo.equals("5")){
+            holder.mTipo.setText("INTERE");
+        }else {
+            holder.mTipo.setText("NORMAL");
+        }
+
+
 //        if (c.getTELEFONO().equals("NULL")||c.getTELEFONO().equals("null")){
 //            holder.telefono.setText("");
 //

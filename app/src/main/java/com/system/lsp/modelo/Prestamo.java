@@ -20,6 +20,7 @@ public class Prestamo {
     private double interes;
     private double mora;
     private double Capital;
+    private int Estado;
     private float PorcientoInteres;
     private float PorcientoMora;
     private String Plazo;
@@ -35,7 +36,7 @@ public class Prestamo {
     public Prestamo() {
     }
 
-    public Prestamo(int id, int clientes_Id, double capital, float porcientoInteres, float porcientoMora, String plazo, int cuotas, String fechaInicio, String fechaSaldo, int activo, int saldado, String updated_at, int modificado) {
+    public Prestamo(int id, int clientes_Id, double capital, float porcientoInteres, float porcientoMora, String plazo, int cuotas, String fechaInicio, String fechaSaldo, int activo, int saldado,int estado, String updated_at, int modificado) {
         Id = id;
         Clientes_Id = clientes_Id;
         Capital = capital;
@@ -47,6 +48,7 @@ public class Prestamo {
         FechaSaldo = fechaSaldo;
         Activo = activo;
         Saldado = saldado;
+        Estado = estado;
         Updated_at = updated_at;
         Modificado = modificado;
 
@@ -192,6 +194,11 @@ public class Prestamo {
         Saldado = saldado;
     }
 
+    public int getEstado() { return Estado; }
+
+    public void setEstado(int estado) { Estado = estado; }
+
+
     public List<PrestamoDetalle> getDetalle() {
         return Detalle;
     }
@@ -216,7 +223,8 @@ public class Prestamo {
         FechaInicio.equals(prestamo.getFechaInicio()) &&
         FechaSaldo.equals(prestamo.getFechaSaldo()) &&
         Activo ==prestamo.getActivo() &&
-        Saldado ==prestamo.getSaldado();
+        Saldado ==prestamo.getSaldado()&&
+        Estado == prestamo.getEstado();
 
     }
 

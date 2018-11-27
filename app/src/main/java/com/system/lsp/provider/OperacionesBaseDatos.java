@@ -708,6 +708,36 @@ public class OperacionesBaseDatos {
         //return resultado > 0;
     }
 
+
+
+    public Cursor tipoPrestamo() {
+        SQLiteDatabase db = baseDatos.getWritableDatabase();
+        Cursor c=null;
+        try{
+            String sql = String.format("SELECT * FROM %s", Contract.PRESTAMOS);
+
+            c = db.rawQuery(sql, null);
+            if (c != null) {
+                c.moveToFirst();
+            }
+
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+//            if(c!=null){
+//                c.close();
+//            }
+//            if(db!=null){
+//                db.close();
+//            }
+        }
+        return c;
+
+        //return resultado > 0;
+    }
+
+
     public boolean isCuotasPagasExists() {
         Cursor cursor = null;
         SQLiteDatabase db = baseDatos.getWritableDatabase();

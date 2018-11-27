@@ -132,6 +132,7 @@ public class Provider extends ContentProvider {
                         "cli.documento as "+Contract.Cobrador.CEDULA+","+
                         "pd.fecha as "+Contract.Cobrador.FECHA+","+
                         "p."+Contract.Prestamo.PLAZO+","+
+                        "p."+Contract.Prestamo.ESTADO+","+
                         "cli.direccion as "+Contract.Cobrador.DIRECCION+","+
                         "cli.celular as "+Contract.Cobrador.CELULAR+","+
                         "cli.telefono as "+Contract.Cobrador.TELEFONO+","+

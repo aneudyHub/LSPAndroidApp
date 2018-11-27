@@ -20,6 +20,7 @@ public class DatosCliente {
     private String MONTO_PAGADO;
     private String PRESTAMO;
     private String PLAZO;
+    private String ESTADO;
 
 
 //    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE,String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String VALOR,String TOTAL,String total_cuota, String PRESTAMO) {
@@ -52,7 +53,7 @@ public class DatosCliente {
         this.CLIENTE=NombreCliente;
     }
 
-    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE, String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL, String total_cuota, String PRESTAMO, String PLAZO) {
+    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE, String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL, String total_cuota, String PRESTAMO, String PLAZO,String ESTADO) {
         this.CUOTA = CUOTA;
         this.CUOTA_ID = CUOTA_ID;
         this.CLIENTE = CLIENTE;
@@ -65,6 +66,7 @@ public class DatosCliente {
         this.Total_cuota = total_cuota;
         this.PRESTAMO = PRESTAMO;
         this.PLAZO=PLAZO;
+        this.ESTADO=ESTADO;
     }
 
     public String getCUOTA() {
@@ -148,11 +150,15 @@ public class DatosCliente {
     public void setTotal_cuota(String total_cuota) {Total_cuota = total_cuota;}
 
 
-    public String getPRESTAMO() {
-        return PRESTAMO;
+    public String getPRESTAMO() { return PRESTAMO; }
+
+    public void setPRESTAMO(String PRESTAMO) { this.PRESTAMO = PRESTAMO; }
+
+    public String getESTADO() {
+        return ESTADO;
     }
 
-    public void setPRESTAMO(String PRESTAMO) {
-        this.PRESTAMO = PRESTAMO;
+    public void setESTADO(String ESTADO) {
+        this.ESTADO = ESTADO;
     }
 }

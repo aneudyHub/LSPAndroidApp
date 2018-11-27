@@ -83,6 +83,7 @@ public class ProcesadorLocal {
             prestamo.setFechaSaldo(row.getString("fecha_saldo"));
             prestamo.setActivo(row.getInt("activo"));
             prestamo.setSaldado(row.getInt("saldado"));
+            prestamo.setEstado(row.getInt("estado"));
             prestamo.setUpdated_at(row.getString("updated_at"));
             prestamo.aplicarSanidad();
             PrestamosRemotos.put(prestamo.getId(),prestamo);
@@ -569,6 +570,7 @@ public class ProcesadorLocal {
                 .withValue(Contract.Prestamo.FECHA_INICIO,prestamo.getFechaInicio())
                 .withValue(Contract.Prestamo.FECHA_SALDO,prestamo.getFechaSaldo())
                 .withValue(Contract.Prestamo.SALDADO,prestamo.getSaldado())
+                .withValue(Contract.Prestamo.ESTADO,prestamo.getEstado())
                 .withValue(Contract.Prestamo.ACTIVO,prestamo.getActivo())
                 .withValue(Contract.Prestamo.UPDATED_AT,prestamo.getUpdated_at())
                 .withValue(Contract.Prestamo.INSERTADO,0)
@@ -586,6 +588,7 @@ public class ProcesadorLocal {
                 .withValue(Contract.Prestamo.FECHA_INICIO,prestamo.getFechaInicio())
                 .withValue(Contract.Prestamo.FECHA_SALDO,prestamo.getFechaSaldo())
                 .withValue(Contract.Prestamo.SALDADO,prestamo.getSaldado())
+                .withValue(Contract.Prestamo.ESTADO,prestamo.getEstado())
                 .withValue(Contract.Prestamo.ACTIVO,prestamo.getActivo())
                 .withValue(Contract.Prestamo.UPDATED_AT,prestamo.getUpdated_at())
                 .withValue(Contract.Prestamo.MODIFICADO,prestamo.getModificado())
@@ -726,6 +729,7 @@ public class ProcesadorLocal {
                 c.getString(c.getColumnIndex(Contract.Prestamo.FECHA_SALDO)),
                 c.getInt(c.getColumnIndex(Contract.Prestamo.ACTIVO)),
                 c.getInt(c.getColumnIndex(Contract.Prestamo.SALDADO)),
+                c.getInt(c.getColumnIndex(Contract.Prestamo.ESTADO)),
                 c.getString(c.getColumnIndex(Contract.Prestamo.UPDATED_AT)),
                 c.getInt(c.getColumnIndex(Contract.Prestamo.MODIFICADO))
 

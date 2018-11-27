@@ -265,7 +265,7 @@ public class FragmentHistorialPagos extends android.support.v4.app.Fragment impl
             // [QUERIES]
             /*Log.d("PAGOS","PAGOS");
             Log.d("PAGOS",String.valueOf(operacionesBaseDatos.isCuotasPagasExists()));*/
-           // DatabaseUtils.dumpCursor(operacionesBaseDatos.pagosPendiente());
+            //DatabaseUtils.dumpCursor(operacionesBaseDatos.tipoPrestamo());
 
 
 
