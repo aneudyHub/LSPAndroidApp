@@ -46,6 +46,7 @@ import com.system.lsp.provider.Contract;
 import com.system.lsp.provider.OperacionesBaseDatos;
 import com.system.lsp.ui.AdaptadorCuotas;
 import com.system.lsp.ui.Main.MainActivity;
+import com.system.lsp.ui.Pagos.PagoInteres;
 import com.system.lsp.ui.Pagos.Pagos;
 import com.system.lsp.utilidades.Resolve;
 import com.system.lsp.utilidades.UCuentas;
@@ -361,14 +362,19 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
 
 
 
-    void mostrarDetalles(Uri uri,double montoPendiente,double totalCuota,String nombre) {
+    void mostrarDetalles(Uri uri,double montoPendiente,double totalCuota,String nombre,String tipoPrestamo) {
         Intent intent = new Intent(getActivity(), Pagos.class);
+       if (tipoPrestamo.equals("5")){
+           intent = new Intent(getActivity(), PagoInteres.class);
+       }
+
         if (null != uri) {
             intent.putExtra(Contract.PRESTAMOS, uri.toString());
             intent.putExtra(Contract.Cobrador.TOTAL,montoPendiente);
             intent.putExtra("TotalCuota",totalCuota);
             intent.putExtra(Contract.Prestamo.ID, Contract.Prestamo.obtenerIdPrestamo(uri));
             intent.putExtra(Contract.Cobrador.CLIENTE,nombre);
+            intent.putExtra("TipoPrestamo",tipoPrestamo);
         }
         startActivityForResult(intent,REQ_DET);
     }
@@ -416,9 +422,9 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onClick(String idContacto,double montoPendiente,double totalCuota,String nombre) {
+    public void onClick(String idContacto,double montoPendiente,double totalCuota,String nombre,String tipoPrestamo) {
         Log.e("idcontacto",idContacto);
-        mostrarDetalles(Contract.PrestamoDetalle.crearUriPrestamoDetalle(idContacto),montoPendiente,totalCuota,nombre);
+        mostrarDetalles(Contract.PrestamoDetalle.crearUriPrestamoDetalle(idContacto),montoPendiente,totalCuota,nombre,tipoPrestamo);
     }
 
     @Override

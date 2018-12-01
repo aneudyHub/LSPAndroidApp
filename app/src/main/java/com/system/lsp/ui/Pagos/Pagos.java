@@ -71,6 +71,7 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
     private double montoDigitado;
     private double TotalCuota;
     private String nombreCliente;
+    private String tipoPrestamo;
     private String idCliente;
     private String detallePago;
     private double totalPagado;
@@ -95,9 +96,6 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
         mPrinterProgress.setCancelable(false);
         mPrinterProgress.setIndeterminate(true);
 
-
-
-
         datosBD = OperacionesBaseDatos
                 .obtenerInstancia(this);
 
@@ -108,14 +106,12 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
             idPrestamos = (String) getIntent().getExtras().get(Contract.Prestamo.ID);
             montoAPagar = datosBD.obtenerTotalMora(idPrestamos)+TotalCuota;
             nombreCliente  = (String) getIntent().getExtras().get(Contract.Cobrador.CLIENTE);
+            tipoPrestamo  = (String) getIntent().getExtras().get("TipoPrestamo");
+            Log.e("TIPO PRESTAMO",tipoPrestamo);
             //idCliente = (String) getIntent().getExtras().get(Contract.Cliente.ID);
         }
 
-
-
-
         infoPrestamo = (ImageView)findViewById(R.id.info_prestamo);
-
         infoPrestamo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
