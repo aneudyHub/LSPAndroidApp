@@ -45,6 +45,7 @@ import com.system.lsp.fragmentos.FragmentTodasLasCuotas;
 import com.system.lsp.provider.Contract;
 import com.system.lsp.provider.OperacionesBaseDatos;
 import com.system.lsp.sync.SyncAdapter;
+import com.system.lsp.ui.Pagos.PagoInteres;
 import com.system.lsp.ui.Pagos.Pagos;
 import com.system.lsp.utilidades.Resolve;
 import com.system.lsp.utilidades.UPreferencias;
@@ -71,8 +72,10 @@ public class DetallePrestamo extends AppCompatActivity {
 
     public ProgressDialog progress;
     private String idPrestamos;
+    private String tipoPrestamo;
     private Double monto;
     private Double totalCuota;
+    private float totlInteres;
 
     private  TextView capital;
     private  TextView interes;
@@ -123,10 +126,12 @@ public class DetallePrestamo extends AppCompatActivity {
 
 
         idPrestamos = (String) getIntent().getExtras().get(Contract.Prestamo.ID);
+        tipoPrestamo = (String) getIntent().getExtras().get("ESTADO");
 
         UPreferencias.guardarIdPrestamos(this,idPrestamos);
 
         Log.e("Este es el valor",idPrestamos);
+        Log.e("Este es el TipoPrestamo",tipoPrestamo);
         getSupportActionBar().setTitle("Detalle Prestamo");
 
         capital = (TextView) findViewById(R.id.capital);
@@ -205,7 +210,14 @@ public class DetallePrestamo extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(DetallePrestamo.this, Pagos.class);
+
+                if (tipoPrestamo.equals("5")){
+                    intent = new Intent(DetallePrestamo.this, PagoInteres.class);
+                }
+
+
                 Uri uri;
+
 
                 uri = Contract.PrestamoDetalle.crearUriPrestamoDetalle(idPrestamos);
                 Log.e("URI-PRE",uri.toString());
@@ -215,6 +227,8 @@ public class DetallePrestamo extends AppCompatActivity {
                     intent.putExtra(Contract.PRESTAMOS, uri.toString());
                     intent.putExtra(Contract.Cobrador.TOTAL,monto);
                     intent.putExtra("TotalCuota",totalCuota);
+                    intent.putExtra("TotalInteres",totlInteres);
+                    intent.putExtra("TipoPrestamo",tipoPrestamo);
                     intent.putExtra(Contract.Prestamo.ID, Contract.Prestamo.obtenerIdPrestamo(uri));
                     intent.putExtra(Contract.Cobrador.CLIENTE,nombre.getText());
 
@@ -356,6 +370,7 @@ public class DetallePrestamo extends AppCompatActivity {
             //double b =Double.parseDouble(cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.CAPITAL)));
             monto = datos.obtenerTotalAPagar(idPrestamos);
             totalCuota = datos.obtenerTotalCuota(idPrestamos);
+            totlInteres = datos.obtenerTotalInteres(idPrestamos);
 
 
 

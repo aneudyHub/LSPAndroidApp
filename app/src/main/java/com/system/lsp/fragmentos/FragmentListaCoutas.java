@@ -273,6 +273,7 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
         int celular = data.getColumnIndex(Contract.Cobrador.CELULAR);
         int total = data.getColumnIndex(Contract.Cobrador.TOTAL);
         int totalCuota = data.getColumnIndex("Total_cuota");
+        int totalInteres = data.getColumnIndex("Total_interes");
         int prestamo = data.getColumnIndex(Contract.Cobrador.PRESTAMO);
         int plazo = data.getColumnIndex(Contract.Prestamo.PLAZO);
         int estado = data.getColumnIndex(Contract.Prestamo.ESTADO);
@@ -284,7 +285,7 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
                 DatosCliente cli = new DatosCliente(data.getString(cuota),data.getString(cuota_id),
                         data.getString(cliente),data.getString(documento),data.getString(fecha),data.getString(direccion),
                         data.getString(telefono),data.getString(celular),data.getString(total),data.getString(totalCuota),
-                        data.getString(prestamo),data.getString(plazo),data.getString(estado)
+                         data.getString(prestamo),data.getString(plazo),data.getString(estado),data.getFloat(totalInteres)
                 );
                 mArrayList.add(cli);
                // Log.e("Este es el ARRAY",cli.getESTADO());
@@ -362,7 +363,7 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
 
 
 
-    void mostrarDetalles(Uri uri,double montoPendiente,double totalCuota,String nombre,String tipoPrestamo) {
+    void mostrarDetalles(Uri uri,double montoPendiente,double totalCuota,float totalInteres,String nombre,String tipoPrestamo) {
         Intent intent = new Intent(getActivity(), Pagos.class);
        if (tipoPrestamo.equals("5")){
            intent = new Intent(getActivity(), PagoInteres.class);
@@ -372,6 +373,7 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
             intent.putExtra(Contract.PRESTAMOS, uri.toString());
             intent.putExtra(Contract.Cobrador.TOTAL,montoPendiente);
             intent.putExtra("TotalCuota",totalCuota);
+            intent.putExtra("TotalInteres",totalInteres);
             intent.putExtra(Contract.Prestamo.ID, Contract.Prestamo.obtenerIdPrestamo(uri));
             intent.putExtra(Contract.Cobrador.CLIENTE,nombre);
             intent.putExtra("TipoPrestamo",tipoPrestamo);
@@ -422,9 +424,9 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onClick(String idContacto,double montoPendiente,double totalCuota,String nombre,String tipoPrestamo) {
+    public void onClick(String idContacto,double montoPendiente,double totalCuota,float totalInteres,String nombre,String tipoPrestamo) {
         Log.e("idcontacto",idContacto);
-        mostrarDetalles(Contract.PrestamoDetalle.crearUriPrestamoDetalle(idContacto),montoPendiente,totalCuota,nombre,tipoPrestamo);
+        mostrarDetalles(Contract.PrestamoDetalle.crearUriPrestamoDetalle(idContacto),montoPendiente,totalCuota,totalInteres,nombre,tipoPrestamo);
     }
 
     @Override

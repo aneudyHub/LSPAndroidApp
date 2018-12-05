@@ -104,11 +104,13 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
         int capital = data.getColumnIndex(Contract.Prestamo.CAPITAL);
         int total = data.getColumnIndex(Contract.Prestamo.TOTAL);
         int totalCuota = data.getColumnIndex("Total_cuota");
+        int totalInteres = data.getColumnIndex("Total_interes");
         int prestamo = data.getColumnIndex(Contract.Prestamo.PRESTAMO);
+        int estado = data.getColumnIndex(Contract.Prestamo.ESTADO);
 
 
 
-        Log.e("El indice del capital",""+capital);
+        Log.e("El indice del capital",""+totalCuota);
 
         if (data != null) {
             for (data.moveToFirst(); !data.isAfterLast();data.moveToNext()){
@@ -128,7 +130,7 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
                             data.getString(capital),
                             data.getString(total),
                             data.getString(prestamo),
-                            "",""
+                            "",data.getString(estado),data.getFloat(totalInteres)
 
                 );
                 mArrayList.add(cli);
@@ -149,12 +151,14 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
 
     }
 
-    void mostrarDetalles(Uri uri,String montoPendiente) {
+    void mostrarDetalles(Uri uri,String montoPendiente,String tipoPrestamo) {
         Intent intent = new Intent(getActivity(), DetallePrestamo.class);
+
         if (null != uri) {
             intent.putExtra(Contract.PRESTAMOS, uri.toString());
             intent.putExtra(Contract.Cobrador.TOTAL,montoPendiente);
             intent.putExtra(Contract.Prestamo.ID, Contract.Prestamo.obtenerIdPrestamo(uri));
+            intent.putExtra("ESTADO",tipoPrestamo);
             intent.putExtra(Contract.Cobrador.CLIENTE,Contract.Prestamo.CLIENTE);
 
         }
@@ -206,10 +210,10 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
     }
 
     @Override
-    public void onClick(String idContacto,String montoPendiente) {
+    public void onClick(String idContacto,String montoPendiente,String tipoPrestamo) {
         Log.e("idcontacto",idContacto);
         Uri u = Contract.PrestamoDetalle.crearUriPrestamoDetalle(idContacto);
-        mostrarDetalles(u,montoPendiente);
+        mostrarDetalles(u,montoPendiente, tipoPrestamo);
     }
 
     @Override

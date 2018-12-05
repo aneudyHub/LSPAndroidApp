@@ -51,11 +51,13 @@ public class PagoInteres extends AppCompatActivity implements Progress,LoaderMan
     public static EditText mMonto;
     private OperacionesBaseDatos datosBD;
     private TextView mPendiente,mPagar,totalMora,totalCuota;
-    private CuotasAdapter mAdapter;
+    private InteresAdapter mAdapter;
     private double montoAPagar;
     private double pagarmonto;
     private double montoDigitado;
     private double TotalCuota;
+    private float TotalInteres;
+    private double totalAPagar;
     private String nombreCliente;
     private String tipoPrestamo;
     private String idCliente;
@@ -88,9 +90,10 @@ public class PagoInteres extends AppCompatActivity implements Progress,LoaderMan
         if(getIntent().getExtras()!=null){
             mPrestamoURI = (String) getIntent().getExtras().get(Contract.PRESTAMOS);
             montoAPagar = (Double) getIntent().getExtras().get(Contract.Cobrador.TOTAL);
-            TotalCuota = (Double) getIntent().getExtras().get("TotalCuota");
+            TotalInteres = (Float) getIntent().getExtras().get("TotalInteres");
+            //totalAPagar = datosBD.obtenerTotalAPagar(idPrestamos);
             idPrestamos = (String) getIntent().getExtras().get(Contract.Prestamo.ID);
-            montoAPagar = datosBD.obtenerTotalMora(idPrestamos)+TotalCuota;
+            montoAPagar = datosBD.obtenerTotalMora(idPrestamos)+TotalInteres;
             nombreCliente  = (String) getIntent().getExtras().get(Contract.Cobrador.CLIENTE);
             tipoPrestamo  = (String) getIntent().getExtras().get("TipoPrestamo");
             Log.e("TIPO PRESTAMO",tipoPrestamo);
@@ -150,11 +153,12 @@ public class PagoInteres extends AppCompatActivity implements Progress,LoaderMan
         totalMora = (TextView)findViewById(R.id.total_mora);
         totalMora.setText(String.valueOf(datosBD.obtenerTotalMora(idPrestamos)));
         totalCuota = (TextView)findViewById(R.id.total_cuota);
-        totalCuota.setText(String.valueOf(TotalCuota));
+        totalCuota.setText(String.valueOf(TotalInteres));
 
         mPendiente =(TextView)findViewById(R.id.total_pendiente);
+        mPendiente.setText(String.valueOf(datosBD.obtenerTotalAPagarInteresSimple(idPrestamos)));
         mPagar =(TextView)findViewById(R.id.total_pagar);
-        mPagar.setText(String.valueOf(datosBD.obtenerTotalMora(idPrestamos)+TotalCuota));
+        mPagar.setText(String.valueOf(datosBD.obtenerTotalMora(idPrestamos)+TotalInteres));
         montoDigitado = Double.parseDouble(mMonto.getText().toString());
         Toolbar toolbar= (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -253,10 +257,10 @@ public class PagoInteres extends AppCompatActivity implements Progress,LoaderMan
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter = new CuotasAdapter(this,idPrestamos);
+        mAdapter = new InteresAdapter(this,idPrestamos);
         mAdapter.swapCursor(data);
         mList.setAdapter(mAdapter);
-        setTotalPendiente(mAdapter.getTotalPendiente());
+        //setTotalPendiente(mAdapter.getTotalPendiente());
         mAdapter.marcarCuotas(montoDigitado);
     }
 
@@ -269,7 +273,7 @@ public class PagoInteres extends AppCompatActivity implements Progress,LoaderMan
         DecimalFormat precision = new DecimalFormat("0.00");
         Log.e("TOTAL-PENDIENTE", precision.format(r));
         totalPendiente = precision.format(r);
-        mPendiente.setText(precision.format(r));
+       //mPendiente.setText(precision.format(r));
     }
 
 

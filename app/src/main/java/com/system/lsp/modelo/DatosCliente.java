@@ -17,6 +17,7 @@ public class DatosCliente {
     private String VALOR;
     private String TOTAL;
     private String Total_cuota;
+    private float Total_interes;
     private String MONTO_PAGADO;
     private String PRESTAMO;
     private String PLAZO;
@@ -53,7 +54,7 @@ public class DatosCliente {
         this.CLIENTE=NombreCliente;
     }
 
-    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE, String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL, String total_cuota, String PRESTAMO, String PLAZO,String ESTADO) {
+    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE, String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL, String total_cuota, String PRESTAMO, String PLAZO,String ESTADO,float total_interes) {
         this.CUOTA = CUOTA;
         this.CUOTA_ID = CUOTA_ID;
         this.CLIENTE = CLIENTE;
@@ -67,6 +68,7 @@ public class DatosCliente {
         this.PRESTAMO = PRESTAMO;
         this.PLAZO=PLAZO;
         this.ESTADO=ESTADO;
+        this.Total_interes=total_interes;
     }
 
     public String getCUOTA() {
@@ -161,4 +163,9 @@ public class DatosCliente {
     public void setESTADO(String ESTADO) {
         this.ESTADO = ESTADO;
     }
+
+    public float getTotal_interes() { return Total_interes; }
+
+    public void setTotal_interes(float total_interes) { Total_interes = total_interes; }
+
 }

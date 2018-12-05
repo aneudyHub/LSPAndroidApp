@@ -138,7 +138,8 @@ public class Provider extends ContentProvider {
                         "cli.telefono as "+Contract.Cobrador.TELEFONO+","+
                         "pd.mora_acumulada as "+Contract.PrestamoDetalle.MORA_ACUMULADA+","+
                         "(sum(pd.capital)+sum(pd.interes)+sum(pd.mora)-(sum(pd.monto_pagado)+sum(pd.abono_mora))) as "+Contract.Cobrador.TOTAL+","+
-                        "((sum(pd.capital)+sum(pd.interes))- sum(pd.monto_pagado)) as "+"Total_cuota"+" "+
+                        "((sum(pd.capital)+sum(pd.interes))- sum(pd.monto_pagado)) as "+"Total_cuota"+", "+
+                        "((sum(pd.interes))- sum(pd.monto_pagado)) as "+"Total_interes"+" "+
                         "from prestamos p " +
                         "join prestamos_detalle pd on p.id=pd.prestamos_id " +
                         "join clientes cli on p.clientes_id=cli.id " +
@@ -164,6 +165,7 @@ public class Provider extends ContentProvider {
                // Log.e("Estoy en Lista","Prestamo");
                 c=bd.rawQuery("select " +
                         "p.id as "+Contract.Cobrador.PRESTAMO+"," +
+                        "p."+Contract.Prestamo.ESTADO+","+
                         "count(pd.n_cuota) as "+Contract.Cobrador.CUOTA+","+
                         "pd.id as "+Contract.Cobrador.CUOTA_ID+","+
                         "cli.nombre as "+Contract.Cobrador.CLIENTE+","+
@@ -174,7 +176,8 @@ public class Provider extends ContentProvider {
                         "cli.telefono as "+Contract.Cobrador.TELEFONO+","+
                         "p.capital_prestamo as "+Contract.Prestamo.CAPITAL+","+
                         "(sum(pd.capital)+sum(pd.interes)+sum(pd.mora)-(sum(pd.monto_pagado)+sum(pd.abono_mora))) as "+Contract.Cobrador.TOTAL+","+
-                        "(sum(pd.capital)+sum(pd.interes)-sum(pd.monto_pagado)) as "+"Total_cuota"+" "+
+                        "(sum(pd.capital)+sum(pd.interes)-sum(pd.monto_pagado)) as "+"Total_cuota"+", "+
+                        "((sum(pd.interes))- sum(pd.monto_pagado)) as "+"Total_interes"+" "+
                         "from prestamos p " +
                         "join prestamos_detalle pd on p.id=pd.prestamos_id " +
                         "join clientes cli on p.clientes_id=cli.id " +

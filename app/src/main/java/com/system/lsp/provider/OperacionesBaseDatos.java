@@ -87,6 +87,47 @@ public class OperacionesBaseDatos {
     }
 
 
+
+
+    public Double obtenerTotalAPagarInteresSimple(String prestamo){
+        double t=0;
+        SQLiteDatabase db = baseDatos.getWritableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        builder.setTables(CABECERA_PRESTAMO_JOIN_DATALLEPRESTAMO );
+        Cursor c=null;
+
+        try{
+
+            String[] proyeccion ={
+
+                            Contract.PRESTAMOS + "." + Contract.Prestamo.CAPITAL+" + " +
+                            "(SUM("+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.INTERES+") + " +
+                            "SUM("+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.MORA+")) - " +
+                            "(SUM("+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.MONTO_PAGADO+")+" +
+                            "SUM("+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.ABONO_MORA+")) as total"
+            };
+            c = builder.query(db, proyeccion, Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PRESTAMO+"=? and "+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PAGADO+"=? and date("+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.FECHA+") <= ?", new String[]{prestamo,"0",UTiempo.obtenerFecha()}, null, null, null);
+
+            if(c!=null){
+                c.moveToFirst();
+                t = c.getDouble(c.getColumnIndex("total"));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+
+        }finally {
+            if(c!=null){
+                c.close();
+            }
+            if(db!=null){
+                db.close();
+            }
+        }
+        return t;
+    }
+
+
     public Double obtenerTotalCuota(String prestamo){
         double t=0;
         SQLiteDatabase db = baseDatos.getWritableDatabase();
@@ -117,6 +158,39 @@ public class OperacionesBaseDatos {
         }
         return t;
     }
+
+    public float obtenerTotalInteres(String prestamo){
+        float t=0;
+        SQLiteDatabase db = baseDatos.getWritableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        builder.setTables(Contract.PRESTAMOS_DETALLES);
+        Cursor c = null;
+        try{
+            String[] proyeccion ={
+                    "( SUM("+Contract.PrestamoDetalle.INTERES+")) - SUM("+Contract.PrestamoDetalle.MONTO_PAGADO+") as totalInteres"
+            };
+            c = builder.query(db, proyeccion, Contract.PrestamoDetalle.PRESTAMO+"=? and "+Contract.PrestamoDetalle.PAGADO+"=? and date("+Contract.PrestamoDetalle.FECHA+") <= ?", new String[]{prestamo,"0",UTiempo.obtenerFecha()}, null, null, null);
+
+            if(c!=null){
+                c.moveToFirst();
+                t = c.getFloat(c.getColumnIndex("totalInteres"));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c!=null){
+                c.close();
+            }
+
+            if(db!=null){
+                db.close();
+            }
+        }
+        return t;
+    }
+
+
 
 
     public Double obtenerTotalMora(String idPrestamo){

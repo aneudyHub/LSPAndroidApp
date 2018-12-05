@@ -106,8 +106,8 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
             idPrestamos = (String) getIntent().getExtras().get(Contract.Prestamo.ID);
             montoAPagar = datosBD.obtenerTotalMora(idPrestamos)+TotalCuota;
             nombreCliente  = (String) getIntent().getExtras().get(Contract.Cobrador.CLIENTE);
-            tipoPrestamo  = (String) getIntent().getExtras().get("TipoPrestamo");
-            Log.e("TIPO PRESTAMO",tipoPrestamo);
+           /* tipoPrestamo  = (String) getIntent().getExtras().get("TipoPrestamo");
+            Log.e("TIPO PRESTAMO",tipoPrestamo);*/
             //idCliente = (String) getIntent().getExtras().get(Contract.Cliente.ID);
         }
 

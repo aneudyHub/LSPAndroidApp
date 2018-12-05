@@ -65,7 +65,7 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
      * Interfaz para escuchar clicks del recycler
      */
     public interface OnItemClickListener {
-        public void onClick(String idContacto, double pendiente, double montoPendiente, String nombre,String tipoPrestamo);
+        public void onClick(String idContacto, double pendiente, double montoPendiente, float totalInteres,String nombre,String tipoPrestamo);
         void showFoto(String documento);
     }
 
@@ -176,6 +176,7 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
         String cantida_cuota =  c.getCUOTA();
 
 
+
         if(cantida_cuota.equals("1")){
             statusIndicator.setBackgroundResource(R.color.activeStatus);
         }else {
@@ -216,7 +217,7 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
             public void onClick(View view) {
                 String po = c.getPRESTAMO();
                 String nombre = c.getCLIENTE();
-                escucha.onClick(po,Double.parseDouble(c.getTOTAL()),Double.parseDouble(c.getTotal_cuota()),nombre,tipoPrestamo);
+                escucha.onClick(po,Double.parseDouble(c.getTOTAL()),Double.parseDouble(c.getTotal_cuota()),c.getTotal_interes(),nombre,tipoPrestamo);
             }
         });
 

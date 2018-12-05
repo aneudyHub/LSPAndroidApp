@@ -46,7 +46,7 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
      * Interfaz para escuchar clicks del recycler
      */
     public interface OnItemClickListener {
-        void onClick(String idContacto,String montoPendiente);
+        void onClick(String idContacto,String montoPendiente,String tipoPrestamo);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -196,7 +196,7 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
             @Override
             public void onClick(View view) {
                 String po = c.getPRESTAMO();
-                escucha.onClick(po,String.format(c.getCLIENTE()));
+                escucha.onClick(po,String.format(c.getCLIENTE()),String.format(c.getESTADO()));
             }
         });
         //Log.e("Este es el valor",""+nombre);

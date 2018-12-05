@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:text="Total en Moraaaaaa"
+            android:text="Total en Mora"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
