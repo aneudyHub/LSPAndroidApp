@@ -106,7 +106,7 @@ public class OperacionesBaseDatos {
                             "(SUM("+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.MONTO_PAGADO+")+" +
                             "SUM("+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.ABONO_MORA+")) as total"
             };
-            c = builder.query(db, proyeccion, Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PRESTAMO+"=? and "+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PAGADO+"=? and date("+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.FECHA+") <= ?", new String[]{prestamo,"0",UTiempo.obtenerFecha()}, null, null, null);
+            c = builder.query(db, proyeccion, Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PRESTAMO+"=? and "+Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PAGADO+"=? ", new String[]{prestamo,"0"}, null, null, null);
 
             if(c!=null){
                 c.moveToFirst();
@@ -138,7 +138,7 @@ public class OperacionesBaseDatos {
             String[] proyeccion ={
                     "(SUM("+Contract.PrestamoDetalle.CAPITAL+") + SUM("+Contract.PrestamoDetalle.INTERES+")) - SUM("+Contract.PrestamoDetalle.MONTO_PAGADO+") as totalCuota"
             };
-            c = builder.query(db, proyeccion, Contract.PrestamoDetalle.PRESTAMO+"=? and "+Contract.PrestamoDetalle.PAGADO+"=? and date("+Contract.PrestamoDetalle.FECHA+") <= ?", new String[]{prestamo,"0",UTiempo.obtenerFecha()}, null, null, null);
+            c = builder.query(db, proyeccion, Contract.PrestamoDetalle.PRESTAMO+"=? and "+Contract.PrestamoDetalle.PAGADO+"=?", new String[]{prestamo,"0"}, null, null, null);
 
             if(c!=null){
                 c.moveToFirst();
@@ -811,6 +811,39 @@ public class OperacionesBaseDatos {
         //return resultado > 0;
     }
 
+
+
+    public boolean isCuotasPrestamoPendienteExists(String idPrestamo) {
+        Cursor cursor = null;
+        SQLiteDatabase db = baseDatos.getWritableDatabase();
+        String pagado = "0";
+        boolean result = false;
+        try {
+            String[] args = { "" + pagado , "" + idPrestamo };
+            StringBuffer sbQuery = new StringBuffer("SELECT * from ").append(
+                    Contract.PRESTAMOS_DETALLES).append(" where pagado =?").append(" AND prestamos_id =? ");
+            cursor = db.rawQuery(sbQuery.toString(), args);
+            if (cursor != null && cursor.moveToFirst()) {
+
+                result = true;
+            }else {
+                result = false;
+            }
+
+        } catch (Exception e) {
+//            Log.e("Requestdbhelper", e.toString());
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(cursor!=null){
+                cursor.close();
+            }
+            if(db !=null){
+                db.close();
+            }
+        }
+        return result;
+    }
 
     public boolean isCuotasPagasExists() {
         Cursor cursor = null;

@@ -203,7 +203,6 @@ public class DetallePrestamo extends AppCompatActivity {
         datos = OperacionesBaseDatos
                 .obtenerInstancia(getApplicationContext());
 
-
         adelantarPago = (Button)findViewById(R.id.adelantarPago);
         adelantarPago.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,28 +211,33 @@ public class DetallePrestamo extends AppCompatActivity {
                 Intent intent = new Intent(DetallePrestamo.this, Pagos.class);
 
                 if (tipoPrestamo.equals("5")){
-                    intent = new Intent(DetallePrestamo.this, PagoInteres.class);
+                    if (datos.isCuotasPrestamoPendienteExists(idPrestamos)){
+                        intent = new Intent(DetallePrestamo.this, PagoInteres.class);
+                    }else {
+                        Log.e("NO HAY CUOTAS PENIENTES","");
+                    }
+
                 }
 
-
                 Uri uri;
-
 
                 uri = Contract.PrestamoDetalle.crearUriPrestamoDetalle(idPrestamos);
                 Log.e("URI-PRE",uri.toString());
                 Log.e("ID-PRESTAMO",Contract.Prestamo.obtenerIdPrestamo(uri));
                 Log.e("URI-PRE",nombre.getText().toString());
+
+
                 if (null != uri) {
                     intent.putExtra(Contract.PRESTAMOS, uri.toString());
                     intent.putExtra(Contract.Cobrador.TOTAL,monto);
+                    Log.e("MONTO EN CUOTA",""+totalCuota);
+                    Log.e("MONTO EN INTERES",""+totlInteres);
+                    Log.e("TIPO-PRESTAMO",""+tipoPrestamo);
                     intent.putExtra("TotalCuota",totalCuota);
                     intent.putExtra("TotalInteres",totlInteres);
                     intent.putExtra("TipoPrestamo",tipoPrestamo);
                     intent.putExtra(Contract.Prestamo.ID, Contract.Prestamo.obtenerIdPrestamo(uri));
                     intent.putExtra(Contract.Cobrador.CLIENTE,nombre.getText());
-
-
-
 
                 }
                 startActivityForResult(intent,REQ_DET);

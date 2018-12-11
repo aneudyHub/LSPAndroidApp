@@ -42,7 +42,7 @@ import com.system.lsp.utilidades.ZebraPrint;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class PagoInteres extends AppCompatActivity implements Progress,LoaderManager.LoaderCallbacks<Cursor>{
+public class PagoCapital extends AppCompatActivity implements Progress,LoaderManager.LoaderCallbacks<Cursor>{
 
     private String mPrestamoURI;
     private Cursor cursor;
@@ -203,7 +203,7 @@ public class PagoInteres extends AppCompatActivity implements Progress,LoaderMan
                     Log.e("VALOR MONTODIGITADO",""+String.valueOf(montoDigitado));
                     Log.e("VALOR TOTALPENDIENTE",""+String.valueOf(totalPendiente));
                     if(montoDigitado > Double.parseDouble(totalPendiente)){
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PagoInteres.this);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PagoCapital.this);
                         // set title
                         alertDialogBuilder.setTitle(Html.fromHtml("<font color='#FF0000'>ERROR</font>"));
 
@@ -504,9 +504,9 @@ public class PagoInteres extends AppCompatActivity implements Progress,LoaderMan
 
 
 
-        ZebraPrint zebraprint = new ZebraPrint(PagoInteres.this,"imprimir",UTiempo.obtenerFechaHora(),idPrestamos,nombreCliente,
-                detallePago,totalPagado,totalMoraF, UPreferencias.obtenerNombreUsuario(PagoInteres.this),
-                UPreferencias.obtenerTelefonoCobrador(PagoInteres.this),PagoInteres.this);
+        ZebraPrint zebraprint = new ZebraPrint(PagoCapital.this,"imprimir",UTiempo.obtenerFechaHora(),idPrestamos,nombreCliente,
+                detallePago,totalPagado,totalMoraF, UPreferencias.obtenerNombreUsuario(PagoCapital.this),
+                UPreferencias.obtenerTelefonoCobrador(PagoCapital.this),PagoCapital.this);
         zebraprint.probarlo();
 
 
@@ -550,7 +550,7 @@ public class PagoInteres extends AppCompatActivity implements Progress,LoaderMan
                             "No hay conexion disponible",
                             Snackbar.LENGTH_LONG).show();*/
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PagoInteres.this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PagoCapital.this);
         // set title
         alertDialogBuilder.setTitle(Html.fromHtml("<font color='#FFF'>INFORMACION</font>"));
 
