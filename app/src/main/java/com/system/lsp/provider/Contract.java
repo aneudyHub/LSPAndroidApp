@@ -54,6 +54,8 @@ public class Contract {
         String SALDADO="saldado";
         String ESTADO ="estado";
         String UPDATED_AT="updated_at";
+        String CAPITAL_AMORTIZABLE="capi_am";
+        String TIPO_NOMBRE="t_nomb";
     }
 
     interface ColumnasPrestamosDetalles{
@@ -88,9 +90,6 @@ public class Contract {
         String CADENA_STRING = "cadena_string";
         String UPDATE_AT="updated_at";
     }
-
-
-
 
     interface ColumnasCobrador{
         String COBRADOR_ID="id";

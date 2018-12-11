@@ -19,9 +19,11 @@ public class DatosCliente {
     private String Total_cuota;
     private float Total_interes;
     private String MONTO_PAGADO;
+    private String TipoNombre;
     private String PRESTAMO;
     private String PLAZO;
     private String ESTADO;
+    private double capital_amortizable;
 
 
 //    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE,String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String VALOR,String TOTAL,String total_cuota, String PRESTAMO) {
@@ -54,7 +56,7 @@ public class DatosCliente {
         this.CLIENTE=NombreCliente;
     }
 
-    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE, String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL, String total_cuota, String PRESTAMO, String PLAZO,String ESTADO,float total_interes) {
+    public DatosCliente(String CUOTA, String CUOTA_ID, String CLIENTE, String CEDULA, String FECHA, String DIRECCION, String TELEFONO, String CELULAR, String TOTAL, String total_cuota, String PRESTAMO, String PLAZO,String ESTADO,float total_interes,String tipoNombre,double capital_amortizable) {
         this.CUOTA = CUOTA;
         this.CUOTA_ID = CUOTA_ID;
         this.CLIENTE = CLIENTE;
@@ -69,6 +71,8 @@ public class DatosCliente {
         this.PLAZO=PLAZO;
         this.ESTADO=ESTADO;
         this.Total_interes=total_interes;
+        TipoNombre = tipoNombre;
+        this.capital_amortizable = capital_amortizable;
     }
 
     public String getCUOTA() {
@@ -168,4 +172,11 @@ public class DatosCliente {
 
     public void setTotal_interes(float total_interes) { Total_interes = total_interes; }
 
+    public String getTipoNombre() { return TipoNombre; }
+
+    public void setTipoNombre(String tipoNombre) { TipoNombre = tipoNombre; }
+
+    public double getCapital_amortizable() { return capital_amortizable; }
+
+    public void setCapital_amortizable(double capital_amortizable) { this.capital_amortizable = capital_amortizable; }
 }

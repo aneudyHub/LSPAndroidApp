@@ -131,8 +131,10 @@ public class Provider extends ContentProvider {
                         "cli.nombre as "+Contract.Cobrador.CLIENTE+","+
                         "cli.documento as "+Contract.Cobrador.CEDULA+","+
                         "pd.fecha as "+Contract.Cobrador.FECHA+","+
-                        "p."+Contract.Prestamo.PLAZO+","+
-                        "p."+Contract.Prestamo.ESTADO+","+
+                        "p."+Contract.Prestamo.PLAZO +" ,"+
+                        "p."+Contract.Prestamo.ESTADO +" ,"+
+                        "p."+Contract.Prestamo.TIPO_NOMBRE +" ,"+
+                        "p."+Contract.Prestamo.CAPITAL_AMORTIZABLE+"," +
                         "cli.direccion as "+Contract.Cobrador.DIRECCION+","+
                         "cli.celular as "+Contract.Cobrador.CELULAR+","+
                         "cli.telefono as "+Contract.Cobrador.TELEFONO+","+
@@ -166,6 +168,8 @@ public class Provider extends ContentProvider {
                 c=bd.rawQuery("select " +
                         "p.id as "+Contract.Cobrador.PRESTAMO+"," +
                         "p."+Contract.Prestamo.ESTADO+","+
+                        "p."+Contract.Prestamo.TIPO_NOMBRE+"," +
+                        "p."+Contract.Prestamo.CAPITAL_AMORTIZABLE+"," +
                         "count(pd.n_cuota) as "+Contract.Cobrador.CUOTA+","+
                         "pd.id as "+Contract.Cobrador.CUOTA_ID+","+
                         "cli.nombre as "+Contract.Cobrador.CLIENTE+","+
@@ -443,6 +447,20 @@ public class Provider extends ContentProvider {
 
                 resolver.notifyChange(uri, null, false);
                 break;
+
+
+            /*case PRESTAMO:
+                String idPrestam = Contract.Prestamo.obtenerIdPrestamo(uri);
+                Log.e("ESTOY ACA","EL PROBLEMA ES AQUI");
+                filasAfectadas = db.update(Contract.PRESTAMOS, values,
+                        Contract.Prestamo.ID + "=" + "\'" + idPrestam + "\'"
+                                + (!TextUtils.isEmpty(selection) ?
+                                " AND (" + selection + ')' : ""),
+                        selectionArgs);
+
+                resolver.notifyChange(uri, null, false);
+                break;*/
+
 
             case PRESTAMO_DETALLE_ID:
                 String idPrestamoDetalle = Contract.PrestamoDetalle.obtenerIdPrestamoDetalle(uri);

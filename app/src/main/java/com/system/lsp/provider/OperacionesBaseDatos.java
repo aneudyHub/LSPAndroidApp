@@ -268,6 +268,8 @@ public class OperacionesBaseDatos {
                     Contract.CLIENTES + "." + Contract.Cliente.NOMBRE,
                     Contract.CLIENTES + "." + Contract.Cliente.DOCUMENTO,
                     Contract.PRESTAMOS + "." + Contract.Prestamo.CAPITAL,
+                    Contract.PRESTAMOS + "." + Contract.Prestamo.TIPO_NOMBRE,
+                    Contract.PRESTAMOS + "." + Contract.Prestamo.CAPITAL_AMORTIZABLE,
                     Contract.PRESTAMOS + "." + Contract.Prestamo.CUOTAS,
                     Contract.PRESTAMOS + "." + Contract.Prestamo.FECHA_INICIO,
                     "(SUM( " + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.CAPITAL + " ) + " +

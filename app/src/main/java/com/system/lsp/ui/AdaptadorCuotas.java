@@ -190,9 +190,9 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
         Log.e("ESTADO PRESTAMO",String.valueOf(c.getESTADO()));
         final String tipoPrestamo = c.getESTADO();
         if(tipoPrestamo.equals("5")){
-            holder.mTipo.setText("INTERE");
+            holder.mTipo.setText(c.getTipoNombre());
         }else {
-            holder.mTipo.setText("NORMAL");
+            holder.mTipo.setText(c.getTipoNombre());
         }
 
 

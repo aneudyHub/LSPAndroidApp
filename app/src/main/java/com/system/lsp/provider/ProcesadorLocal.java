@@ -85,9 +85,11 @@ public class ProcesadorLocal {
             prestamo.setSaldado(row.getInt("saldado"));
             prestamo.setEstado(row.getInt("estado"));
             prestamo.setUpdated_at(row.getString("updated_at"));
+            prestamo.setCapitalAmortizable(row.getDouble("capital_amortizable"));
+            prestamo.setTipoNombre(row.getString("tipo_nombre"));
             prestamo.aplicarSanidad();
             PrestamosRemotos.put(prestamo.getId(),prestamo);
-            //Log.e("prestamo",prestamo.toString());
+           // Log.e("prestamo",String.valueOf(prestamo.getId())+" ==> "+String.valueOf(prestamo.getCapitalAmortizable()));
         }
 
 
@@ -559,6 +561,8 @@ public class ProcesadorLocal {
 
 
     private ContentProviderOperation construirOperacionInsert_Prestamo(Prestamo prestamo) {
+        Log.e("prestamo",String.valueOf(prestamo.getId())+" ==> "+String.valueOf(prestamo.getCapitalAmortizable()));
+
         return ContentProviderOperation.newInsert(Contract.Prestamo.URI_CONTENIDO)
                 .withValue(Contract.Prestamo.ID,prestamo.getId())
                 .withValue(Contract.Prestamo.CLIENTE_ID,prestamo.getClientes_Id())
@@ -573,11 +577,15 @@ public class ProcesadorLocal {
                 .withValue(Contract.Prestamo.ESTADO,prestamo.getEstado())
                 .withValue(Contract.Prestamo.ACTIVO,prestamo.getActivo())
                 .withValue(Contract.Prestamo.UPDATED_AT,prestamo.getUpdated_at())
+                .withValue(Contract.Prestamo.CAPITAL_AMORTIZABLE,prestamo.getCapitalAmortizable())
+                .withValue(Contract.Prestamo.TIPO_NOMBRE,prestamo.getTipoNombre())
                 .withValue(Contract.Prestamo.INSERTADO,0)
                 .build();
     }
 
     private ContentProviderOperation construirOperacionUpdate_Prestamo(Prestamo prestamo, Uri updateUri) {
+        Log.e("prestamo",String.valueOf(prestamo.getId())+" ==> "+String.valueOf(prestamo.getCapitalAmortizable()));
+
         return ContentProviderOperation.newUpdate(updateUri)
                 .withValue(Contract.Prestamo.CLIENTE_ID,prestamo.getClientes_Id())
                 .withValue(Contract.Prestamo.CAPITAL,prestamo.getCapital())
@@ -591,6 +599,8 @@ public class ProcesadorLocal {
                 .withValue(Contract.Prestamo.ESTADO,prestamo.getEstado())
                 .withValue(Contract.Prestamo.ACTIVO,prestamo.getActivo())
                 .withValue(Contract.Prestamo.UPDATED_AT,prestamo.getUpdated_at())
+                .withValue(Contract.Prestamo.CAPITAL_AMORTIZABLE,prestamo.getCapitalAmortizable())
+                .withValue(Contract.Prestamo.TIPO_NOMBRE,prestamo.getTipoNombre())
                 .withValue(Contract.Prestamo.MODIFICADO,prestamo.getModificado())
                 .build();
     }
@@ -731,6 +741,8 @@ public class ProcesadorLocal {
                 c.getInt(c.getColumnIndex(Contract.Prestamo.SALDADO)),
                 c.getInt(c.getColumnIndex(Contract.Prestamo.ESTADO)),
                 c.getString(c.getColumnIndex(Contract.Prestamo.UPDATED_AT)),
+                c.getDouble(c.getColumnIndex(Contract.Prestamo.CAPITAL_AMORTIZABLE)),
+                c.getString(c.getColumnIndex(Contract.Prestamo.TIPO_NOMBRE)),
                 c.getInt(c.getColumnIndex(Contract.Prestamo.MODIFICADO))
 
         );

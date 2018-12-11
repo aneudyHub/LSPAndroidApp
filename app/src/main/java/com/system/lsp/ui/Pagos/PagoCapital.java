@@ -53,17 +53,12 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
     private TextView mPendiente,mPagar,totalMora,totalCuota;
     private InteresAdapter mAdapter;
     private double montoAPagar;
-    private double pagarmonto;
     private double montoDigitado;
-    private double TotalCuota;
-    private double TotalInteres;
-    private double totalAPagar;
+    private double TotalCapital;
+    private double totalPagado;
     private String nombreCliente;
     private String tipoPrestamo;
-    private String idCliente;
     private String detallePago;
-    private double totalPagado;
-    private double totalMoraF;
     private String totalPendiente;
     private Context context;
     private ImageView infoPrestamo;
@@ -90,10 +85,11 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
         if(getIntent().getExtras()!=null){
             mPrestamoURI = (String) getIntent().getExtras().get(Contract.PRESTAMOS);
             montoAPagar = (Double) getIntent().getExtras().get(Contract.Cobrador.TOTAL);
-            TotalInteres = (Double) getIntent().getExtras().get("TotalCuota");
+            TotalCapital = (Double) getIntent().getExtras().get("MontoCapitalizable");
             //totalAPagar = datosBD.obtenerTotalAPagar(idPrestamos);
             idPrestamos = (String) getIntent().getExtras().get(Contract.Prestamo.ID);
-            montoAPagar = datosBD.obtenerTotalMora(idPrestamos)+TotalInteres;
+            //montoAPagar = datosBD.obtenerTotalMora(idPrestamos)+TotalInteres;
+            montoAPagar = TotalCapital;
             nombreCliente  = (String) getIntent().getExtras().get(Contract.Cobrador.CLIENTE);
             tipoPrestamo  = (String) getIntent().getExtras().get("TipoPrestamo");
             Log.e("TIPO PRESTAMO",tipoPrestamo);
@@ -153,19 +149,19 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
         totalMora = (TextView)findViewById(R.id.total_mora);
         totalMora.setText(String.valueOf(datosBD.obtenerTotalMora(idPrestamos)));
         totalCuota = (TextView)findViewById(R.id.total_cuota);
-        totalCuota.setText(String.valueOf(TotalInteres));
+        totalCuota.setText(String.valueOf(TotalCapital));
 
         mPendiente =(TextView)findViewById(R.id.total_pendiente);
         Log.e("TOTALPENDIENTE",String.valueOf(datosBD.obtenerTotalAPagarInteresSimple(idPrestamos)));
         mPendiente.setText(String.valueOf(datosBD.obtenerTotalAPagarInteresSimple(idPrestamos)));
-        totalPendiente = String.valueOf(datosBD.obtenerTotalAPagarInteresSimple(idPrestamos));
+        totalPendiente =String.valueOf(TotalCapital);
         mPagar =(TextView)findViewById(R.id.total_pagar);
-        mPagar.setText(String.valueOf(datosBD.obtenerTotalMora(idPrestamos)+TotalInteres));
+        mPagar.setText(String.valueOf(TotalCapital));
         montoDigitado = Double.parseDouble(mMonto.getText().toString());
         Toolbar toolbar= (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Cuotas a Pagar");
+        getSupportActionBar().setTitle("SALDO PRESTAMO");
 
 
     }
@@ -285,68 +281,12 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
         showProgress("REALIZANDO PAGO...");
 
         StringBuilder sb= new StringBuilder() ;
-        String cantidadCuota="";
+
 
         Cursor c = mAdapter.mItems;
-        OperacionesBaseDatos datosBD = new OperacionesBaseDatos();
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            cantidadCuota = c.getString(c.getColumnIndex(Contract.PrestamoDetalle.CUOTA));
-        }
-
-        //buscar si hay mora que pagar
-        Double moraT;
-        moraT = datosBD.obtenerTotalMora(idPrestamos);
-
-        Double mTotalMoraPagada=0.0;
-
-        Double mValorTotalPago=montoDigitado;
+        Log.e("VALORINTERESSSSS","empezeos");
+        //aplica para cuotas
         totalPagado = montoDigitado;
-        if(moraT>0){
-            //hay mora que pagar
-            if(montoDigitado>=moraT){
-                sb.append("Pago Mora Generada a la fecha." + ";" + moraT + ";");
-                montoDigitado-=moraT;
-                totalMoraF =moraT;
-                mTotalMoraPagada=moraT;
-            }else{
-                sb.append("Abono Mora Generada a la fecha." + ";" + Math.abs(montoDigitado) + ";");
-                mTotalMoraPagada=montoDigitado;
-                totalMoraF = montoDigitado;
-                montoDigitado=0;
-
-            }
-
-            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                double mCargada = c.getDouble(c.getColumnIndex(Contract.PrestamoDetalle.MORA));
-                double mPagada = c.getDouble(c.getColumnIndex(Contract.PrestamoDetalle.ABONO_MORA));
-                Uri mUri= Contract.PrestamoDetalle.crearUriPrestamoDetalle(c.getString(c.getColumnIndex(Contract.PrestamoDetalle.ID)));
-
-                if(mTotalMoraPagada <=0){
-                    break;
-                }
-
-                if(mTotalMoraPagada>=(mCargada - mPagada)){
-                    ops.add(ContentProviderOperation.newUpdate(mUri)
-                            .withValue(Contract.PrestamoDetalle.ABONO_MORA,mPagada+(mCargada - mPagada))
-                            .build());
-
-
-
-                    mTotalMoraPagada = mTotalMoraPagada-(mCargada - mPagada);
-                }else {
-                    ops.add( ContentProviderOperation.newUpdate(mUri)
-                            .withValue(Contract.PrestamoDetalle.ABONO_MORA,mPagada+(mTotalMoraPagada))
-                            .build());
-
-
-                    mTotalMoraPagada = 0.0;
-                }
-            }
-        }
-
-        //aplica para cuotas
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             double mCapital=0.0;
             double mInteres=0.0;
             double mAbonado =0.0;
@@ -354,104 +294,46 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
             int mNumeroCuota=0;
 
             if(montoDigitado <=0){
-                break;
+               return;
             }
 
 
-            mInteres = c.getDouble(c.getColumnIndex(Contract.PrestamoDetalle.INTERES));
-            mAbonado = c.getDouble(c.getColumnIndex(Contract.PrestamoDetalle.MONTO_PAGADO));
-            mNumeroCuota = c.getInt(c.getColumnIndex(Contract.PrestamoDetalle.CUOTA));
-            mRestante = (mInteres) - mAbonado;
+            mInteres = Double.parseDouble(totalPendiente);
+            //mAbonado = c.getDouble(c.getColumnIndex(Contract.PrestamoDetalle.MONTO_PAGADO));
+           //mNumeroCuota = c.getInt(c.getColumnIndex(Contract.PrestamoDetalle.CUOTA));
+            Log.e("VALORINTERESSSSS",String.valueOf(mInteres));
+            mRestante = mInteres;
 
-            Uri mUri= Contract.PrestamoDetalle.crearUriPrestamoDetalle(c.getString(c.getColumnIndex(Contract.PrestamoDetalle.ID)));
+            Uri mUri= Contract.Prestamo.crearUriPrestamo(idPrestamos);
 
             //comprobar si es abono o pago
             if(montoDigitado >= mRestante){
                 //pago de la cuota
-                sb.append("Pago Cuota(s)N."+c.getString(c.getColumnIndex(Contract.PrestamoDetalle.CUOTA))+"/"+ cantidadCuota +";"+Math.abs(mRestante)+";");
+
+                mCapital = montoDigitado - mRestante;
+                sb.append("Prestamo Saldado" + ";" + Math.abs(mRestante) + ";");
                 ops.add( ContentProviderOperation.newUpdate(mUri)
-                        .withValue(Contract.PrestamoDetalle.MONTO_PAGADO,(mInteres))
-                        .withValue(Contract.PrestamoDetalle.PAGADO,1)
-                        .withValue(Contract.PrestamoDetalle.FECHA_PAGADO,UTiempo.obtenerFechaHora())
+                        .withValue(Contract.Prestamo.CAPITAL_AMORTIZABLE,(mCapital))
+                        .withValue(Contract.Prestamo.FECHA_SALDO,UTiempo.obtenerFechaHora())
+                        .withValue(Contract.Prestamo.MODIFICADO,"1")
                         .build());
-
-
-
-
                 montoDigitado -= mRestante;
 
 
             }else{
                 //abono de la cuota
-                sb.append("Abono Cuota(s)N."+c.getString(c.getColumnIndex(Contract.PrestamoDetalle.CUOTA))+"/"+ cantidadCuota +";"+
-                        String.valueOf(Math.abs(montoDigitado))+";");
+                Log.e("ESTOY ABONANDO","VAMOS VAMOS");
+                mCapital = mRestante - montoDigitado;
+                sb.append("Abono a Capital(s)N" + ";" + String.valueOf(Math.abs(montoDigitado))+";");
 
                 ops.add( ContentProviderOperation.newUpdate(mUri)
-                        .withValue(Contract.PrestamoDetalle.MONTO_PAGADO,(montoDigitado+mAbonado))
-                        .withValue(Contract.PrestamoDetalle.PAGADO,0)
+                        .withValue(Contract.Prestamo.CAPITAL_AMORTIZABLE,(mCapital))
+                        .withValue(Contract.Prestamo.MODIFICADO,"1")
                         .build());
 
 
                 montoDigitado=0;
             }
-
-
-        }
-
-
-
-        //aplica para cuotas
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            double mCapital=0.0;
-            double mInteres=0.0;
-            double mAbonado =0.0;
-            double mRestante =0.0;
-            int mNumeroCuota=0;
-
-            if(montoDigitado <=0){
-                break;
-            }
-
-            mCapital = c.getDouble(c.getColumnIndex(Contract.PrestamoDetalle.CAPITAL));
-            mInteres = c.getDouble(c.getColumnIndex(Contract.PrestamoDetalle.INTERES));
-            mAbonado = c.getDouble(c.getColumnIndex(Contract.PrestamoDetalle.MONTO_PAGADO));
-            mNumeroCuota = c.getInt(c.getColumnIndex(Contract.PrestamoDetalle.CUOTA));
-            mRestante = (mCapital ) - mAbonado;
-
-            Uri mUri= Contract.PrestamoDetalle.crearUriPrestamoDetalle(c.getString(c.getColumnIndex(Contract.PrestamoDetalle.ID)));
-
-            //comprobar si es abono o pago
-            if(montoDigitado >= mRestante){
-                //pago de la cuota
-                sb.append("Pago Capital."+";");
-                ops.add( ContentProviderOperation.newUpdate(mUri)
-                        .withValue(Contract.PrestamoDetalle.MONTO_PAGADO,(mCapital))
-                        .withValue(Contract.PrestamoDetalle.PAGADO,1)
-                        .withValue(Contract.PrestamoDetalle.FECHA_PAGADO,UTiempo.obtenerFechaHora())
-                        .build());
-
-
-
-
-                montoDigitado -= mRestante;
-
-
-            }else{
-                //abono de la cuota
-                sb.append("Abono A Capital."+";"+
-                        String.valueOf(Math.abs(montoDigitado))+";");
-
-                ops.add( ContentProviderOperation.newUpdate(mUri)
-                        .withValue(Contract.PrestamoDetalle.MONTO_PAGADO,(montoDigitado+mAbonado))
-                        .withValue(Contract.PrestamoDetalle.PAGADO,0)
-                        .build());
-
-
-                montoDigitado=0;
-            }
-
-
-        }
 
 
 
@@ -479,8 +361,8 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
         valores.put(Contract.CuotaPaga.COBRADOR_ID,UPreferencias.obtenerIdUsuario(this));
         valores.put(Contract.CuotaPaga.NOMBRE_COBRADOR,UPreferencias.obtenerNombreUsuario(this));
         valores.put(Contract.CuotaPaga.NOMBRE_CLIENTE,nombreCliente);
-        valores.put(Contract.CuotaPaga.MONTO,mValorTotalPago);
-        valores.put(Contract.CuotaPaga.TOTALMORA,moraT);
+        valores.put(Contract.CuotaPaga.MONTO,montoDigitado);
+        valores.put(Contract.CuotaPaga.TOTALMORA,0.0);
         valores.put(Contract.CuotaPaga.PRESTAMO,idPrestamos);
         valores.put(Contract.CuotaPaga.FECHA_CONSULTA,UTiempo.obtenerFecha());
         valores.put(Contract.CuotaPaga.UPDATE_AT,UTiempo.obtenerTiempo());
@@ -498,6 +380,7 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
 
         //Resolve.sincronizarData(Pagos.this);
 //        setResult(RESULT_OK);
+        Log.e("Detalle perstamo",String.valueOf(detallePago));
         Log.e("TOTAL-E-MORA",String.valueOf(CuotasAdapter.totalMora));
         Log.e("VALOR-FATURA",CuotasAdapter.datos);
 
@@ -505,7 +388,7 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
 
 
         ZebraPrint zebraprint = new ZebraPrint(PagoCapital.this,"imprimir",UTiempo.obtenerFechaHora(),idPrestamos,nombreCliente,
-                detallePago,totalPagado,totalMoraF, UPreferencias.obtenerNombreUsuario(PagoCapital.this),
+                detallePago,totalPagado,0.0, UPreferencias.obtenerNombreUsuario(PagoCapital.this),
                 UPreferencias.obtenerTelefonoCobrador(PagoCapital.this),PagoCapital.this);
         zebraprint.probarlo();
 

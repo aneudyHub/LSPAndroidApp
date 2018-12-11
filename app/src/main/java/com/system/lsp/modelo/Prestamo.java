@@ -30,13 +30,20 @@ public class Prestamo {
     private int Activo;
     private int Saldado;
     private String Updated_at;
+    private double CapitalAmortizable;
+    private String TipoNombre;
     private int Modificado;
     private List<PrestamoDetalle> Detalle;
 
     public Prestamo() {
     }
 
-    public Prestamo(int id, int clientes_Id, double capital, float porcientoInteres, float porcientoMora, String plazo, int cuotas, String fechaInicio, String fechaSaldo, int activo, int saldado,int estado, String updated_at, int modificado) {
+    public Prestamo(int id, int clientes_Id, double capital, float porcientoInteres,
+                    float porcientoMora, String plazo,
+                    int cuotas, String fechaInicio, String fechaSaldo,
+                    int activo, int saldado,int estado, String updated_at,
+                    double capitalAmortizable, String tipoNombre, int modificado) {
+
         Id = id;
         Clientes_Id = clientes_Id;
         Capital = capital;
@@ -50,6 +57,8 @@ public class Prestamo {
         Saldado = saldado;
         Estado = estado;
         Updated_at = updated_at;
+        CapitalAmortizable =capitalAmortizable;
+        TipoNombre = tipoNombre;
         Modificado = modificado;
 
     }
@@ -198,6 +207,13 @@ public class Prestamo {
 
     public void setEstado(int estado) { Estado = estado; }
 
+    public double getCapitalAmortizable() { return CapitalAmortizable; }
+
+    public String getTipoNombre() { return TipoNombre; }
+
+    public void setTipoNombre(String tipoNombre) {TipoNombre = tipoNombre; }
+
+    public void setCapitalAmortizable(double capitalAmortizable) { CapitalAmortizable = capitalAmortizable; }
 
     public List<PrestamoDetalle> getDetalle() {
         return Detalle;

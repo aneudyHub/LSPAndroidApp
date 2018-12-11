@@ -277,6 +277,8 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
         int prestamo = data.getColumnIndex(Contract.Cobrador.PRESTAMO);
         int plazo = data.getColumnIndex(Contract.Prestamo.PLAZO);
         int estado = data.getColumnIndex(Contract.Prestamo.ESTADO);
+        int tipoNombre = data.getColumnIndex(Contract.Prestamo.TIPO_NOMBRE);
+        int capital_amortizable = data.getColumnIndex(Contract.Prestamo.CAPITAL_AMORTIZABLE);
 
 
         if (data != null) {
@@ -285,7 +287,8 @@ public class FragmentListaCoutas extends Fragment implements LoaderManager.Loade
                 DatosCliente cli = new DatosCliente(data.getString(cuota),data.getString(cuota_id),
                         data.getString(cliente),data.getString(documento),data.getString(fecha),data.getString(direccion),
                         data.getString(telefono),data.getString(celular),data.getString(total),data.getString(totalCuota),
-                         data.getString(prestamo),data.getString(plazo),data.getString(estado),data.getFloat(totalInteres)
+                         data.getString(prestamo),data.getString(plazo),data.getString(estado),data.getFloat(totalInteres),
+                        data.getString(tipoNombre),data.getDouble(capital_amortizable)
                 );
                 mArrayList.add(cli);
                // Log.e("Este es el ARRAY",cli.getESTADO());

@@ -85,33 +85,33 @@ public class ProcesadorRemoto {
         }
     }
 
-//    public List<Map<String, Object>> obtenerModificaciones(ContentResolver cr) {
-//
-//        List<Map<String, Object>> ops = new ArrayList<>();
-//
-//        // Obtener contactos donde 'modificado' = 1
-//        Cursor c = cr.query(Contract.Cliente.URI_CONTENIDO,
-//                null,
-//                Contract.Cliente.MODIFICADO + "=?",
-//                new String[]{"1"}, null);
-//
-//        // Comprobar si hay trabajo que realizar
-//        if (c != null && c.getCount() > 0) {
-//
-//            Log.d(TAG, "Existen " + c.getCount() + " modificaciones de contactos");
-//
-//            // Procesar operaciones
-//            while (c.moveToNext()) {
-//                ops.add(mapearActualizacion(c));
-//            }
-//
-//            return ops;
-//
-//        } else {
-//            return null;
-//        }
-//
-//    }
+    /*public List<Map<String, Object>> obtenerModificaciones(ContentResolver cr) {
+
+       List<Map<String, Object>> ops = new ArrayList<>();
+
+        // Obtener contactos donde 'modificado' = 1
+        Cursor c = cr.query(Contract.Prestamo.URI_CONTENIDO,
+                null,
+                Contract.Prestamo.MODIFICADO + "=?",
+               new String[]{"1"}, null);
+
+        // Comprobar si hay trabajo que realizar
+        if (c != null && c.getCount() > 0) {
+
+            Log.d(TAG, "Existen " + c.getCount() + " modificaciones de contactos");
+
+            // Procesar operaciones
+            while (c.moveToNext()) {
+                ops.add(mapearActualizacion(c));
+            }
+
+            return ops;
+
+        } else {
+            return null;
+        }
+
+    }*/
 //
 //    public List<String> obtenerEliminaciones(ContentResolver cr) {
 //
@@ -167,6 +167,25 @@ public class ProcesadorRemoto {
 
     }
 
+
+    /*public void desmarcarPrestamo(ContentResolver cr) {
+        // Establecer valores de la actualización
+        ContentValues valores = new ContentValues();
+        valores.put(Contract.Prestamo.MODIFICADO, 0);
+
+        String seleccion = Contract.Prestamo.MODIFICADO + "= ?";
+        String[] argumentos = {"1"};
+
+        // Modificar banderas de insertados y modificados
+        cr.update(Contract.Prestamo.URI_CONTENIDO, valores, seleccion, argumentos);
+
+
+        seleccion = Contract.CuotaPaga.ELIMINADO + "=?";
+        // Eliminar definitivamente
+        //cr.delete(Contract.CuotaPaga.URI_CONTENIDO, seleccion, new String[]{"1"});
+
+    }*/
+
     private Map<String, Object> mapearInsercion(Cursor c) {
         // Nuevo mapa para reflejarlo en JSON
         Map<String, Object> mapaContacto = new HashMap<String, Object>();
@@ -179,21 +198,21 @@ public class ProcesadorRemoto {
         return mapaContacto;
     }
 
-    private Map<String, Object> mapearActualizacion(Cursor c) {
+    /*private Map<String, Object> mapearActualizacion(Cursor c) {
         // Nuevo mapa para reflejarlo en JSON
-        Map<String, Object> mapaContacto = new HashMap<String, Object>();
+        Map<String, Object> mapaPrestamo = new HashMap<String, Object>();
 
         // Añadir valores de columnas como atributos
-        UDatos.agregarStringAMapa(mapaContacto, Contract.Cliente.ID, c);
-        UDatos.agregarStringAMapa(mapaContacto, Contract.Cliente.NOMBRE, c);
-        UDatos.agregarStringAMapa(mapaContacto, Contract.Cliente.DOCUMENTO, c);
-        UDatos.agregarStringAMapa(mapaContacto,Contract.Cliente.FOTO_LOCAL , c);
-        UDatos.agregarStringAMapa(mapaContacto, Contract.Cliente.FOTO_WEB, c);
-        UDatos.agregarStringAMapa(mapaContacto, Contract.Cliente.DIRECCION, c);
-        UDatos.agregarStringAMapa(mapaContacto, Contract.Cliente.LAT, c);
-        UDatos.agregarStringAMapa(mapaContacto, Contract.Cliente.LNG, c);
-        UDatos.agregarStringAMapa(mapaContacto, Contract.Cliente.UPDATE_AT, c);
+        UDatos.agregarStringAMapa(mapaPrestamo, Contract.Prestamo.ID, c);
+        UDatos.agregarStringAMapa(mapaPrestamo, Contract.Prestamo.CAPITAL_AMORTIZABLE, c);
+        /*UDatos.agregarStringAMapa(mapaPrestamo, Contract.Cliente.DOCUMENTO, c);
+        UDatos.agregarStringAMapa(mapaPrestamo,Contract.Cliente.FOTO_LOCAL , c);
+        UDatos.agregarStringAMapa(mapaPrestamo, Contract.Cliente.FOTO_WEB, c);
+        UDatos.agregarStringAMapa(mapaPrestamo, Contract.Cliente.DIRECCION, c);
+        UDatos.agregarStringAMapa(mapaPrestamo, Contract.Cliente.LAT, c);
+        UDatos.agregarStringAMapa(mapaPrestamo, Contract.Cliente.LNG, c);
+        UDatos.agregarStringAMapa(mapaPrestamo, Contract.Cliente.UPDATE_AT, c);*/
 
-        return mapaContacto;
-    }
+      //  return mapaPrestamo;
+    //}
 }

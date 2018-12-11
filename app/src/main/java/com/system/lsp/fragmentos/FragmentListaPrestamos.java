@@ -107,7 +107,8 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
         int totalInteres = data.getColumnIndex("Total_interes");
         int prestamo = data.getColumnIndex(Contract.Prestamo.PRESTAMO);
         int estado = data.getColumnIndex(Contract.Prestamo.ESTADO);
-
+        int tipoNombre = data.getColumnIndex(Contract.Prestamo.TIPO_NOMBRE);
+        int capital_amortizable = data.getColumnIndex(Contract.Prestamo.CAPITAL_AMORTIZABLE);
 
 
         Log.e("El indice del capital",""+totalCuota);
@@ -130,7 +131,8 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
                             data.getString(capital),
                             data.getString(total),
                             data.getString(prestamo),
-                            "",data.getString(estado),data.getFloat(totalInteres)
+                            "",data.getString(estado),data.getFloat(totalInteres),
+                            data.getString(tipoNombre),data.getDouble(capital_amortizable)
 
                 );
                 mArrayList.add(cli);

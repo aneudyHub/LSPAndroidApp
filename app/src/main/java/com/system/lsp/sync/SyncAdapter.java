@@ -277,6 +277,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void tratarPost() {
         // Desmarcar inserciones locales
         procRemoto.desmarcarContactos(cr);
+        //procRemoto.desmarcarPrestamo(cr);
         //Resolve.sincronizarData(getContext());
         syncLocal();
 //        Resolve.enviarBroadcast(getContext(),true, "Sicronizando espereeeeeeee!!!");

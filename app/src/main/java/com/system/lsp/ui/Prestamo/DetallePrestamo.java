@@ -45,6 +45,7 @@ import com.system.lsp.fragmentos.FragmentTodasLasCuotas;
 import com.system.lsp.provider.Contract;
 import com.system.lsp.provider.OperacionesBaseDatos;
 import com.system.lsp.sync.SyncAdapter;
+import com.system.lsp.ui.Pagos.PagoCapital;
 import com.system.lsp.ui.Pagos.PagoInteres;
 import com.system.lsp.ui.Pagos.Pagos;
 import com.system.lsp.utilidades.Resolve;
@@ -90,7 +91,7 @@ public class DetallePrestamo extends AppCompatActivity {
     private  TextView iPrestamo;
     private  Button adelantarPago;
     public OperacionesBaseDatos operacionesBaseDatos;
-    private Double montoTotal;
+    private Double montoTotal,montoCapitalizable;
     private ImageView mFoto,mLlamar;
 
     private BroadcastReceiver receptorSync;
@@ -193,12 +194,8 @@ public class DetallePrestamo extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-
-
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
 
         datos = OperacionesBaseDatos
                 .obtenerInstancia(getApplicationContext());
@@ -214,7 +211,7 @@ public class DetallePrestamo extends AppCompatActivity {
                     if (datos.isCuotasPrestamoPendienteExists(idPrestamos)){
                         intent = new Intent(DetallePrestamo.this, PagoInteres.class);
                     }else {
-                        Log.e("NO HAY CUOTAS PENIENTES","");
+                        intent = new Intent(DetallePrestamo.this, PagoCapital.class);
                     }
 
                 }
@@ -226,16 +223,17 @@ public class DetallePrestamo extends AppCompatActivity {
                 Log.e("ID-PRESTAMO",Contract.Prestamo.obtenerIdPrestamo(uri));
                 Log.e("URI-PRE",nombre.getText().toString());
 
-
                 if (null != uri) {
                     intent.putExtra(Contract.PRESTAMOS, uri.toString());
                     intent.putExtra(Contract.Cobrador.TOTAL,monto);
-                    Log.e("MONTO EN CUOTA",""+totalCuota);
-                    Log.e("MONTO EN INTERES",""+totlInteres);
-                    Log.e("TIPO-PRESTAMO",""+tipoPrestamo);
+                    Log.e("MONTO EN CUOTA",""+montoCapitalizable);
+                    Log.e("MONTO EN INTERES",""+montoCapitalizable);
+                    Log.e("TIPO-PRESTAMO",""+montoCapitalizable);
                     intent.putExtra("TotalCuota",totalCuota);
+                    intent.putExtra("TotalCapital",totalCuota);
                     intent.putExtra("TotalInteres",totlInteres);
                     intent.putExtra("TipoPrestamo",tipoPrestamo);
+                    intent.putExtra("MontoCapitalizable",montoCapitalizable);
                     intent.putExtra(Contract.Prestamo.ID, Contract.Prestamo.obtenerIdPrestamo(uri));
                     intent.putExtra(Contract.Cobrador.CLIENTE,nombre.getText());
 
@@ -372,6 +370,8 @@ public class DetallePrestamo extends AppCompatActivity {
             mora.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.MORA)));
             balance.setText("RD$ "+cursor.getString(cursor.getColumnIndex("Balance")));
             //double b =Double.parseDouble(cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.CAPITAL)));
+            montoCapitalizable = cursor.getDouble(cursor.getColumnIndex(Contract.Prestamo.CAPITAL_AMORTIZABLE));
+            Log.e("MONTOCAPITALIZABLE",String.valueOf(montoCapitalizable));
             monto = datos.obtenerTotalAPagar(idPrestamos);
             totalCuota = datos.obtenerTotalCuota(idPrestamos);
             totlInteres = datos.obtenerTotalInteres(idPrestamos);

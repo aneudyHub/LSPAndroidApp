@@ -787,7 +787,7 @@ public class ZebraPrint {
                 Devuelve la misma sentencia con los detalles anexados en dado caso de fallar devuelve el mismo string sin los anexos
                  */
             //cpclConfigLabel = imprime_detalles(cpclConfigLabel,SeparaLineas("Saldo Cuota(s) No. 10/46;650.00;Saldo Cuota(s) No. 11/46;650.00;", ";"), caracteres_X_linea, Final_Linea);//ConceptoPago
-            //Log.e("DETALLE",detalleFactura);
+            Log.e("DETALLE",detalleFactura);
             cpclConfigLabel = imprime_detalles(cpclConfigLabel,SeparaLineas(detalleFactura, ";"), caracteres_X_linea, Final_Linea);//ConceptoPago
             Log.e("TOTAL-MORA",String.valueOf(totalMora));
             //Double f = Double.valueOf(cliente.balance) -  Double.valueOf(param_post.get(0).getValue());

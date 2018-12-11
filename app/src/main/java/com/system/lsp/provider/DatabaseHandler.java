@@ -65,6 +65,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 Prestamo.ESTADO+" INTEGER,"+
                 Prestamo.ACTIVO+" INTEGER,"+
                 Prestamo.UPDATED_AT+" DATE DEFAULT CURRENT_TIMESTAMP,"+
+                Prestamo.CAPITAL_AMORTIZABLE+" DOUBLE,"+
+                Prestamo.TIPO_NOMBRE+" TEXT,"+
                 Prestamo.INSERTADO+" INTEGER DEFAULT 1,"+
                 Prestamo.MODIFICADO+" INTEGER DEFAULT 0,"+
                 Prestamo.ELIMINADO+" INTEGER DEFAULT 0 );";
