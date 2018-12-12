@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.system.lsp.R;
 import com.system.lsp.modelo.DatosCliente;
 import com.system.lsp.provider.Contract;
+import com.system.lsp.provider.OperacionesBaseDatos;
 import com.system.lsp.ui.AdaptadorMiRuta;
 import com.system.lsp.ui.Pagos.Pagos;
 import com.system.lsp.ui.Prestamo.DetallePrestamo;
@@ -34,6 +35,7 @@ public class FragmentMiRuta extends Fragment implements AdaptadorMiRuta.OnItemCl
     public AdaptadorMiRuta mAdapter;
     public RecyclerView mList;
     public TextView mCantidad;
+    public OperacionesBaseDatos operacionesBaseDatos;
 
 
     @Nullable
@@ -88,9 +90,18 @@ public class FragmentMiRuta extends Fragment implements AdaptadorMiRuta.OnItemCl
     @Override
     public void onClick(String idprestamo) {
         Uri u = Contract.PrestamoDetalle.crearUriPrestamoDetalle(idprestamo);
+        String tipoPrestamo="";
+
+        operacionesBaseDatos = OperacionesBaseDatos
+                .obtenerInstancia(getContext());
+
+
+        tipoPrestamo = operacionesBaseDatos.obtenerTipoPrestamo(idprestamo);
+
 
         Intent intent = new Intent(getActivity(), DetallePrestamo.class);
         intent.putExtra(Contract.Prestamo.ID, Contract.Prestamo.obtenerIdPrestamo(u));
+        intent.putExtra("ESTADO",tipoPrestamo);
         startActivityForResult(intent,500);
     }
 

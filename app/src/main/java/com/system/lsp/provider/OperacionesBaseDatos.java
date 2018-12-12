@@ -615,6 +615,34 @@ public class OperacionesBaseDatos {
         return c;
     }
 
+
+
+    // [OPERACIONES_FORMA_PAGO]
+    public String obtenerTipoPrestamo(String idPrestamos) {
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+        String tipo="";
+        Cursor c=null;
+        try {
+            String sql = String.format("SELECT estado  FROM %s ", Contract.PRESTAMOS +" WHERE id = "+idPrestamos);
+            c = db.rawQuery(sql, null);
+            if (c.moveToFirst()) {
+                tipo = c.getString(c.getColumnIndex(Contract.Prestamo.ESTADO));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c!=null){
+                c.close();
+            }
+            if(db!=null){
+                db.close();
+            }
+        }
+        return tipo;
+    }
+
+
     public List<CuotaPendiente> getCuotaPendiete(String ipPrestamos,String pagado){
 
         List<CuotaPendiente> list = new ArrayList<>();

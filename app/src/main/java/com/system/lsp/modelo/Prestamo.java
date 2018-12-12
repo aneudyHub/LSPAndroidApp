@@ -240,7 +240,9 @@ public class Prestamo {
         FechaSaldo.equals(prestamo.getFechaSaldo()) &&
         Activo ==prestamo.getActivo() &&
         Saldado ==prestamo.getSaldado()&&
-        Estado == prestamo.getEstado();
+        Estado == prestamo.getEstado()&&
+        CapitalAmortizable == getCapitalAmortizable()&&
+        TipoNombre == getTipoNombre();
 
     }
 
