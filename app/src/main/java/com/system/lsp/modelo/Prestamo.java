@@ -215,6 +215,14 @@ public class Prestamo {
 
     public void setCapitalAmortizable(double capitalAmortizable) { CapitalAmortizable = capitalAmortizable; }
 
+    public String getUpdated_at() { return Updated_at; }
+
+    public void setUpdated_at(String version) { Updated_at = version; }
+
+    public int getModificado() { return Modificado; }
+
+    public void setModificado(int modificado) { Modificado = modificado; }
+
     public List<PrestamoDetalle> getDetalle() {
         return Detalle;
     }
@@ -223,10 +231,7 @@ public class Prestamo {
         Detalle = detalle;
     }
 
-    public void aplicarSanidad(){
-        this.setUpdated_at(this.getUpdated_at() == null? UTiempo.obtenerTiempo():this.getUpdated_at());
-        this.setModificado(0);
-    }
+
 
     public Boolean compararCon(Prestamo prestamo){
         return Id==prestamo.getId() &&
@@ -241,10 +246,17 @@ public class Prestamo {
         Activo ==prestamo.getActivo() &&
         Saldado ==prestamo.getSaldado()&&
         Estado == prestamo.getEstado()&&
-        CapitalAmortizable == getCapitalAmortizable()&&
-        TipoNombre == getTipoNombre();
+        CapitalAmortizable == prestamo.getCapitalAmortizable();
+
 
     }
+
+    public void aplicarSanidad(){
+        this.setUpdated_at(this.getUpdated_at() == null? UTiempo.obtenerTiempo():this.getUpdated_at());
+        this.setModificado(0);
+    }
+
+
 
     public int esMasReciente(Prestamo match){
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -258,24 +270,6 @@ public class Prestamo {
             e.printStackTrace();
         }
         return 0;
-    }
-
-
-
-    public String getUpdated_at() {
-        return Updated_at;
-    }
-
-    public void setUpdated_at(String version) {
-        Updated_at = version;
-    }
-
-    public int getModificado() {
-        return Modificado;
-    }
-
-    public void setModificado(int modificado) {
-        Modificado = modificado;
     }
 
 

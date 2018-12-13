@@ -409,10 +409,13 @@ public class Provider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         Log.e("ESTOY EN EL METODO","UPDATE");
+        Log.e("VALOR DE LA URI",String.valueOf(uri));
         SQLiteDatabase db = helper.getWritableDatabase();
         int filasAfectadas;
        // Log.e("VALOR  DE LA URI",uri.toString());
 
+        Log.e("VALOR---",String.valueOf(PRESTAMO_DETALLE_ID));
+        Log.e("VALOR DE LA URI",String.valueOf(PRESTAMO_ID));
         switch (uriMatcher.match(uri)) {
             /*case CUOTA_PAGADA:
 
@@ -423,8 +426,10 @@ public class Provider extends ContentProvider {
 
                 break;*/
 
+
             case CLIENTE_ID:
                 String idCliente = Contract.Cliente.obtenerIdCliente(uri);
+                Log.e("CLIENTE---","UPDATE");
 
                 filasAfectadas = db.update(Contract.CLIENTES, values,
                         Contract.Cliente.ID + "=" + "\'" + idCliente + "\'"
@@ -437,8 +442,9 @@ public class Provider extends ContentProvider {
 
 
             case PRESTAMO_ID:
+                Log.e("PRESTAMO-ID---","UPDATE");
                 String idPrestamo = Contract.Prestamo.obtenerIdPrestamo(uri);
-                Log.e("ESTOY ACA","EL PROBLEMA ES AQUI");
+                //Log.e("ESTOY ACA","EL PROBLEMA ES AQUI");
                 filasAfectadas = db.update(Contract.PRESTAMOS, values,
                         Contract.Prestamo.ID + "=" + "\'" + idPrestamo + "\'"
                                 + (!TextUtils.isEmpty(selection) ?
@@ -448,23 +454,9 @@ public class Provider extends ContentProvider {
                 resolver.notifyChange(uri, null, false);
                 break;
 
-
-            /*case PRESTAMO:
-                String idPrestam = Contract.Prestamo.obtenerIdPrestamo(uri);
-                Log.e("ESTOY ACA","EL PROBLEMA ES AQUI");
-                filasAfectadas = db.update(Contract.PRESTAMOS, values,
-                        Contract.Prestamo.ID + "=" + "\'" + idPrestam + "\'"
-                                + (!TextUtils.isEmpty(selection) ?
-                                " AND (" + selection + ')' : ""),
-                        selectionArgs);
-
-                resolver.notifyChange(uri, null, false);
-                break;*/
-
-
             case PRESTAMO_DETALLE_ID:
                 String idPrestamoDetalle = Contract.PrestamoDetalle.obtenerIdPrestamoDetalle(uri);
-
+                Log.e("PRESTAMO-DTLL---","UPDATE");
                 filasAfectadas = db.update(Contract.PRESTAMOS_DETALLES, values,
                         Contract.PrestamoDetalle.ID + "=" + "\'" + idPrestamoDetalle + "\'"
                                 + (!TextUtils.isEmpty(selection) ?

@@ -162,6 +162,7 @@ public class ProcesadorLocal {
 
     public void procesarOperaciones_Clientes(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
         Cursor c_clientes = null;
+       // Log.e("CLIENTES","1");
         try{
             // Consultar clientes locales
             c_clientes = resolver.query(Contract.Cliente.URI_CONTENIDO,
@@ -235,6 +236,7 @@ public class ProcesadorLocal {
 
     public void procesarOperaciones_Prestamos(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
         Cursor c_prestamo = null;
+       // Log.e("PRESTAMO","1");
         try{
             // Consultar clientes locales
             c_prestamo = resolver.query(Contract.Prestamo.URI_CONTENIDO,
@@ -258,26 +260,34 @@ public class ProcesadorLocal {
 
                         // Crear uri de este contacto
                         Uri updateUri = Contract.Prestamo.crearUriPrestamo(String.valueOf(filaActual.getId()));
+                       // Log.e("VALOR URI-PRESTAMO",String.valueOf(updateUri));
+
 
                     /*
                     Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso
                     tanto en el servidro como en la app. Quién tenga la versión más actual, será tomado
                     como preponderante
                      */
+                        //Log.e("VALOR FILA-PRESTAMO",String.valueOf(match.compararCon(filaActual)));
+
                         if (!match.compararCon(filaActual)) {
                             int flag = match.esMasReciente(filaActual);
                             if (flag > 0) {
-                                Log.e(TAG, "Programar actualización  del Prestamos " + updateUri);
+                                //Log.e(TAG, "Programar actualización  del Prestamos " + updateUri);
 
                                 // Verificación: ¿Existe conflicto de modificación?
                                 if (filaActual.getModificado() == 1) {
                                     match.setModificado(0);
+
                                 }
+                                //Log.e("VALwwwwww",String.valueOf(filaActual));
                                 ops.add(construirOperacionUpdate_Prestamo(match, updateUri));
 
                             }
+                           // Log.e("VALORppppppp",String.valueOf(filaActual));
+                            ops.add(construirOperacionUpdate_Prestamo(match, updateUri));
 
-                        }
+                        }//Log.e("VALORoooooooooo",String.valueOf(filaActual));
 
                     } else {
                     /*
@@ -308,6 +318,7 @@ public class ProcesadorLocal {
 
     public void procesarOperaciones_Prestamos_Detalle(ArrayList<ContentProviderOperation> ops, ContentResolver resolver) {
         Cursor c_prestamo_detalle=null;
+        //Log.e("PRESTAMO-DETALLE","1");
         try{
             // Consultar clientes locales
             c_prestamo_detalle = resolver.query(Contract.PrestamoDetalle.URI_CONTENIDO,
@@ -325,6 +336,7 @@ public class ProcesadorLocal {
                     // Buscar si el contacto actual se encuentra en el mapa de mapacontactos
                     PrestamoDetalle match = PrestamosDetalleRemotos.get(filaActual.getId());
 
+
                     if (match != null) {
                         // Esta entrada existe, por lo que se remueve del mapeado
                         PrestamosDetalleRemotos.remove(filaActual.getId());
@@ -332,15 +344,17 @@ public class ProcesadorLocal {
                         // Crear uri de este contacto
                         Uri updateUri = Contract.PrestamoDetalle.crearUriPrestamoDetalle(String.valueOf(filaActual.getId()));
 
+
                     /*
                     Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso
                     tanto en el servidro como en la app. Quién tenga la versión más actual, será tomado
                     como preponderante
                      */
+                        //Log.e("VALOR MATCH-PDETALLE",String.valueOf(match.compararCon(filaActual)));
                         if (!match.compararCon(filaActual)) {
                             int flag = match.esMasReciente(filaActual);
                             if (flag > 0) {
-                                // Log.d(TAG, "Programar actualización  del Prestamos_Detalle " + updateUri);
+                                 //Log.d(TAG, "Programar actualización  del Prestamos_Detalle " + updateUri);
 
                                 // Verificación: ¿Existe conflicto de modificación?
                                 if (filaActual.getModificado() == 1) {
@@ -349,10 +363,11 @@ public class ProcesadorLocal {
                                 ops.add(construirOperacionUpdate_Prestamo_Detalle(match, updateUri));
 
                             }
+                            //Log.e("VALORaaaaa",String.valueOf(filaActual));
                             // Log.d(TAG, "Programar actualización  del Prestamos_Detalle " + updateUri);
                             ops.add(construirOperacionUpdate_Prestamo_Detalle(match, updateUri));
                         }
-
+                        //Log.e("VALOReeeeee",String.valueOf(filaActual));
                     } else {
                     /*
                     Se deduce que aquellos elementos que no coincidieron, ya no existen en el servidor,
@@ -407,6 +422,7 @@ public class ProcesadorLocal {
 
                         // Crear uri de este contacto
                         Uri updateUri = Contract.CuotaPaga.crearUriCuotaPaga(String.valueOf(filaActual.getId()));
+
 
                     /*
                     Aquí se aplica la resolución de conflictos de modificaciones de un mismo recurso

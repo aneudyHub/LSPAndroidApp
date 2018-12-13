@@ -315,7 +315,6 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
                 ops.add( ContentProviderOperation.newUpdate(mUri)
                         .withValue(Contract.Prestamo.CAPITAL_AMORTIZABLE,(mCapital))
                         .withValue(Contract.Prestamo.FECHA_SALDO,UTiempo.obtenerFechaHora())
-                        .withValue(Contract.Prestamo.INSERTADO,"1")
                         .build());
                 montoDigitado -= mRestante;
 
@@ -328,7 +327,6 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
 
                 ops.add( ContentProviderOperation.newUpdate(mUri)
                         .withValue(Contract.Prestamo.CAPITAL_AMORTIZABLE,(mCapital))
-                        .withValue(Contract.Prestamo.INSERTADO,"1")
                         .build());
 
 
@@ -361,7 +359,7 @@ public class PagoCapital extends AppCompatActivity implements Progress,LoaderMan
         valores.put(Contract.CuotaPaga.COBRADOR_ID,UPreferencias.obtenerIdUsuario(this));
         valores.put(Contract.CuotaPaga.NOMBRE_COBRADOR,UPreferencias.obtenerNombreUsuario(this));
         valores.put(Contract.CuotaPaga.NOMBRE_CLIENTE,nombreCliente);
-        valores.put(Contract.CuotaPaga.MONTO,montoDigitado);
+        valores.put(Contract.CuotaPaga.MONTO,totalPagado);
         valores.put(Contract.CuotaPaga.TOTALMORA,0.0);
         valores.put(Contract.CuotaPaga.PRESTAMO,idPrestamos);
         valores.put(Contract.CuotaPaga.FECHA_CONSULTA,UTiempo.obtenerFecha());
