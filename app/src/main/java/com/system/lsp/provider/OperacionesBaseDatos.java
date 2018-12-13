@@ -346,15 +346,25 @@ public class OperacionesBaseDatos {
     }
 
 
-    public Cursor ObtenerInfoPrestamoDiasAtrasadoAndMora(String id){
+    public Cursor ObtenerInfoPrestamoDiasAtrasadoAndMora(String id,String pendiente){
         SQLiteDatabase db = baseDatos.getWritableDatabase();
         Cursor c = null;
         try{
             String selection;
-            selection = String.format("%s=?", Contract.PRESTAMOS + "." +Contract.Prestamo.ID) +
-                    " AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PAGADO + " = 0" +
-                    " AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.DIAS_ATRASADOS + " > 0 IS NOT NULL";
-            String[] selectionArgs = {id};
+            if (pendiente.equals("1")){
+                selection = String.format("%s=?", Contract.PRESTAMOS + "." +Contract.Prestamo.ID) +
+                        " AND "+ Contract.PRESTAMOS + "." +Contract.Prestamo.SALDADO + " = 0" +
+                        " AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.DIAS_ATRASADOS + " > 0 IS NOT NULL";
+
+            }else {
+                selection = String.format("%s=?", Contract.PRESTAMOS + "." +Contract.Prestamo.ID) +
+                        " AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PAGADO + " = 0" +
+                        " AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.DIAS_ATRASADOS + " > 0 IS NOT NULL";
+
+            }String[] selectionArgs = {id};
+
+
+
 
 
             SQLiteQueryBuilder builder = new SQLiteQueryBuilder();

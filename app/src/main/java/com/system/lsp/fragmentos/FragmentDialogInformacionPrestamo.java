@@ -35,6 +35,7 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
 //    public Cursor cursor,cursor1;
     private String message = "message";
     private String idPrestamo;
+    private String tipoPrestamo;
     private Context context;
 
     public FragmentDialogInformacionPrestamo setMessage(Context context, String customMessage, String idPrestamo) {
@@ -81,6 +82,7 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
         Cursor cursor1 = null;
         try{
             cursor = datos.ObtenerInfoPrestamoPorId(idPrestamo);
+
 //            DatabaseUtils.dumpCursor(datos.ObtenerInfoPrestamoPorId(idPrestamo));
 
 //            DatabaseUtils.dumpCursor(datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo));
@@ -114,12 +116,15 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
             String porciento = cursor.getString(cursor.getColumnIndex(Contract.Prestamo.PORCIENTO_MORA));
             int porcientoMora = (Integer.parseInt(capitalPrestamo)*Integer.parseInt(porciento))/1000;
             costoPorDias.setText(String.valueOf(porcientoMora));
-
-
-            cursor1 = datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo);
+            if (datos.isCuotasPrestamoPendienteExists(idPrestamo)){
+                tipoPrestamo = "0";
+            }else {
+                tipoPrestamo ="1";
+            }
+            cursor1 = datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo,tipoPrestamo);
             diasAtrasados.setText(cursor1.getString(cursor1.getColumnIndex("DiasAtrasados")));
             cuotasAtrasadas.setText(cursor1.getString(cursor1.getColumnIndex("CuotasAtrasadas")));
-            Log.e("Valor",cursor1.getString(cursor1.getColumnIndex("ValorMora")));
+            //Log.e("Valor",cursor1.getString(cursor1.getColumnIndex("ValorMora")));
             valorMora.setText(cursor1.getString(cursor1.getColumnIndex("ValorMora")));
             abonoMora.setText(cursor1.getString(cursor1.getColumnIndex("AbonoMora")));
         }catch (Exception e){
