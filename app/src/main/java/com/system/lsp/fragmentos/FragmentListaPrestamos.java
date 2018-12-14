@@ -102,7 +102,7 @@ public class FragmentListaPrestamos extends android.support.v4.app.Fragment impl
         int telefono = data.getColumnIndex(Contract.Prestamo.TELEFONO);
         int celular = data.getColumnIndex(Contract.Prestamo.CELULAR);
         int capital = data.getColumnIndex(Contract.Prestamo.CAPITAL);
-        int total = data.getColumnIndex(Contract.Prestamo.TOTAL);
+        int total = data.getColumnIndex(Contract.Cobrador.TOTAL);
         int totalCuota = data.getColumnIndex("Total_cuota");
         int totalInteres = data.getColumnIndex("Total_interes");
         int prestamo = data.getColumnIndex(Contract.Prestamo.PRESTAMO);

@@ -272,9 +272,11 @@ public class OperacionesBaseDatos {
                     Contract.PRESTAMOS + "." + Contract.Prestamo.CAPITAL_AMORTIZABLE,
                     Contract.PRESTAMOS + "." + Contract.Prestamo.CUOTAS,
                     Contract.PRESTAMOS + "." + Contract.Prestamo.FECHA_INICIO,
-                    "(SUM( " + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.CAPITAL + " ) + " +
+                    "(       SUM( " + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.CAPITAL + " ) + " +
                             "SUM(" + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.INTERES + " ) + " +
-                            "SUM(" + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MORA + " ) - "+Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MONTO_PAGADO+") as Balance",
+                            "SUM(" + Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MORA + " ) - "+
+                            "(SUM(" +Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MONTO_PAGADO +") + "+
+                            "SUM(" +Contract.PRESTAMOS_DETALLES+ "." + Contract.PrestamoDetalle.ABONO_MORA+"))) as Balance",
                     Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MONTO_PAGADO,
                     "SUM("+Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.INTERES+") AS "+Contract.PrestamoDetalle.INTERES,
                     "SUM("+Contract.PRESTAMOS_DETALLES + "." + Contract.PrestamoDetalle.MORA+") AS "+Contract.PrestamoDetalle.MORA,

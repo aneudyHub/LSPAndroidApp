@@ -190,8 +190,8 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
 //            }
 //
 //        }
-        holder.valor.setText("RD$ "+c.getVALOR());
-        holder.total.setText("RD$ "+c.getTOTAL());
+        holder.valor.setText("RD$ "+c.getTOTAL());
+        holder.total.setText("RD$ "+c.getTotal_cuota());
         holder.mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
