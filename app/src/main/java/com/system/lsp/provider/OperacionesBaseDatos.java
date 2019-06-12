@@ -611,7 +611,8 @@ public class OperacionesBaseDatos {
         SQLiteDatabase db = baseDatos.getReadableDatabase();
         Cursor c=null;
         try {
-            String sql = String.format("SELECT * FROM %s ", Contract.PRESTAMOS_DETALLES +" WHERE prestamos_id = "+idPrestamos);
+            String sql = String.format("SELECT fecha FROM %s ", Contract.PRESTAMOS_DETALLES +"  WHERE prestamos_id = "+idPrestamos +" AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PAGADO + " = 0" +
+                    " AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.DIAS_ATRASADOS + " > 0 IS NOT NULL  LIMIT 1");
             c = db.rawQuery(sql, null);
         }catch (Exception e){
             FirebaseCrash.report(e);
@@ -625,6 +626,34 @@ public class OperacionesBaseDatos {
             }
         }
         return c;
+    }
+
+
+
+    // [OPERACIONES_FORMA_PAGO]
+    public String obtenerFechaAtrazo(String idPrestamos) {
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+        String tipo="";
+        Cursor c=null;
+        try {
+            String sql = String.format("SELECT fecha FROM %s ", Contract.PRESTAMOS_DETALLES +"  WHERE prestamos_id = "+idPrestamos +" AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PAGADO + " = 0" +
+                    " AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.DIAS_ATRASADOS + " > 0 IS NOT NULL  LIMIT 1");
+            c = db.rawQuery(sql, null);
+            if (c.moveToFirst()) {
+                tipo = c.getString(c.getColumnIndex(Contract.PrestamoDetalle.FECHA));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c!=null){
+                c.close();
+            }
+            if(db!=null){
+                db.close();
+            }
+        }
+        return tipo;
     }
 
 

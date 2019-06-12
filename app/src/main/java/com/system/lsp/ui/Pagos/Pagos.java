@@ -50,9 +50,18 @@ import com.system.lsp.utilidades.UTiempo;
 import com.system.lsp.utilidades.ZebraPrint;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import static java.time.temporal.ChronoUnit.*;
+
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoPeriod;
+import java.time.format.DateTimeFormatter;
+
 
 import static java.lang.Thread.sleep;
 
@@ -96,6 +105,7 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
         mPrinterProgress.setCancelable(false);
         mPrinterProgress.setIndeterminate(true);
 
+
         datosBD = OperacionesBaseDatos
                 .obtenerInstancia(this);
 
@@ -127,11 +137,14 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
 
     }
 
+
+
+
+
     private void prepareView(){
         mList = (RecyclerView)findViewById(R.id.Lista);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mList.setLayoutManager(layoutManager);
-
         mMonto = (EditText)findViewById(R.id.Monto);
         mMonto.setText(String.valueOf(montoAPagar));
         mMonto.addTextChangedListener(new TextWatcher() {
@@ -281,10 +294,15 @@ public class Pagos extends AppCompatActivity implements Progress,LoaderManager.L
 
     public void setTotalPendiente(double r){
         DecimalFormat precision = new DecimalFormat("0.00");
-        Log.e("TOTAL-PENDIENTE", precision.format(r));
+        Log.e("TOTAL-PENDIENTERRRRRRRRRRRRRRRRRRRRRR", precision.format(r));
+        Log.e("HOLA","ESTOY EN EL ");
+        //getDifference();
         totalPendiente = precision.format(r);
         mPendiente.setText(precision.format(r));
     }
+
+
+
 
 
     public void pagar() throws InterruptedException {

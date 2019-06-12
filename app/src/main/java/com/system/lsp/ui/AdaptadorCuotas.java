@@ -7,12 +7,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,9 +89,11 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
         public ImageView mLlamarCliente;
         public TextView mPlazo;
         public TextView mTipo;
+        public ConstraintLayout constraintLayout;
 
         public ViewHolder(View v) {
             super(v);
+            constraintLayout = (ConstraintLayout) v.findViewById(R.id.relativeLayout);
             fecha = (TextView) v.findViewById(R.id.fecha);
             nombre_cliente = (TextView) v.findViewById(R.id.nombre_cliente);
             cedula_cliente = (TextView) v.findViewById(R.id.cedula_cliente);
@@ -191,8 +196,20 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
         final String tipoPrestamo = c.getESTADO();
         if(tipoPrestamo.equals("5")){
             holder.mTipo.setText(c.getTipoNombre());
-        }else {
+            statusIndicator.setBackgroundResource(R.color.naranja);
+            holder.mTipo.setTextColor(Color.parseColor("#a5790a"));
+        }if(tipoPrestamo.equals("3")) {
             holder.mTipo.setText(c.getTipoNombre());
+            statusIndicator.setBackgroundResource(R.color.mora);
+            holder.mTipo.setTextColor(Color.parseColor("#d32f2f"));
+            holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFFAE9E9"));
+        }if(tipoPrestamo.equals("2")){
+            holder.mTipo.setText(c.getTipoNombre());
+            holder.mTipo.setTextColor(Color.parseColor("#388E3C"));
+        }
+        else {
+            holder.mTipo.setText(c.getTipoNombre());
+           ;
         }
 
 

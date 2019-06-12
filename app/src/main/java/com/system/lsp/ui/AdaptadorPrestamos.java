@@ -1,6 +1,8 @@
 package com.system.lsp.ui;
 
 import android.database.Cursor;
+import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -60,9 +62,11 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
         public TextView telefono;
         public TextView celular;
         public TextView total;
+        public TextView tipo_prestamo;
         public TextView valor;
         public View statusIndicator;
         public CardView mLayout;
+        public ConstraintLayout constraintLayout;
 
         public ViewHolder(View v) {
             super(v);
@@ -76,7 +80,9 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
 //            telefono = (TextView) v.findViewById(R.id.telefono);
 //            celular = (TextView) v.findViewById(R.id.celular);
             cuota = (TextView) v.findViewById(R.id.cuota);
+            tipo_prestamo = (TextView) v.findViewById(R.id.tip_prestamo);
             statusIndicator = itemView.findViewById(R.id.appointment_status);
+            constraintLayout = (ConstraintLayout)v.findViewById(R.id.relativeLayout);
             mLayout= (CardView) itemView.findViewById(R.id.Layout);
         }
     }
@@ -168,6 +174,23 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
 
         //indicator_appointment_status
         Log.e("VALOR CUOTA",cantida_cuota);
+        Log.e("TIPO NOMBRE",c.getTipoNombre());
+        final String tipoPrestamo = c.getESTADO();
+        if(tipoPrestamo.equals("5")){
+            holder.tipo_prestamo.setText(c.getTipoNombre());
+            statusIndicator.setBackgroundResource(R.color.naranja);
+            holder.tipo_prestamo.setTextColor(Color.parseColor("#a5790a"));
+        }if(tipoPrestamo.equals("3")) {
+            holder.tipo_prestamo.setText(c.getTipoNombre());
+            statusIndicator.setBackgroundResource(R.color.mora);
+            holder.tipo_prestamo.setTextColor(Color.parseColor("#d32f2f"));
+            holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFFAE9E9"));
+        }if(tipoPrestamo.equals("2")){
+            holder.tipo_prestamo.setText(c.getTipoNombre());
+            holder.tipo_prestamo.setTextColor(Color.parseColor("#388E3C"));
+        }
+
+        //holder.tipo_prestamo.setText(c.getTipoNombre());
         holder.nombre_cliente.setText(c.getCLIENTE());
         holder.num_documento.setText(c.getCEDULA());
         holder.direccion.setText(c.getDIRECCION());

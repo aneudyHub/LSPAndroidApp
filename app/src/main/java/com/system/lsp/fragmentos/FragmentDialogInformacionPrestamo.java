@@ -21,7 +21,15 @@ import com.system.lsp.R;
 import com.system.lsp.provider.Contract;
 import com.system.lsp.provider.OperacionesBaseDatos;
 
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoPeriod;
+import java.time.format.DateTimeFormatter;
+
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.MONTHS;
+import static java.time.temporal.ChronoUnit.YEARS;
 
 /**
  * Created by Suarez on 24/03/2018.
@@ -67,6 +75,7 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
         TextView valorCuota = (TextView) dialogView.findViewById(R.id.valorCuota);
         TextView plasoCuota = (TextView) dialogView.findViewById(R.id.plazoCuota);
         TextView cuotasPagadas = (TextView) dialogView.findViewById(R.id.cuotasPagadas);
+        TextView fecha_atrazo = (TextView) dialogView.findViewById(R.id.fecha_atrazo);
         TextView diasAtrasados = (TextView) dialogView.findViewById(R.id.diasAtrasados);
         TextView cuotasAtrasadas = (TextView)dialogView.findViewById(R.id.cuotasAtrasadas);
         TextView valorMora = (TextView)dialogView.findViewById(R.id.valorMora);
@@ -80,12 +89,14 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
 
         Cursor cursor = null;
         Cursor cursor1 = null;
+        Cursor cursor2 = null;
         try{
             cursor = datos.ObtenerInfoPrestamoPorId(idPrestamo);
 
 //            DatabaseUtils.dumpCursor(datos.ObtenerInfoPrestamoPorId(idPrestamo));
 
 //            DatabaseUtils.dumpCursor(datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo));
+            getDifference();
             montoPrestamo.setText("RD$ "+cursor.getString(cursor.getColumnIndex(Contract.Prestamo.CAPITAL)));
             String capital = cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.CAPITAL));
             String interes = cursor.getString(cursor.getColumnIndex(Contract.PrestamoDetalle.INTERES));
@@ -122,6 +133,25 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
                 tipoPrestamo ="1";
             }
             cursor1 = datos.ObtenerInfoPrestamoDiasAtrasadoAndMora(idPrestamo,tipoPrestamo);
+
+            String fechaAtrazo = datos.obtenerFechaAtrazo(idPrestamo);
+            if (fechaAtrazo!= ""){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                ChronoLocalDate from = ChronoLocalDate.from(formatter.parse(fechaAtrazo));
+                String fechal = LocalDate.now().toString();
+                Log.e("ESTA ES LA FECHA",fechal);
+                ChronoLocalDate to = ChronoLocalDate.from(LocalDate.now());
+                ChronoPeriod period = ChronoPeriod.between(from, to);
+                //System.out.printf("%d años, %d meses y %d días", period.get(YEARS), period.get(MONTHS), period.get(DAYS));
+
+                Log.e("DATOS",""+period.get(YEARS)+" ANOS - "+period.get(MONTHS)+" MES - "+period.get(DAYS)+" DIAS");
+
+                fecha_atrazo.setText(""+period.get(YEARS)+" Años/ "+period.get(MONTHS)+" MES/ "+period.get(DAYS)+" DIAS");
+            }
+
+
+
+            //fecha_atrazo.setText(fechaAtrazo);
             diasAtrasados.setText(cursor1.getString(cursor1.getColumnIndex("DiasAtrasados")));
             cuotasAtrasadas.setText(cursor1.getString(cursor1.getColumnIndex("CuotasAtrasadas")));
             //Log.e("Valor",cursor1.getString(cursor1.getColumnIndex("ValorMora")));
@@ -197,6 +227,18 @@ public class FragmentDialogInformacionPrestamo extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         Log.v(LOG_TAG,"onDismiss");
+    }
+
+
+    public  void getDifference() {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        ChronoLocalDate from = ChronoLocalDate.from(formatter.parse("09/02/2019"));
+        ChronoLocalDate to = ChronoLocalDate.from(formatter.parse("10/06/2019"));
+        ChronoPeriod period = ChronoPeriod.between(from, to);
+        //System.out.printf("%d años, %d meses y %d días", period.get(YEARS), period.get(MONTHS), period.get(DAYS));
+        Log.e("DATOS",""+period.get(YEARS)+" ANOS - "+period.get(MONTHS)+" MES - "+period.get(DAYS)+" DIAS");
+
     }
 
 
