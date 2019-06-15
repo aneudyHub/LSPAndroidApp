@@ -184,7 +184,7 @@ public class AdaptadorPrestamos extends RecyclerView.Adapter<AdaptadorPrestamos.
             holder.tipo_prestamo.setText(c.getTipoNombre());
             statusIndicator.setBackgroundResource(R.color.mora);
             holder.tipo_prestamo.setTextColor(Color.parseColor("#d32f2f"));
-            holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFFAE9E9"));
+           // holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFFAE9E9"));
         }if(tipoPrestamo.equals("2")){
             holder.tipo_prestamo.setText(c.getTipoNombre());
             holder.tipo_prestamo.setTextColor(Color.parseColor("#388E3C"));

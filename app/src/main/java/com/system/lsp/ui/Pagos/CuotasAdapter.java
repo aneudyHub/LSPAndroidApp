@@ -4,8 +4,10 @@ import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Color;
 import android.net.Uri;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,7 +27,13 @@ import com.system.lsp.utilidades.UConsultas;
 import com.system.lsp.utilidades.UPreferencias;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +57,9 @@ public class CuotasAdapter extends RecyclerView.Adapter<CuotasAdapter.CuotaViewH
     private double montoRestante =0.00 ;
     private String cantidadCuota ="";
     private int totalCuotas =0;
+    private int atrazo = 0;
     DecimalFormat precision = new DecimalFormat("0.00");;
+
 
     public CuotasAdapter(Context mCtx,String idPrestamo){
 
@@ -70,8 +80,17 @@ public class CuotasAdapter extends RecyclerView.Adapter<CuotasAdapter.CuotaViewH
     public void onBindViewHolder(CuotaViewHolder holder, int position) {
         mItems.moveToPosition(position);
 
+        atrazo = Integer.parseInt(mItems.getString(mItems.getColumnIndex(Contract.PrestamoDetalle.DIAS_ATRASADOS)));
 
+        if (atrazo == 0) {
+            holder.constraintLayout.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.total_monto.setTextColor(mCtx.getResources().getColor(R.color.negro87));
 
+        }else {
+            holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFFAE9E9"));
+            holder.total_monto.setTextColor(mCtx.getResources().getColor(R.color.mora));
+           ;
+        }
 
         holder.mFecha.setText(String.format("%s", UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.FECHA)));
         holder.mNumero.setText("#"+String.format("%s", UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.CUOTA)));
@@ -96,12 +115,14 @@ public class CuotasAdapter extends RecyclerView.Adapter<CuotasAdapter.CuotaViewH
 //        holder.mIcon.setVisibility(View.GONE);
         holder.mRestante.setVisibility(View.GONE);
         holder.mAbonado.setText(mItems.getString(mItems.getColumnIndex(Contract.PrestamoDetalle.MONTO_PAGADO)));
+        String fecha_vencida = String.format("%s", UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.FECHA));
 
-        if(mora>0){
+
+      /*  if(mora>0){
             holder.total_monto.setTextColor(mCtx.getResources().getColor(R.color.mora));
         }else{
             holder.total_monto.setTextColor(mCtx.getResources().getColor(R.color.negro87));
-        }
+        }*/
 
         if(modificaCuota!=null){
 
@@ -149,6 +170,7 @@ public class CuotasAdapter extends RecyclerView.Adapter<CuotasAdapter.CuotaViewH
         public TextView mFecha,mAbonado,diasAtrasados;
         public TextView cuota_monto,moraMonto,total_monto,mNumero,mRestante;
         public ImageView mIcon;
+        public ConstraintLayout constraintLayout;
 
         public CuotaViewHolder(View itemView) {
             super(itemView);
@@ -157,6 +179,7 @@ public class CuotasAdapter extends RecyclerView.Adapter<CuotasAdapter.CuotaViewH
             cuota_monto=(TextView)itemView.findViewById(R.id.Cuot_Monto);
             moraMonto=(TextView)itemView.findViewById(R.id.Mora_Monto);
             total_monto=(TextView)itemView.findViewById(R.id.Total_Monto);
+            constraintLayout = (ConstraintLayout) itemView .findViewById(R.id.relativeLayout);
             mNumero=(TextView)itemView.findViewById(R.id.Cuota_Numero);
 //            mIcon =(ImageView)itemView.findViewById(R.id.Cuota_Modificacion);
             mRestante=(TextView)itemView.findViewById(R.id.Restante);

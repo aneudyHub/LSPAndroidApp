@@ -202,7 +202,6 @@ public class AdaptadorCuotas extends RecyclerView.Adapter<AdaptadorCuotas.ViewHo
             holder.mTipo.setText(c.getTipoNombre());
             statusIndicator.setBackgroundResource(R.color.mora);
             holder.mTipo.setTextColor(Color.parseColor("#d32f2f"));
-            holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFFAE9E9"));
         }if(tipoPrestamo.equals("2")){
             holder.mTipo.setText(c.getTipoNombre());
             holder.mTipo.setTextColor(Color.parseColor("#388E3C"));

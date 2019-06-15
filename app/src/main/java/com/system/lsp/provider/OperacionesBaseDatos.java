@@ -657,6 +657,33 @@ public class OperacionesBaseDatos {
     }
 
 
+    public String obtenerTodasFechaAtrazo(String idPrestamos) {
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+        String tipo="";
+        Cursor c=null;
+        try {
+            String sql = String.format("SELECT fecha FROM %s ", Contract.PRESTAMOS_DETALLES +"  WHERE prestamos_id = "+idPrestamos +" AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.PAGADO + " = 0" +
+                    " AND "+ Contract.PRESTAMOS_DETALLES + "." +Contract.PrestamoDetalle.DIAS_ATRASADOS + " > 0 IS NOT NULL");
+            c = db.rawQuery(sql, null);
+                while (c.moveToFirst()) {
+                tipo = c.getString(c.getColumnIndex(Contract.PrestamoDetalle.FECHA));
+            }
+        }catch (Exception e){
+            FirebaseCrash.report(e);
+            throw e;
+        }finally {
+            if(c!=null){
+                c.close();
+            }
+            if(db!=null){
+                db.close();
+            }
+        }
+        return tipo;
+    }
+
+
+
 
     // [OPERACIONES_FORMA_PAGO]
     public String obtenerTipoPrestamo(String idPrestamos) {

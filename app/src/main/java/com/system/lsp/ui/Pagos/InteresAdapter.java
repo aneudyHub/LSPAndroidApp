@@ -2,8 +2,11 @@ package com.system.lsp.ui.Pagos;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +42,7 @@ public class InteresAdapter extends RecyclerView.Adapter<InteresAdapter.CuotaVie
     private double montoRestante =0.00 ;
     private String cantidadCuota ="";
     private int totalCuotas =0;
+    private int atrazo = 0;
     DecimalFormat precision = new DecimalFormat("0.00");;
 
     public InteresAdapter(Context mCtx, String idPrestamo){
@@ -60,15 +64,25 @@ public class InteresAdapter extends RecyclerView.Adapter<InteresAdapter.CuotaVie
     public void onBindViewHolder(CuotaViewHolder holder, int position) {
         mItems.moveToPosition(position);
 
+        atrazo = Integer.parseInt(mItems.getString(mItems.getColumnIndex(Contract.PrestamoDetalle.DIAS_ATRASADOS)));
+        double mora = Double.parseDouble(UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.MORA));
 
 
+        if (atrazo == 0 ) {
+            holder.constraintLayout.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.total_monto.setTextColor(mCtx.getResources().getColor(R.color.negro87));
+
+        }else {
+            holder.constraintLayout.setBackgroundColor(Color.parseColor("#FFFAE9E9"));
+            holder.total_monto.setTextColor(mCtx.getResources().getColor(R.color.mora));
+            ;
+        }
 
         holder.mFecha.setText(String.format("%s", UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.FECHA)));
         holder.mNumero.setText("#"+String.format("%s", UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.CUOTA)));
         holder.diasAtrasados.setText(String.format("%s", UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.DIAS_ATRASADOS)));
         double cap = Double.parseDouble(UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.CAPITAL));
         double interes = Double.parseDouble(UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.INTERES));
-        double mora = Double.parseDouble(UConsultas.obtenerString(mItems, Contract.PrestamoDetalle.MORA));
         double mora_acumulada = Double.parseDouble(UConsultas.obtenerString(mItems,Contract.PrestamoDetalle.MORA_ACUMULADA));
         abonado = Double.parseDouble(mItems.getString(mItems.getColumnIndex(Contract.PrestamoDetalle.MONTO_PAGADO)));
         abonoM = Double.parseDouble(mItems.getString(mItems.getColumnIndex(Contract.PrestamoDetalle.ABONO_MORA)));
@@ -87,11 +101,11 @@ public class InteresAdapter extends RecyclerView.Adapter<InteresAdapter.CuotaVie
         holder.mRestante.setVisibility(View.GONE);
         holder.mAbonado.setText(mItems.getString(mItems.getColumnIndex(Contract.PrestamoDetalle.MONTO_PAGADO)));
 
-        if(mora>0){
+        /*if(mora>0){
             holder.total_monto.setTextColor(mCtx.getResources().getColor(R.color.mora));
         }else{
             holder.total_monto.setTextColor(mCtx.getResources().getColor(R.color.negro87));
-        }
+        }*/
 
         if(modificaCuota!=null){
 
@@ -139,6 +153,7 @@ public class InteresAdapter extends RecyclerView.Adapter<InteresAdapter.CuotaVie
         public TextView mFecha,mAbonado,diasAtrasados;
         public TextView cuota_monto,moraMonto,total_monto,mNumero,mRestante;
         public ImageView mIcon;
+        public ConstraintLayout constraintLayout;
 
         public CuotaViewHolder(View itemView) {
             super(itemView);
@@ -148,6 +163,7 @@ public class InteresAdapter extends RecyclerView.Adapter<InteresAdapter.CuotaVie
             moraMonto=(TextView)itemView.findViewById(R.id.Mora_Monto);
             total_monto=(TextView)itemView.findViewById(R.id.Total_Monto);
             mNumero=(TextView)itemView.findViewById(R.id.Cuota_Numero);
+            constraintLayout=(ConstraintLayout)itemView.findViewById(R.id.relativeLayout);
 //            mIcon =(ImageView)itemView.findViewById(R.id.Cuota_Modificacion);
             mRestante=(TextView)itemView.findViewById(R.id.Restante);
             mAbonado=(TextView)itemView.findViewById(R.id.Abonado);
